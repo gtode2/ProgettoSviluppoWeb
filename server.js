@@ -23,7 +23,20 @@ const pool = new Pool({
 app.post("/registrazione", async (req, res) => {
     const { name, surname, email, phone, password, user_type } = req.body;
 
+    // Validazione lato server
+    if (!name || !surname || !email || !phone || !password || !user_type) {
+        return res.status(400).send("Tutti i campi sono obbligatori.");
+    }
+
     try {
+        // Controlla se l'email è già registrata
+        const checkQuery = "SELECT id FROM utenti WHERE email = $1";
+        const existing = await pool.query(checkQuery, [email]);
+
+        if (existing.rows.length > 0) {
+            return res.status(409).send("Email già registrata.");
+        }
+
         // Hash della password
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -36,8 +49,8 @@ app.post("/registrazione", async (req, res) => {
         await pool.query(query, values);
         res.status(200).send("Registrazione completata con successo.");
     } catch (err) {
-        console.error("Errore DB:", err);
-        res.status(500).send("Errore durante la registrazione.");
+        console.error("Errore durante la registrazione:", err);
+        res.status(500).send("Errore interno al server.");
     }
 });
 
