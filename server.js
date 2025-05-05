@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const { Pool } = require("pg");
+const path = require('path')
 
 const app = express();
 const port = 3000;
@@ -53,6 +54,28 @@ app.post("/registrazione", async (req, res) => {
         res.status(500).send("Errore interno al server.");
     }
 });
+
+
+app.use(express.static(path.join(__dirname, "login")));
+app.get("/login",(req,res)=>{
+    res.sendFile(path.join(__dirname,"login","login.html"))
+})
+app.post("/serverLogin", async(req,res)=>{  //NOME ROUTE TEMPORANEO
+    const {cred, password} = req.body
+    const query = "SELECT id FROM utenti WHERE email = $1 AND password = $2"
+    const hashedpw = bcrypt.hash(password,10);
+    const values = [cred, hashedpw]
+    const uid = await pool.query(query,values)
+    if (uid.rows.length>0) {
+        res.status(200).send("Accesso eseguito")
+    }else{
+        res.status(401).send("Account non trovato")
+    } 
+
+})
+
+
+
 
 app.listen(port, () => {
     console.log(`Server attivo su http://localhost:${port}`);
