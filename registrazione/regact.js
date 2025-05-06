@@ -1,6 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector("form");
-
+    const prevmail = document.getElementById("prevmail")
+    prevmail.addEventListener("change", ()=>{
+        const mail = document.getElementById("mail")
+        if (prevmail.checked) {
+            mail.disabled=true
+            mail.value="aaa" //inserire mail precedente
+        }else{
+            mail.disabled=false
+            mail.value=""
+        }
+    })
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -9,9 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const name = document.getElementById("name").value.trim();
             return name.length >= 1;
         };
-        //controlla che ci sia il cognome
-        const checkSurname = () => {
-            const surname = document.getElementById("surname").value.trim();
+        const checkAddress = () => {
+            const surname = document.getElementById("addr").value.trim();
             return surname.length >= 1;
         };
 
@@ -23,30 +32,18 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         const checkPhone = () => {
-            const phone = document.getElementById("phone").value.trim();
+            const phone = document.getElementById("num").value.trim();
             const regex = /^[0-9]{9,15}$/;
             return regex.test(phone);
         };
 
-        const checkPassword = () => {
-            const password = document.getElementById("password").value;
-            return password.length >= 6;
-        };
-
-        const checkConfirmPassword = () => {
-            const password = document.getElementById("password").value;
-            const confirmPassword = document.getElementById("confirm_password").value;
-            return password === confirmPassword;
-        };
 
         // Esegui i check
         if (
             !checkName() ||
-            !checkSurname() ||
+            !checkAddress() ||
             !checkEmail() ||
-            !checkPhone() ||
-            !checkPassword() ||
-            !checkConfirmPassword()
+            !checkPhone() 
         ) {
             alert("Compila tutti i campi correttamente.");
             return;
@@ -64,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Invia i dati al backend
         try {
-            const response = await fetch("http://localhost:3000/registrazione", {
+            const response = await fetch("http://localhost:3000/RegAct", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)

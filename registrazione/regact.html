@@ -11,34 +11,35 @@
       <h1>Registrazione</h1>
     </header>
     <main>
-      <form action="registrazione.php" method="POST">
-        <label for="name">Nome utente:</label>
-        <input type="text" id="name" name="name" required><br><br>
-
-        <label for="surname">Cognome:</label>
-        <input type="text" id="surname" name="surname" required><br><br>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-
-        <label for="phone">Telefono:</label>
-        <input type="tel" id="phone" name="phone" required><br><br>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <label for="confirm_password">Conferma Password:</label>
-        <input type="password" id="confirm_password" name="confirm_password" required><br><br>
-
-        <label for="user_type">Registrati come:</label>
-        <select id="user_type" name="user_type" required>
-          <option value="cliente">Cliente</option>
-          <option value="artigiano">Artigiano</option>
-        </select><br><br>
-
-        <input type="submit" value="Registrati">
+      <form>
+        <label>
+          nome attività
+        </label>
+        <input type="text" id="name">
+        <label>
+          indirizzo
+        </label>
+        <input type="text" id="addr">
+        <label>
+          email
+        </label>
+        <input type="text" id="mail">
+        <input type="checkbox" id="prevmail">
+        <label style="font-weight: normal;">
+          usa stesso indirizzo email dell'account
+        </label>
+        <label>
+          numero di telefono
+        </label>
+        <input type="text" id="num">
+        <label>
+          descrizione
+        </label>
+        <textarea id="descr" style="height: 300px;"></textarea>
+        
       </form>
+
     </main>
-    <script src="registrazione.js"></script>
+    <script src="regact.js"></script>
   </body>
 </html>
