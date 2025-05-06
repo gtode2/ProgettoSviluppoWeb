@@ -3,23 +3,50 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const { Pool } = require("pg");
-const path = require('path')
+const path = require('path');
+const { checkdb } = require("./dbmanager.js");
 
 const app = express();
 const port = 3000;
 
+app.use(express.static(path.join(__dirname, "login")));
+app.use(express.static(path.join(__dirname, "registrazione")));
+
+const db_user = "postgres"
+const db_name = "dbprogetto"
+const db_pw = "postgres"
+const db_port = 5432 
+
+
 app.use(cors());
 app.use(bodyParser.json());
+initDb()
 
 // Connessione PostgreSQL
-const pool = new Pool({
-    user: "tuo_utente",
-    host: "localhost",
-    database: "tuo_database",
-    password: "tua_password",
-    port: 5432,
-});
+async function initDb() {
+    var cdb = await checkdb()
+    if (cdb==0) {
+        const pool = new Pool({
+        user: db_user,
+        host: "localhost",
+        database: db_name,
+        password: db_pw,
+        port: db_port,
+    });
+    }else{
+        console.log("impossibile inizializzare DB");
+        console.log(cdb);
+    
+        process.exit(0)
+    }
+}
 
+/////////////////////////////////////////////////////////////////////////
+//REGISTRAZIONE
+
+app.get("/reg",(req,res)=>{
+    res.sendFile(path.join(__dirname,"registrazione","registrazione.html"))
+})
 // Endpoint registrazione
 app.post("/registrazione", async (req, res) => {
     const { name, surname, email, phone, password, user_type } = req.body;
@@ -49,14 +76,18 @@ app.post("/registrazione", async (req, res) => {
 
         await pool.query(query, values);
         res.status(200).send("Registrazione completata con successo.");
+        if (user_type=="artigiano") {
+            res.sendFile(path.join(__dirname,"registrazione","regact.html"))
+        }
     } catch (err) {
         console.error("Errore durante la registrazione:", err);
         res.status(500).send("Errore interno al server.");
     }
 });
 
+/////////////////////////////////////////////////////////////////////////
+//LOGIN
 
-app.use(express.static(path.join(__dirname, "login")));
 app.get("/login",(req,res)=>{
     res.sendFile(path.join(__dirname,"login","login.html"))
 })
