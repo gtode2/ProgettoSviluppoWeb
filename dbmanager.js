@@ -21,12 +21,19 @@ async function checkdb()  {
         if (res.rowCount>0) {
             console.log("DB Esiste")
             await setDb(nomeDb)
-            checkTables()
+            await checkTables()
+            console.log("verifica tabelle completata");
+            
         }else{
             const res = await pool.query("CREATE DATABASE "+nomeDb)
             console.log("DB Creato")
+            console.log("richiesta modifica database");
             await setDb(nomeDb)
+            
+            await pool.connect()
+            console.log("connessione al database riuscita");
             await createTables()
+            console.log("Tabelle create")
         }
         return 0
     } catch (error) {
@@ -36,7 +43,11 @@ async function checkdb()  {
 }
 
 async function setDb(nomedb){
-    await pool.end()
+    try {
+        console.log("chiusura pool");
+        pool.end()
+    console.log("Pool chiuso");
+    
     pool = new Pool({
         user:db_user,
         host:'localhost',
@@ -44,6 +55,10 @@ async function setDb(nomedb){
         password:db_pw,
         port:db_port    
     })
+    } catch (error) {
+        console.log("impossibile chiudere il db\n"+error);
+             
+    }
 }
 async function createTables(){
     try {
@@ -67,15 +82,19 @@ async function createTables(){
     }
 }       
 async function checkTables(){
-    if (! await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='utenti')")) {
+    res_utenti = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='utenti')")
+    
+    if (! res_utenti.rows[0].exists) {
         await creaUtenti()
         console.log("Creata tabella utenti");
         
     }
-    if(await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='attivita')")){
+    res_attivita = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='attivita')")
+    if(!res_attivita.rows[0].exists){
         await creaAttivita()
         console.log("Creata tabella attivita");
     }
+   
 }
 
 
