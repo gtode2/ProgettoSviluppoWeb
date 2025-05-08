@@ -1,71 +1,81 @@
 /* login.css */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    color: #333;
-    padding: 20px;
-  }
-  
-  header {
-    background: #333;
-    color: #fff;
-    padding: 20px 0;
-    text-align: center;
-  }
-  
-  main {
-    max-width: 400px;
-    margin: 30px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  form label {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  form input[type="text"],
-  form input[type="password"] {
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-    transition: border 0.3s;
-  }
-  
-  form input[type="text"]:focus,
-  form input[type="password"]:focus {
-    border-color: #007BFF;
-    outline: none;
-  }
-  
-  form input[type="submit"] {
-    padding: 10px;
-    background-color: #007BFF;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  form input[type="submit"]:hover {
-    background-color: #0056b3;
-  }
-  
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #333;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Sfondo iframe */
+.iframe-sfondo iframe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  border: none;
+  z-index: -1;
+  filter: blur(4px);
+}
+
+/* Contenitore del form */
+.contenitore-login {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
+  width: 100%;
+}
+
+.form-login h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-login label {
+  display: block;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.form-login input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border 0.3s;
+}
+
+.form-login input:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+.form-login button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-login button:hover {
+  background-color: #0056b3;
+}
