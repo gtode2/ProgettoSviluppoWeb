@@ -1,26 +1,35 @@
 <!DOCTYPE html>
 <html lang="it">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="login.css">
-  </head>
-  <body>
-    <header>
-      <h1>Login</h1>
-    </header>
-    <main>
-      <form action="login.php" method="POST" id="loginForm">
-        <label for="username">Nome utente:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        
-        <input type="submit" value="Accedi">
-      </form>
-    </main>
-    <script src="login.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <title>Registrazione | App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="iframe-sfondo">
+    <iframe src="HomePage/HomePage.html" title="Homepage"></iframe>
+  </div>
+
+  <div class="contenitore-register">
+    <div class="form-register">
+      <h2>Registrati</h2>
+      <label for="nome">Nome:
+        <input type="text" placeholder="Nome" id="nome" />
+      </label>
+      <label for="cognome">Cognome:
+        <input type="text" placeholder="Cognome" id="cognome" />
+      </label>
+      <label for="username">Username:
+        <input type="text" placeholder="Username" id="username" />
+      </label>
+      <label for="email">Email:
+        <input type="email" placeholder="Email" id="email" />
+      </label>
+      <label for="confirm-password">Conferma Password:
+        <input type="password" placeholder="Conferma Password" id="confirm-password" />
+      </label>
+      <button>Registrati</button>
+    </div>
+  </div>
+</body>
 </html>
