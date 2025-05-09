@@ -124,15 +124,36 @@ async function main(params) {
         res.sendFile(path.join(__dirname,"login","login.html"))
     })
     app.post("/login", async(req,res)=>{  //NOME ROUTE TEMPORANEO
+        console.log("iniziata sequenza login");
+        
         const {cred, password} = req.body
         const query = "SELECT * FROM utenti WHERE email = $1 AND password = $2"
         const hashedpw = bcrypt.hash(password,10);
         const values = [cred, hashedpw]
         const user = await pool.query(query,values)
+        
         if (user.rows.length>0) {
-            createAccessToken(user.rows[0])
+            const accessToken = createAccessToken(user.rows[0])
+            const refreshToken = createRefreshToken(user.rows[0])
+            console.log("creato token");
+            
+            //inserire refreshToken in db
+            try {
+                const query = `
+                INSERT INTO utenti (userid, token, exp, revoked)
+                VALUES ($1, $2, $3, $4)
+                `;
+                const now = new Date();
+                const expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+                const values = [user.rows[0].uid, refreshToken, expiresAt, false];
+                await pool.query(query,values)
+            } catch (error) {
+                console.log("non va un cazzo \n"+error);
+                
+            }
             
             res.status(200).send("Accesso eseguito")
+            res.json({ accessToken, refreshToken });
         }else{
             res.status(401).send("Credenziali non valide")
         } 

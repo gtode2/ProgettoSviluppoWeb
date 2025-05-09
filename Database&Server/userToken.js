@@ -1,7 +1,11 @@
 const jwt = require('jsonwebtoken')
+const bodyParser = require('body-parser')
+const express = require("express");
 
 const SECRET_KEY="chiaveesempio"
 const REFRESH_SECRET_KEY="chiaveesempiomapiubrutta"
+const app = express();
+app.use(bodyParser.json());
 
 // Funzione per creare un access token
 function createAccessToken(user) {

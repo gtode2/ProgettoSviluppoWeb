@@ -136,4 +136,8 @@ async function creaRefTok(){
     }
 }
 
+
+
+
+
 module.exports={checkdb}

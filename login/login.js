@@ -1,3 +1,53 @@
+document.addEventListener("DOMContentLoaded", ()=>{
+    document.getElementById("send").addEventListener("click", async ()=>{
+        const cred = document.getElementById("username")
+        const pw = document.getElementById("password")
+
+        
+        const checkCred=()=>{
+            return cred.value.length >0
+        }
+        const checkPassword =()=>{
+            return pw.value.length >0
+        }
+        
+        if (!checkCred()||!checkPassword()) {
+            alert("Compila tutti i campi correttamente.")
+            return
+        }
+        const formData = {
+            cred: cred.value,
+            pw: pw.value
+        }
+        // Invia i dati al backend
+        try {
+            const response = await fetch("http://localhost:3000/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            });
+            if (response.ok) {
+                window.location.href = response.url
+        
+            } 
+
+            //const text = await response.text();
+            //alert(text);
+        } catch (error) {
+            alert("Errore di rete.");
+            console.error(error);
+        }
+
+    })
+})
+
+
+        
+
+
+
+
+/* VECCHIO CONTENUTO DI LOGIN.JS
 const bcrypt = require('bcrypt');
 const db = require('./db'); // Modulo per interagire con il database
 
@@ -41,3 +91,4 @@ async function handleLogin(req, res) {
 }
 
 module.exports = { handleLogin };
+*/
