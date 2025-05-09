@@ -10,6 +10,8 @@ app.use(bodyParser.json());
 // Funzione per creare un access token
 function createAccessToken(user) {
     return jwt.sign({ id: user.uid, nome: user.name, mail: user.email }, SECRET_KEY, { expiresIn: '1h' });
+    
+    
 }
 
 // Funzione per creare un refresh token

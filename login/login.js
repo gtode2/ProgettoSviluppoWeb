@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", ()=>{
     document.getElementById("send").addEventListener("click", async ()=>{
+        console.log("aaa");
+        
         const cred = document.getElementById("username")
         const pw = document.getElementById("password")
 
@@ -21,6 +23,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
         }
         // Invia i dati al backend
         try {
+            console.log("tenativo invio dati");
+            
             const response = await fetch("http://localhost:3000/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

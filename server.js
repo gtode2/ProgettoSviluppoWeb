@@ -125,22 +125,30 @@ async function main(params) {
     })
     app.post("/login", async(req,res)=>{  //NOME ROUTE TEMPORANEO
         console.log("iniziata sequenza login");
-        
-        const {cred, password} = req.body
-        const query = "SELECT * FROM utenti WHERE email = $1 AND password = $2"
-        const hashedpw = bcrypt.hash(password,10);
-        const values = [cred, hashedpw]
+        const {cred, pw} = req.body
+        const query = "SELECT * FROM utenti WHERE username = $1"
+        const hashedpw = await bcrypt.hash(pw,10);
+        const values = [cred]
         const user = await pool.query(query,values)
+        console.log(user[0]);
+        console.log(hashedpw)
         
         if (user.rows.length>0) {
             const accessToken = createAccessToken(user.rows[0])
             const refreshToken = createRefreshToken(user.rows[0])
-            console.log("creato token");
             
             //inserire refreshToken in db
             try {
+                console.log(user.rows[0].password);
+                
+                const isCorrect = await bcrypt.compare(pw, user.rows[0].password)
+                if (!isCorrect) {
+                    res.status(401).send("Credenziali non valide")
+                    console.log("bcrypt.compare errato");
+                    return
+                }
                 const query = `
-                INSERT INTO utenti (userid, token, exp, revoked)
+                INSERT INTO reftok(userid, token, exp, revoked)
                 VALUES ($1, $2, $3, $4)
                 `;
                 const now = new Date();
@@ -149,13 +157,15 @@ async function main(params) {
                 await pool.query(query,values)
             } catch (error) {
                 console.log("non va un cazzo \n"+error);
-                
+
             }
             
-            res.status(200).send("Accesso eseguito")
-            res.json({ accessToken, refreshToken });
+            res.status(200).json({message: "Accesso eseguito", accessToken, refreshToken });
         }else{
+            
             res.status(401).send("Credenziali non valide")
+            console.log("no rows");
+            
         } 
 
     })
