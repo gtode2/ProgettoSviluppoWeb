@@ -15,6 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
             return surname.length >= 1;
         };
 
+        const checkUsername=()=>{
+            const username = document.getElementById("username").value.trim();
+            return username.length >= 1;
+        }
         //controlla che l'email sia corretta
         const checkEmail = () => {
             const email = document.getElementById("email").value.trim();
@@ -43,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (
             !checkName() ||
             !checkSurname() ||
+            !checkUsername()||
             !checkEmail() ||
             !checkPhone() ||
             !checkPassword() ||
@@ -56,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = {
             name: document.getElementById("name").value,
             surname: document.getElementById("surname").value,
+            username: document.getElementById("username").value,
             email: document.getElementById("email").value,
             phone: document.getElementById("phone").value,
             password: document.getElementById("password").value,

@@ -69,6 +69,9 @@ async function createTables(){
         if (! await creaAttivita()) {
             corr=false
         }
+        if (! await creaRefTok()) {
+            corr=false
+        }
 
 
         if (!corr) {
@@ -89,10 +92,16 @@ async function checkTables(){
         console.log("Creata tabella utenti");
         
     }
+
     res_attivita = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='attivita')")
     if(!res_attivita.rows[0].exists){
         await creaAttivita()
         console.log("Creata tabella attivita");
+    }
+    res_token = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='reftok')")
+    if(!res_token.rows[0].exists){
+        await creaAttivita()
+        console.log("Creata tabella reftok");
     }
    
 }
@@ -101,7 +110,7 @@ async function checkTables(){
 
 async function creaUtenti(){
     try {
-        await pool.query("CREATE TABLE utenti(uid SERIAL PRIMARY KEY ,nome VARCHAR NOT NULL,cognome VARCHAR NOT NULL,email VARCHAR NOT NULL,ntel INT NOT NULL,password VARCHAR NOT NULL,usertype INT NOT NULL,activity SERIAL)")
+        await pool.query("CREATE TABLE utenti(uid SERIAL PRIMARY KEY ,nome VARCHAR NOT NULL,cognome VARCHAR NOT NULL,username VARCHAR NOT NULL,email VARCHAR NOT NULL,ntel INT NOT NULL,password VARCHAR NOT NULL,usertype INT NOT NULL,activity SERIAL)")
         return true
     } catch (error) {
         console.log(error);        
@@ -111,6 +120,15 @@ async function creaUtenti(){
 async function creaAttivita(){
     try {
         await pool.query("CREATE TABLE attivita(actid SERIAL PRIMARY KEY,nome VARCHAR NOT NULL,indirizzo VARCHAR,email VARCHAR NOT NULL,ntel INT, descr VARCHAR NOT NULL)")
+        return true
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+async function creaRefTok(){
+    try {
+        await pool.query("CREATE TABLE RefTok(id SERIAL PRIMARY KEY,userid INT NOT NULL,token VARCHAR,exp TIMESTAMP NOT NULL,revoked BOOLEAN, FOREIGN KEY (userid) REFERENCES utenti(uid))")
         return true
     } catch (error) {
         console.log(error);

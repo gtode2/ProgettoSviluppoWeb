@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const { Pool } = require("pg");
 const path = require('path');
 const { checkdb } = require("./Database&Server/dbmanager.js");
+const {createAccessToken, createRefreshToken} = require("./Database&Server/userToken.js")
 
 
 
@@ -69,10 +70,10 @@ async function main(params) {
     })
     // Endpoint registrazione
     app.post("/registrazione", async (req, res) => {
-        const { name, surname, email, phone, password, user_type } = req.body;
+        const { name, surname, username, email, phone, password, user_type } = req.body;
 
         // Validazione lato server
-        if (!name || !surname || !email || !phone || !password || !user_type) {
+        if (!name || !surname || !username || !email || !phone || !password || !user_type) {
             return res.status(400).send("Tutti i campi sono obbligatori.");
         }
 
@@ -89,8 +90,8 @@ async function main(params) {
             const hashedPassword = await bcrypt.hash(password, 10);
 
             const query = `
-                INSERT INTO utenti (nome, cognome, email, ntel, password, usertype)
-                VALUES ($1, $2, $3, $4, $5, $6)
+                INSERT INTO utenti (nome, cognome, username, email, ntel, password, usertype)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
             `;
             const type=()=>{
                 if (user_type=="artigiano") {
@@ -99,7 +100,7 @@ async function main(params) {
                     return 1
                 }
             }
-            const values = [name, surname, email, phone, hashedPassword, type()];     
+            const values = [name, surname, username, email, phone, hashedPassword, type()];     
             await pool.query(query, values);
             if (user_type=="artigiano") {
                 res.redirect("/regAct")
@@ -122,16 +123,18 @@ async function main(params) {
     app.get("/login",(req,res)=>{
         res.sendFile(path.join(__dirname,"login","login.html"))
     })
-    app.post("/serverLogin", async(req,res)=>{  //NOME ROUTE TEMPORANEO
+    app.post("/login", async(req,res)=>{  //NOME ROUTE TEMPORANEO
         const {cred, password} = req.body
-        const query = "SELECT id FROM utenti WHERE email = $1 AND password = $2"
+        const query = "SELECT * FROM utenti WHERE email = $1 AND password = $2"
         const hashedpw = bcrypt.hash(password,10);
         const values = [cred, hashedpw]
-        const uid = await pool.query(query,values)
-        if (uid.rows.length>0) {
+        const user = await pool.query(query,values)
+        if (user.rows.length>0) {
+            createAccessToken(user.rows[0])
+            
             res.status(200).send("Accesso eseguito")
         }else{
-            res.status(401).send("Account non trovato")
+            res.status(401).send("Credenziali non valide")
         } 
 
     })
