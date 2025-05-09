@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artigiano</title>
+  <link rel="stylesheet" href="artigiano.css" />
+</head>
+<body>
+  <div class="iframe-sfondo">
+    <iframe src="../HomePage/HomePage.html"></iframe>
+  </div>
+
+  <!-- Overlay contenuto -->
+  <div class="overlay-artigiano">
+    <h1>Area Artigiano</h1>
+
+    <!-- Prodotti -->
+    <div class="contenitore-prodotti">
+      <!-- Qui verranno caricati tutti i prodotti -->
+    </div>
+
+    <!-- Form di inserimento prodotto -->
+    <div class="contenitore-inserimento">
+      <form action="inserisci_prodotto.php" method="POST">
+        <h2>Inserisci un nuovo prodotto</h2>
+
+        <label for="nome">Nome prodotto:</label>
+        <input type="text" id="nome" name="nome" required />
+
+        <label for="prezzo">Prezzo prodotto:</label>
+        <input type="text" id="prezzo" name="prezzo" required />
+
+        <label for="quantita">Quantità prodotto:</label>
+        <input type="text" id="quantita" name="quantita" required />
+
+        <label for="descrizione">Descrizione prodotto:</label>
+        <input type="text" id="descrizione" name="descrizione" required />
+
+        <button type="submit">Aggiungi prodotto</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
