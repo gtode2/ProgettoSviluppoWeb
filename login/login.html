@@ -1,26 +1,23 @@
 <!DOCTYPE html>
 <html lang="it">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="login.css">
-  </head>
-  <body>
-    <header>
-      <h1>Login</h1>
-    </header>
-    <main>
-      <form action="login.php" method="POST" id="loginForm">
-        <label for="username">Nome utente:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        
-        <input type="submit" value="Accedi">
-      </form>
-    </main>
-    <script src="login.js"></script>
-  </body>
-</html>
+<head>
+  <meta charset="UTF-8">
+  <title>Login con sfondo Homepage</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <!-- Sfondo con HomePage -->
+  <div class="iframe-sfondo">
+    <iframe src="HomePage.html"></iframe>
+  </div>
+
+  <!-- Form di login -->
+  <div class="contenitore-login">
+    <div class="form-login">
+      <h2>Accesso</h2>
+      <input type="text" placeholder="Username">
+      <input type="password" placeholder="Password">
+      <button>Accedi</button>
+    </div>
+  </div>
+</body>

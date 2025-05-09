@@ -1,0 +1,16 @@
+body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #ffd9a3, #00f2fe);
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+h1{
+    font-size: 3rem;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+}

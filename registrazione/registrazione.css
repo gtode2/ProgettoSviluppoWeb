@@ -1,87 +1,60 @@
-/* Reset di alcuni stili predefiniti */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* Stile globale per la pagina */
-  body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    color: #333;
-    line-height: 1.6;
-    padding: 20px;
-  }
-  
-  /* Header: un'intestazione semplice ma d'effetto */
-  header {
-    background: #333;
-    color: #fff;
-    padding: 20px 0;
-    text-align: center;
-  }
-  
-  /* Main: contenitore centrale per il modulo */
-  main {
-    max-width: 500px;
-    margin: 30px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Form: uso di flex per disporre gli elementi in colonna */
-  form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* Stile per le etichette (label) */
-  form label {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  /* Input e select: stili coerenti per gli elementi di input */
-  form input[type="text"],
-  form input[type="email"],
-  form input[type="tel"],
-  form input[type="password"],
-  form select {
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-    transition: border 0.3s;
-  }
-  
-  /* Focus: migliora la visibilità al passaggio del mouse o al focus */
-  form input[type="text"]:focus,
-  form input[type="email"]:focus,
-  form input[type="tel"]:focus,
-  form input[type="password"]:focus,
-  form select:focus {
-    border-color: #007BFF;
-    outline: none;
-  }
-  
-  /* Bottone di Submit: stili per renderlo accattivante e interattivo */
-  form input[type="submit"] {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007BFF;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  /* Hover: effetto al passaggio del mouse sul bottone */
-  form input[type="submit"]:hover {
-    background-color: #0056b3;
-  }
-  
+/* Sfondo pagina + reset */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+
+/* Contenitore dell'iframe sfondo */
+.iframe-sfondo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.iframe-sfondo iframe {
+  width: 100vw;
+  height: 100vh;
+  border: none;
+  filter: blur(8px);
+  transform: scale(1.02);
+  pointer-events: none;
+}
+
+/* Overlay del form */
+.overlay-registrazione {
+  position: relative;
+  z-index: 1;
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 60px;
+}
+
+/* Form stilizzato */
+.form-container {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  max-width: 500px;
+  width: 90%;
+}
+
+form input, form select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}

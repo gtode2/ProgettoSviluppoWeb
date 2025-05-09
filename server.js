@@ -4,7 +4,7 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const { Pool } = require("pg");
 const path = require('path');
-const { checkdb } = require("./dbmanager.js");
+const { checkdb } = require("./Database&Server/dbmanager.js");
 
 
 
@@ -23,6 +23,7 @@ async function main(params) {
     app.use(express.static(path.join(__dirname, "login")));
     app.use(express.static(path.join(__dirname, "registrazione")));
     app.use(express.static(path.join(__dirname, "homepage")));
+    app.use(express.static(path.join(__dirname, "homepage_temp")));
 
 
     app.use(cors());
@@ -56,7 +57,7 @@ async function main(params) {
     /////////////////////////////////////////////////////////////////////////
     //HOMEPAGE
     app.get("/",(req,res)=>{
-        res.sendFile(path.join(__dirname,"homepage","unlogged.html"))
+        res.sendFile(path.join(__dirname,"homepage_temp","unlogged.html"))
     })
 
 
