@@ -22,6 +22,7 @@ async function main(params) {
 
     app.use(express.static(path.join(__dirname, "login")));
     app.use(express.static(path.join(__dirname, "registrazione")));
+    app.use(express.static(path.join(__dirname, "homepage")));
 
 
     app.use(cors());
@@ -51,6 +52,13 @@ async function main(params) {
             process.exit(0)
         }
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    //HOMEPAGE
+    app.get("/",(req,res)=>{
+        res.sendFile(path.join(__dirname,"homepage","unlogged.html"))
+    })
+
 
     /////////////////////////////////////////////////////////////////////////
     //REGISTRAZIONE

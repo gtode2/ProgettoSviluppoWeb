@@ -1,0 +1,21 @@
+#searchbar{
+    margin-left: 2%;
+    margin-top: 1%;
+    height: 40px;
+    background-color: #d9d9d9;
+    border: 0px;
+}
+#searchbar:focus{
+    border: 4px solid yellow;
+    
+}
+@media(max-width:572px){
+    #searchbar{
+        width: 90% ;
+    }
+}
+@media (min-width:572px) {
+    #searchbar{
+        width: 60%;
+    }
+}
