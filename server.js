@@ -6,13 +6,8 @@ const { Pool } = require("pg");
 const path = require('path');
 const { checkdb } = require("./Database&Server/dbmanager.js");
 const {createAccessToken, createRefreshToken, checkToken, renewToken} = require("./Database&Server/userToken.js")
+const {db_name, db_user, db_port, db_pw} = require("./config.js")
 
-
-
-const db_user = "postgres"
-const db_name = "dbprogetto"
-const db_pw = "postgres"
-const db_port = 5432 
 
 
 async function main(params) {
