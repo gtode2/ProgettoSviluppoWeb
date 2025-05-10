@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const { Pool } = require("pg");
 const path = require('path');
 const { checkdb } = require("./Database&Server/dbmanager.js");
-const {createAccessToken, createRefreshToken} = require("./Database&Server/userToken.js")
+const {createAccessToken, createRefreshToken, checkToken, renewToken} = require("./Database&Server/userToken.js")
 
 
 
@@ -171,6 +171,24 @@ async function main(params) {
     })
 
 
+
+
+//FUNZIONI DI TEST TEMPORANEE
+
+    app.get("/tokentest",(req,res)=>{
+        res.sendFile(path.join(__dirname,"prova.html"))
+    })
+    app.post("/tokentest", async (req,res)=>{
+        console.log("chiamata a tokentest");
+        const token = req.body
+
+        
+        const val = await renewToken(token,pool)
+        console.log(val);
+        if (val==-1) {
+           res.send("403")
+        }
+    })
 
     app.listen(port, () => {
         console.log(`Server attivo su http://localhost:${port}`);
