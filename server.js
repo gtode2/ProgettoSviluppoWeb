@@ -5,7 +5,8 @@ const bcrypt = require("bcrypt");
 const { Pool } = require("pg");
 const path = require('path');
 const { checkdb } = require("./Database&Server/dbmanager.js");
-const {createAccessToken, createRefreshToken, checkToken, renewToken} = require("./Database&Server/userToken.js")
+const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Database&Server/userToken.js")
+const {addProduct} = require("./Database&Server/products.js");
 const {db_name, db_user, db_port, db_pw} = require("./config.js")
 
 
@@ -86,7 +87,7 @@ async function main(params) {
 
             const query = `
                 INSERT INTO utenti (nome, cognome, username, email, ntel, password, usertype)
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *
             `;
             const type=()=>{
                 if (user_type=="artigiano") {
@@ -96,11 +97,27 @@ async function main(params) {
                 }
             }
             const values = [name, surname, username, email, phone, hashedPassword, type()];     
-            await pool.query(query, values);
+            const user = await pool.query(query, values);
+
+            console.log("user in database");
+            
+            
+            const tokens = await registerToken(user, pool)
+            
+            console.log(tokens["access"]);
+            console.log("altro token")
+            console.log(tokens["refresh"]);
             if (user_type=="artigiano") {
-                res.redirect("/regAct")
+                res.status(200).json({
+                    redirect: '/regAct',
+                    accessToken: tokens["access"],
+                    refreshToken: tokens["refresh"]
+
+                })
             }
-            res.status(200).send("Registrazione completata")
+            else{
+
+            }
         } catch (err) {
             console.error("Errore durante la registrazione:", err);
             res.status(500).send("Errore interno al server.");
@@ -110,7 +127,8 @@ async function main(params) {
         res.sendFile(path.join(__dirname,"registrazione", "regact.html"))
     })
     app.post("/RegAct",async(req,res)=>{
-        
+        //verifico che utente non abbia attività
+        //aggiungo a DB
     })
     /////////////////////////////////////////////////////////////////////////
     //LOGIN
@@ -125,37 +143,20 @@ async function main(params) {
         const hashedpw = await bcrypt.hash(pw,10);
         const values = [cred]
         const user = await pool.query(query,values)
-        console.log(user[0]);
         console.log(hashedpw)
         
+        
         if (user.rows.length>0) {
-            const accessToken = createAccessToken(user.rows[0])
-            const refreshToken = createRefreshToken(user.rows[0])
-            
-            //inserire refreshToken in db
-            try {
-                console.log(user.rows[0].password);
-                
-                const isCorrect = await bcrypt.compare(pw, user.rows[0].password)
-                if (!isCorrect) {
+            const isCorrect = await bcrypt.compare(pw, user.rows[0].password)
+            if (!isCorrect) {
                     res.status(401).send("Credenziali non valide")
-                    console.log("bcrypt.compare errato");
+                    console.log("password errata");
                     return
-                }
-                const query = `
-                INSERT INTO reftok(userid, token, exp, revoked)
-                VALUES ($1, $2, $3, $4)
-                `;
-                const now = new Date();
-                const expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-                const values = [user.rows[0].uid, refreshToken, expiresAt, false];
-                await pool.query(query,values)
-            } catch (error) {
-                console.log("non va un cazzo \n"+error);
-
             }
+            const tokens = await registerToken(user, pool)
+            console.log(tokens);
             
-            res.status(200).json({message: "Accesso eseguito", accessToken, refreshToken });
+            res.status(200).json({accessToken: tokens["access"], refreshToken:tokens["refresh"] });
         }else{
             
             res.status(401).send("Credenziali non valide")
@@ -204,8 +205,13 @@ async function main(params) {
 
 //FUNZIONI DI TEST TEMPORANEE
 
-    app.get("/tokentest",(req,res)=>{
+    app.get("/test",(req,res)=>{
         res.sendFile(path.join(__dirname,"prova.html"))
+    })
+    app.post("/test",async(req,res)=>{
+        console.log(req.body);
+        addProduct(req,pool)
+        
     })
     
 

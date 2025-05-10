@@ -25,7 +25,6 @@ function checkToken(token){
         if (err) {
             return -1
         }
-        
     }); 
     return user
 }
@@ -79,4 +78,29 @@ async function renewToken(token, pool){
 
 }
 
-module.exports={createAccessToken, createRefreshToken, checkToken, renewToken}
+async function registerToken(user, pool) {
+
+    const accessToken = createAccessToken(user.rows[0])
+    const refreshToken = createRefreshToken(user.rows[0])
+    console.log("creati token");
+    
+    //inserire refreshToken in db
+    try {
+        console.log(user.rows[0].password);
+        const query = `
+        INSERT INTO reftok(userid, token, exp, revoked)
+        VALUES ($1, $2, $3, $4)
+        `;
+        const now = new Date();
+        const expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const values = [user.rows[0].uid, refreshToken, expiresAt, false];
+        await pool.query(query,values)
+        console.log("token in db");
+    } catch (error) {
+        console.log("non va un cazzo \n"+error);
+        return -1
+    }
+    return {access: accessToken, refresh:refreshToken}    
+}
+
+module.exports={createAccessToken, createRefreshToken, checkToken, renewToken, registerToken}

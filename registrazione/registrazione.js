@@ -69,22 +69,35 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         // Invia i dati al backend
-        try {
-            const response = await fetch("http://localhost:3000/registrazione", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-            if (response.ok) {
-                window.location.href = response.url
         
-            } 
+        const response = await fetch("http://localhost:3000/registrazione", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+        })
+        .then(res=>res.json())
+        .then(data =>{
+            console.log(data.access);
+            
+            localStorage.setItem('accessToken', data.accessToken)
+            console.log("access token impostato correttamente");
+            localStorage.setItem('refreshToken', data.refreshToken)
+            console.log("refresh token impostato correttamente");
+            if (data.redirect) {
+                window.location.href = data.redirect
+            }else{
+                window.location.href = "http://localhost:3000/"
+                //redirect a homepage
+            }
+        })
+        .catch(err=>{
+            console.log(err);
+            alert("Errore di rete.");
+        })
+            
 
             //const text = await response.text();
             //alert(text);
-        } catch (error) {
-            alert("Errore di rete.");
-            console.error(error);
-        }
+    
     });
 });

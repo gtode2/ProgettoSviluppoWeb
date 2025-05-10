@@ -1,5 +1,5 @@
 const { Pool } = require("pg");
-const {db_user, db_port, db_pw} = require("./config.js")
+const {db_user, db_port, db_pw} = require("../config.js")
 
 var pool = new Pool({
     user:db_user,
@@ -69,6 +69,9 @@ async function createTables(){
         if (! await creaRefTok()) {
             corr=false
         }
+        if (! await creaProdotti()) {
+            corr=false
+        }
 
 
         if (!corr) {
@@ -83,13 +86,10 @@ async function createTables(){
 }       
 async function checkTables(){
     res_utenti = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='utenti')")
-    
     if (! res_utenti.rows[0].exists) {
         await creaUtenti()
-        console.log("Creata tabella utenti");
-        
+        console.log("Creata tabella utenti");   
     }
-
     res_attivita = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='attivita')")
     if(!res_attivita.rows[0].exists){
         await creaAttivita()
@@ -97,8 +97,13 @@ async function checkTables(){
     }
     res_token = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='reftok')")
     if(!res_token.rows[0].exists){
-        await creaAttivita()
+        await creaRefTok()
         console.log("Creata tabella reftok");
+    }
+    res_prod = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='prodotti')")
+    if(!res_prod.rows[0].exists){
+        await creaProdotti()
+        console.log("Creata tabella prodotti");
     }
    
 }
@@ -107,7 +112,7 @@ async function checkTables(){
 
 async function creaUtenti(){
     try {
-        await pool.query("CREATE TABLE utenti(uid SERIAL PRIMARY KEY ,nome VARCHAR NOT NULL,cognome VARCHAR NOT NULL,username VARCHAR NOT NULL,email VARCHAR NOT NULL,ntel INT NOT NULL,password VARCHAR NOT NULL,usertype INT NOT NULL,activity SERIAL)")
+        await pool.query("CREATE TABLE utenti(uid SERIAL PRIMARY KEY ,nome VARCHAR NOT NULL,cognome VARCHAR NOT NULL,username VARCHAR NOT NULL,email VARCHAR NOT NULL,ntel BIGINT NOT NULL,password VARCHAR NOT NULL,usertype INT NOT NULL,activity SERIAL)")
         return true
     } catch (error) {
         console.log(error);        
@@ -126,6 +131,15 @@ async function creaAttivita(){
 async function creaRefTok(){
     try {
         await pool.query("CREATE TABLE RefTok(id SERIAL PRIMARY KEY,userid INT NOT NULL,token VARCHAR,exp TIMESTAMP NOT NULL,revoked BOOLEAN, FOREIGN KEY (userid) REFERENCES utenti(uid))")
+        return true
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+async function creaProdotti() {
+    try {
+        await pool.query("CREATE TABLE Prodotti(id SERIAL PRIMARY KEY,actid INT NOT NULL,name VARCHAR NOT NULL, descr VARCHAR NOT NULL, costo FLOAT NOT NULL, amm INT NOT NULL, FOREIGN KEY (actid) REFERENCES attivita(actid))")
         return true
     } catch (error) {
         console.log(error);
