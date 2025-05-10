@@ -22,7 +22,15 @@ function createRefreshToken(user) {
 }
 
 function checkToken(token){
-    
+   
+
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) {
+            return -1
+        }
+
+        return 0
+    }); 
 }
 
 async function renewToken(token, pool){

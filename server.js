@@ -58,7 +58,7 @@ async function main(params) {
     /////////////////////////////////////////////////////////////////////////
     //HOMEPAGE
     app.get("/",(req,res)=>{
-        res.sendFile(path.join(__dirname,"homepage_temp","unlogged.html"))
+        res.sendFile(path.join(__dirname,"homepage","homepage.html"))
     })
 
 
@@ -171,14 +171,7 @@ async function main(params) {
     })
 
 
-
-
-//FUNZIONI DI TEST TEMPORANEE
-
-    app.get("/tokentest",(req,res)=>{
-        res.sendFile(path.join(__dirname,"prova.html"))
-    })
-    app.post("/tokentest", async (req,res)=>{
+    app.post("/renewToken", async (req,res)=>{
         console.log("chiamata a tokentest");
         const token = req.body
 
@@ -187,14 +180,54 @@ async function main(params) {
         console.log(val);
         if (val==-1) {
            res.send("403")
+        }else{
+            res.send("")
         }
     })
+    app.post('/logout', async (req, res) => {
+        console.log("logout");
+        const { token } = req.body;
+        
+                //disabilitazione token
+        const query = `UPDATE reftok SET revoked = true WHERE token=$1`
+        const values = [token]
+        try {
+            await pool.query(query,values)
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+        console.log("logout effettuato");
+        
+        res.json({ message: 'Logout effettuato' });
+        
+        
+    });
+
+
+
+//FUNZIONI DI TEST TEMPORANEE
+
+    app.get("/tokentest",(req,res)=>{
+        res.sendFile(path.join(__dirname,"prova.html"))
+    })
+    
 
     app.listen(port, () => {
         console.log(`Server attivo su http://localhost:${port}`);
     });
-}
 
+    app.post("/ESEMPIOPROTECTED",(req,res)=>{
+        //verifica presenza di token nel res
+        if (!token) {
+            return res.status(401).json({ message: 'Token mancante' });
+        }
+
+    })
+
+
+}
 
 main().catch((err) => {
     console.error("Errore durante l'inizializzazione del server:", err);
