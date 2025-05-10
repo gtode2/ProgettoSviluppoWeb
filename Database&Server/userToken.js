@@ -11,9 +11,7 @@ app.use(bodyParser.json());
 
 // Funzione per creare un access token
 function createAccessToken(user) {
-    return jwt.sign({ id: user.uid, nome: user.name, mail: user.email, role: user.usertype}, SECRET_KEY, { expiresIn: '1h' });
-    
-    
+    return jwt.sign({ id: user.uid, nome: user.name, mail: user.email, role: user.usertype}, SECRET_KEY, { expiresIn: '1h' });    
 }
 
 // Funzione per creare un refresh token
@@ -22,15 +20,14 @@ function createRefreshToken(user) {
 }
 
 function checkToken(token){
-   
-
+    var user = null
     jwt.verify(token, SECRET_KEY, (err, user) => {
         if (err) {
             return -1
         }
-
-        return 0
+        
     }); 
+    return user
 }
 
 async function renewToken(token, pool){
