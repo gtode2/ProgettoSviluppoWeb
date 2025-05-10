@@ -19,12 +19,14 @@ html, body {
 }
 
 .iframe-sfondo iframe {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   border: none;
-  filter: blur(8px);
-  transform: scale(1.02);
-  pointer-events: none;
+  z-index: -1;
+  filter: blur(4px);
 }
 
 /* Overlay del form */
