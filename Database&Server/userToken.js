@@ -20,13 +20,14 @@ function createRefreshToken(user) {
 }
 
 function checkToken(token){
-    var user = null
-    jwt.verify(token, SECRET_KEY, (err, user) => {
-        if (err) {
-            return -1
-        }
-    }); 
-    return user
+    try {
+        const user = jwt.verify(token, SECRET_KEY)
+        return user
+    } catch (error) {
+        console.log(error);
+        
+        return -1
+    }
 }
 
 async function renewToken(token, pool){

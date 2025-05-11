@@ -9,9 +9,10 @@ async function addProduct(req, pool) {
         try {
             const res = await pool.query(query,values)
             console.log("Inserimento prodotto completato");
-            
+            return 0
         } catch (error) {
-            console.log(error);            
+            console.log(error);      
+            return -1      
         }
 }
 

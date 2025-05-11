@@ -201,16 +201,73 @@ async function main(params) {
         
     });
 
+    app.post("/refreshToken", async(req,res)=>{
+        const token = renewToken(req.body["token"], pool)
+        if (token==-1) {
+            res.status(401)
+        }else{
+            res.status(200).json({
+                token:token
+            })
+        }
+    })
 
+
+    app.post("/addProduct", async(req,res)=>{
+        console.log("add product avviata");
+        
+        const {token} = req.body
+
+        if (!token) {
+            console.log("no token");
+            
+            res.status(401).json({error:"missing token"})
+        }else{
+            console.log("token presente");
+            
+            const user = checkToken(token)
+            console.log("eseguita verifica token");
+            console.log(user);
+            
+            if (user==-1) {
+                console.log("token non valido");
+            
+                res.status(401).json({error:"invalid token"})
+            }else{
+                if (user.role!=2) {
+                    console.log("tipo utente errato");
+                    
+                    res.status(401).json({error:"unauthorized"})
+                }else{
+                    console.log(req.body);
+                    /*
+                    const result = await addProduct(req,pool)
+                    if (result==0) {
+                        res.status(200)
+                    }else{
+                        res.status(500)
+                    }
+                    */
+                }
+            }
+        }
+        
+    })
 
 //FUNZIONI DI TEST TEMPORANEE
-
+    //pagina di test aggiunta prodotti
+    app.get("/TESTaddprod",(req,res)=>{
+        res.sendFile(path.join(__dirname,"./testPages/prova.html"))
+    }) 
+    app.get("/TESTusertype",(req,res)=>{
+        res.sendFile(path.join(__dirname,"./testPages/testusertype.html"))
+    }) 
+    
     app.get("/test",(req,res)=>{
         res.sendFile(path.join(__dirname,"prova.html"))
     })
     app.post("/test",async(req,res)=>{
-        console.log(req.body);
-        addProduct(req,pool)
+        
         
     })
     
