@@ -1,10 +1,30 @@
 <!DOCTYPE html>
-<head>
+<html lang="it">
+  <head>
+     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Area Admin</title>
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <div class = "container">
+      <div class = "iframe-sfondo">
+        <iframe src = "../prodotti/prodotti.html"></iframe>
+      </div>
+      <div class = "overlay-admin">
+        <h1>Area Admin</h1>
+        <section class = "segnalazioni">
+          <2>Segnalazioni recenti</2>
+          <ul id = "lista segnalazioni">
 
-</head>
-<body>
-    <div class="iframe-sfondo">
-    <iframe src="../../homepage_temp/prodotti/prodotti.html"></iframe>
-  </div>
-    <script src="admin.js"></script>
-</body>
+          </ul>
+        </section>
+        <section class = "controlli">
+          <h2>Azioni rapide</h2>
+          <button onclick = "generaReport()">Genera Report Mensile</button>
+          <button onclick = "verificaDatabase()">Verifica integrità Db</button>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>
