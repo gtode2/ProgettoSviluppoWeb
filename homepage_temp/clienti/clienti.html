@@ -1,31 +1,29 @@
 <!DOCTYPE html>
 <html lang="it">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Area Admin</title>
-    <link rel="stylesheet" href="admin.css" />
-  </head>
-  <body>
-    <div class="container">
-      <!-- Iframe di sfondo per anteprima prodotti -->
-      <div class="iframe-sfondo">
-        <iframe src="../prodotti/prodotti.html" title="Anteprima prodotti" loading="lazy"></iframe>
-      </div>
-
-      <!-- Overlay per azioni amministrative -->
-      <div class="overlay-admin">
-        <h1>Scheda d'acquisto</h1>
-        <form id="admin-form">
-          <label for="quantita">Inserisci quantità</label>
-          <input type="number" id="quantita" name="quantita" min="1" required />
-          
-          <div class="form-actions">
-            <button type="submit">Conferma</button>
-            <button type="reset">Annulla</button>
-          </div>
-        </form>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Area Acquisti</title>
+  <link rel="stylesheet" href="clienti.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Sezione prodotti, che occupa il 75% dello schermo -->
+    <div class="prodotti">
+      <iframe src="../prodotti/prodotti.html" title="Prodotti disponibili" loading="lazy"></iframe>
     </div>
-  </body>
+    <!-- Sezione form, che occupa il 25% dello schermo -->
+    <div class="form">
+      <h1>Scheda d'acquisto</h1>
+      <form>
+        <label for="quantita">Inserisci quantità</label>
+        <input type="number" id="quantita" name="quantita" min="1" required />
+        <div class="actions">
+          <button type="submit">Conferma</button>
+          <button type="reset">Annulla</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
 </html>

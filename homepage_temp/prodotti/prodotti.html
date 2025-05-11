@@ -6,34 +6,32 @@
   <link rel="stylesheet" href="prodotti.css">
 </head>
 <body>
-  <iframe src = ../../HomePage/HomePage.html></iframe>
+
+  <!-- Sfondo con iframe -->
+  <iframe class="background-frame" src="../../HomePage/HomePage.html"></iframe>
+
   <div class="container">
-    
     <h1>Prodotti disponibili</h1>
 
-    <!-- Prodotto esempio -->
+    <!-- Prodotto esempio --
     <div class="product-card">
       <img src="img/prodotto1.jpg" alt="Collana in rame">
       <h3>Collana in rame</h3>
       <p>Fatta a mano con tecnica wire wrapping</p>
       <span class="price">€45</span>
 
-      <!-- Azioni visibili solo se cliente -->
-      <div class="product-actions cliente hidden">
+      <div class="product-actions cliente">
         <button>Aggiungi al carrello</button>
         <button>Rimuovi dal carrello</button>
       </div>
 
-      <!-- Azioni visibili solo se artigiano -->
-      <div class="product-actions artigiano hidden">
+      <div class="product-actions artigiano">
         <button>Modifica prodotto</button>
         <button>Elimina prodotto</button>
       </div>
     </div>
+  </div>-->
 
-    <!-- Altri prodotti qui replicando il blocco sopra -->
-  </div>
-
-  <script src="toggle-role.js"></script>
+  <script src="prodotti.js"></script>
 </body>
 </html>
