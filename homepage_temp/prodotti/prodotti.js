@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+<<<<<<< HEAD
   const prodotti = [
     {
       nome: "Collana in rame",
@@ -41,5 +42,15 @@ document.addEventListener("DOMContentLoaded", () => {
       aggiungiAlCarrello(titolo, parseFloat(card.querySelector(".price").textContent.replace("€", "")));
       // Puoi integrare con classe Carrello (vedi sotto)
     }
+=======
+  const tipoUtente = document.body.dataset.utente; // "cliente" o "artigiano"
+
+  document.querySelectorAll(".cliente").forEach(el => {
+    el.classList.toggle("hidden", tipoUtente !== "cliente");
+  });
+
+  document.querySelectorAll(".artigiano").forEach(el => {
+    el.classList.toggle("hidden", tipoUtente !== "artigiano");
+>>>>>>> 363b584 (Fixed implementation DOM and BootStrap)
   });
 });

@@ -1,4 +1,4 @@
-/* Sfondo iframe sfocato */
+/* Sfondo iframe */
 .background-frame {
   position: fixed;
   top: 0;
@@ -16,7 +16,12 @@
   margin: 10px 0;
 }
 
-/* Azioni cliente/artigiano - gestite tramite JS o classi dinamiche */
+/* Blocchi dinamici */
 .product-actions {
   margin-top: 15px;
+}
+
+/* Nascondi blocchi dinamici */
+.hidden {
+  display: none !important;
 }
