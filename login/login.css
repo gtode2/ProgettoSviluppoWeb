@@ -8,7 +8,6 @@
   overflow: hidden;
   z-index: 0;
 }
-
 .iframe-sfondo iframe {
   position: fixed;
   top: 0;
