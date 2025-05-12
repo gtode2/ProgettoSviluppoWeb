@@ -1,29 +1,44 @@
 <!DOCTYPE html>
 <html lang="it">
   <head>
-     <meta charset="UTF-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Area Admin</title>
     <link rel="stylesheet" href="admin.css" />
   </head>
   <body>
-    <div class = "container">
-      <div class = "iframe-sfondo">
-        <iframe src = "../prodotti/prodotti.html"></iframe>
+    <div class="layout-container">
+      <!-- 📦 Area prodotti pubblici (iframe) -->
+      <div class="view-prodotti">
+        <iframe src="../prodotti/prodotti.html" title="Catalogo prodotti"></iframe>
       </div>
-      <div class = "overlay-admin">
-        <h1>Area Admin</h1>
-        <section class = "segnalazioni">
-          <2>Segnalazioni recenti</2>
-          <ul id = "lista segnalazioni">
 
-          </ul>
-        </section>
-        <section class = "controlli">
-          <h2>Azioni rapide</h2>
-          <button onclick = "generaReport()">Genera Report Mensile</button>
-          <button onclick = "verificaDatabase()">Verifica integrità Db</button>
-        </section>
+      <!-- 🔘 Bottone mobile per aprire overlay -->
+      <button id="btn-toggle-overlay" class="btn-toggle-overlay">Apri Area Admin</button>
+
+      <!-- 🛠️ Area amministrativa (overlay) -->
+      <div id="admin-overlay" class="admin-overlay">
+        <!-- ❌ Bottone chiusura (solo mobile) -->
+        <button id="btn-close-overlay" class="btn-close-overlay">✖</button>
+
+        <header class="admin-header">
+          <h1>Benvenuto, Admin</h1>
+        </header>
+        
+        <div class="overlay-admin">
+          <h1>Area Segnalazioni</h1>
+          <section class="segnalazioni">
+            <h2>Segnalazioni recenti</h2>
+            <ul id="lista-segnalazioni">
+              <!-- Inserisci qui le segnalazioni -->
+            </ul>
+          </section>
+          <section class="controlli">
+            <h2>Azioni rapide</h2>
+            <button onclick="generaReport()">Genera Report Mensile</button>
+            <button onclick="verificaDatabase()">Verifica integrità Db</button>
+          </section>
+        </div>
       </div>
     </div>
   </body>

@@ -1,67 +1,187 @@
-body {
+/* ✅ RESET & BASE */
+* {
+  box-sizing: border-box;
   margin: 0;
+  padding: 0;
+}
+body {
   font-family: Arial, sans-serif;
+  line-height: 1.6;
 }
 
-.container {
+/* ✅ LAYOUT PRINCIPALE */
+.layout-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
-
 @media (min-width: 768px) {
-  .container {
+  .layout-container {
     flex-direction: row;
   }
 }
 
-.iframe-sfondo {
+/* ✅ AREA PRODOTTI PUBBLICI (iframe) */
+.view-prodotti {
   flex: 2;
   height: 100vh;
 }
-
-.iframe-sfondo iframe {
+.view-prodotti iframe {
   width: 100%;
   height: 100%;
   border: none;
 }
 
-.overlay-admin {
-  flex: 1;
-  background-color: #fff;
+/* ✅ OVERLAY ADMIN */
+.admin-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
   padding: 2rem;
   overflow-y: auto;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+.admin-overlay.aperto {
+  transform: translateX(0);
 }
 
-.overlay-admin h1 {
+/* ✅ BOTTONE APERTURA MOBILE */
+.btn-toggle-overlay {
+  display: block;
+  position: fixed;
+  bottom: 1rem;
+  left: 0.5rem;
+  z-index: 1001;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+}
+
+/* ✅ BOTTONE CHIUSURA OVERLAY */
+.btn-close-overlay {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* ✅ DESKTOP OVERRIDE */
+@media (min-width: 768px) {
+  .admin-overlay {
+    position: static;
+    transform: none !important;
+    width: 350px;
+    height: auto;
+    background: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .btn-toggle-overlay,
+  .btn-close-overlay {
+    display: none;
+  }
+}
+
+/* ✅ SEZIONI INTERNE */
+
+/* Header dell'area admin */
+.admin-header {
   margin-bottom: 1rem;
 }
 
-section {
+/* Sezione Prodotti Artigiano */
+.prodotti-artigiano {
+  margin-top: 2rem;
+}
+.lista-prodotti {
+  margin-top: 1rem;
+}
+.lista-prodotti .prodotto {
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+.lista-prodotti .prodotto h3 {
+  margin-bottom: 0.5rem;
+}
+.lista-prodotti .azioni button {
+  margin-right: 0.5rem;
+}
+
+/* Container interno per ulteriori controlli e segnalazioni */
+.overlay-admin {
+  margin-top: 2rem;
+}
+
+/* Sezione Segnalazioni */
+.segnalazioni {
   margin-bottom: 2rem;
 }
-
-ul {
-  padding-left: 1rem;
+.segnalazioni h2 {
+  margin-bottom: 1rem;
 }
-
-ul li {
-  background: #f3f3f3;
-  margin-bottom: 0.5rem;
+.segnalazioni ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+.segnalazioni ul li {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
   padding: 0.75rem;
-  border-radius: 5px;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
-ul li button {
-  margin-left: 1rem;
+.segnalazioni ul li button {
   background: #e63946;
-  color: white;
+  color: #fff;
   border: none;
   padding: 0.3rem 0.6rem;
   border-radius: 3px;
   cursor: pointer;
+}
+
+/* Sezione Controlli (Azioni rapide) */
+.controlli {
+  margin-top: 2rem;
+}
+.controlli h2 {
+  margin-bottom: 1rem;
+}
+.controlli button {
+  display: inline-block;
+  margin-right: 1rem;
+  padding: 0.5rem 1rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* ✅ FORM STILE */
+.form-prodotto input,
+.form-prodotto button {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0 1rem 0;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
