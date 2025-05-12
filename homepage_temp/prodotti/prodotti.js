@@ -1,5 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
-<<<<<<< HEAD
+  const tipoUtente = document.body.dataset.utente; // "cliente" o "artigiano"
+
+  // Mostra/Nasconde pulsanti in base al tipo utente
+  document.querySelectorAll(".cliente").forEach(el => {
+    el.classList.toggle("hidden", tipoUtente !== "cliente");
+  });
+  document.querySelectorAll(".artigiano").forEach(el => {
+    el.classList.toggle("hidden", tipoUtente !== "artigiano");
+  });
+
   const prodotti = [
     {
       nome: "Collana in rame",
@@ -16,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   const container = document.querySelector(".row");
+  container.innerHTML = ""; // Pulisce eventuali template statici
 
   prodotti.forEach(p => {
     const col = document.createElement("div");
@@ -28,7 +38,16 @@ document.addEventListener("DOMContentLoaded", () => {
           <h5 class="card-title">${p.nome}</h5>
           <p class="card-text">${p.descrizione}</p>
           <p class="price text-success fw-bold">€${p.prezzo}</p>
-          <button class="btn btn-outline-primary w-100 aggiungi-carrello">Aggiungi al carrello</button>
+
+          <div class="d-flex justify-content-center gap-2 product-actions cliente">
+            <button class="btn btn-primary aggiungi-carrello">Aggiungi al carrello</button>
+            <button class="btn btn-outline-primary">Rimuovi</button>
+          </div>
+
+          <div class="d-flex justify-content-center gap-2 product-actions artigiano">
+            <button class="btn btn-warning">Modifica</button>
+            <button class="btn btn-danger">Elimina</button>
+          </div>
         </div>
       </div>
     `;
@@ -39,18 +58,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.classList.contains("aggiungi-carrello")) {
       const card = e.target.closest(".card");
       const titolo = card.querySelector(".card-title").textContent;
-      aggiungiAlCarrello(titolo, parseFloat(card.querySelector(".price").textContent.replace("€", "")));
-      // Puoi integrare con classe Carrello (vedi sotto)
+      const prezzo = parseFloat(card.querySelector(".price").textContent.replace("€", ""));
+      aggiungiAlCarrello(titolo, prezzo);
     }
-=======
-  const tipoUtente = document.body.dataset.utente; // "cliente" o "artigiano"
-
-  document.querySelectorAll(".cliente").forEach(el => {
-    el.classList.toggle("hidden", tipoUtente !== "cliente");
   });
 
-  document.querySelectorAll(".artigiano").forEach(el => {
-    el.classList.toggle("hidden", tipoUtente !== "artigiano");
->>>>>>> 363b584 (Fixed implementation DOM and BootStrap)
-  });
+  function aggiungiAlCarrello(nome, prezzo) {
+    console.log(`Prodotto aggiunto al carrello: ${nome} - €${prezzo}`);
+    // Implementazione futura
+  }
 });
