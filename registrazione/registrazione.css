@@ -1,62 +1,21 @@
-/* Sfondo pagina + reset */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  font-family: sans-serif;
-}
-
-/* Contenitore dell'iframe sfondo */
+/* Sfondo iframe sfocato */
 .iframe-sfondo {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 0;
   overflow: hidden;
+  z-index: 0;
 }
 
 .iframe-sfondo iframe {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  border: none;
-  z-index: -1;
-  filter: blur(4px);
-}
-
-/* Overlay del form */
-.overlay-registrazione {
-  position: relative;
-  z-index: 1;
-  width: 100vw;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 60px;
-}
-
-/* Form stilizzato */
-.form-container {
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
-  max-width: 500px;
-  width: 90%;
-}
-
-form input, form select {
   width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  box-sizing: border-box;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  height: 100%;
+  border: none;
+  filter: blur(4px);
+  z-index: -1;
 }

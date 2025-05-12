@@ -1,3 +1,4 @@
+/* Reset di base - già incluso da Bootstrap, ma lo lasciamo per compatibilità */
 * {
   margin: 0;
   padding: 0;
@@ -7,57 +8,64 @@
 html, body {
   height: 100%;
   font-family: 'Arial', sans-serif;
+  background-color: #f8f9fa; /* colore di sfondo neutro Bootstrap */
 }
 
-.container {
-  display: flex;
-  height: 100vh;
-  width: 100%;
+/* Container principale gestito da Bootstrap con classi flex */
+.container-fluid {
+  overflow: hidden;
 }
 
-/* Colonna prodotti */
-.prodotti {
-  flex: 3;
-  background-color: #f4f4f4;
-}
-
-.prodotti iframe {
+/* Colonna iframe (prodotti) */
+iframe {
   width: 100%;
   height: 100%;
   border: none;
 }
 
-/* Colonna form */
-.form {
-  flex: 1;
-  background-color: #fff;
-  padding: 2rem;
-  border-left: 1px solid #ccc;
+/* Sezione form utente */
+form {
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
-.form h1 {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
+/* Etichetta quantità */
+label {
+  font-weight: 600;
   color: #333;
 }
 
-.form label {
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  color: #555;
-}
-
-.form input {
+/* Input numero quantità */
+input[type="number"] {
   padding: 0.75rem;
   font-size: 1rem;
-  margin-bottom: 1rem;
   border-radius: 4px;
   border: 1px solid #ccc;
-  width: 100%;
 }
+
+/* Pulsanti (override per padding extra) */
+button {
+  padding: 0.75rem;
+  font-size: 1rem;
+}
+
+/* Feedback visuale dopo submit */
+#feedback {
+  transition: all 0.3s ease;
+}
+
+/* Responsive custom extra (oltre Bootstrap) */
+@media (max-width: 768px) {
+  .container-fluid {
+    flex-direction: column !important;
+  }
+
+  .p-4 {
+    border-left: none !important;
+    border-top: 1px solid #dee2e6;
+  }
+}
+
 
 .actions {
   display: flex;
