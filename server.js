@@ -20,7 +20,8 @@ async function main(params) {
     app.use(express.static(path.join(__dirname, "login")));
     app.use(express.static(path.join(__dirname, "registrazione")));
     app.use(express.static(path.join(__dirname, "homepage")));
-    app.use(express.static(path.join(__dirname, "homepage_temp")));
+    app.use(express.static(path.join(__dirname, "homepage_temp/unlogged")));
+    app.use(express.static(path.join(__dirname, "homepage_temp/artigiano")));
 
 
     app.use(cors());
@@ -54,7 +55,7 @@ async function main(params) {
     /////////////////////////////////////////////////////////////////////////
     //HOMEPAGE
     app.get("/",(req,res)=>{
-        res.sendFile(path.join(__dirname,"homepage","homepage.html"))
+        res.sendFile(path.join(__dirname,"homepage_temp/artigiano","artigiano.html"))
     })
 
 
@@ -69,10 +70,13 @@ async function main(params) {
         const { name, surname, username, email, phone, password, user_type } = req.body;
 
         // Validazione lato server
+        /*
+        teoricamente inutile -> dati verificati lato client        
         if (!name || !surname || !username || !email || !phone || !password || !user_type) {
             return res.status(400).send("Tutti i campi sono obbligatori.");
         }
 
+        */ 
         try {
             // Controlla se l'email è già registrata
             const checkQuery = "SELECT uid FROM utenti WHERE email = $1";
@@ -258,7 +262,7 @@ async function main(params) {
         }else{
             console.log(req.body);
             const result = await addProduct(req,pool)
-            if (result==0) {
+            if (result===0) {
                 res.status(200)
             }else{
                 res.status(500)

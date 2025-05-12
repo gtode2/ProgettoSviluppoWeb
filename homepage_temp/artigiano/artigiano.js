@@ -48,4 +48,27 @@ function gestisciOverlayArtigiano() {
 document.addEventListener("DOMContentLoaded", function() {
   caricaProdotti();
   gestisciOverlayArtigiano();
-});
+  const send = this.document.getElementById("sendProduct")
+  send.addEventListener("click", async ()=>{
+    const msg = {
+      name: document.getElementById("nome").value,
+      descr: document.getElementById("descrizione").value,
+      price: document.getElementById("prezzo").value,
+      amm: document.getElementById("quantita").value
+      //img: 
+    }
+    await fetch('http://localhost:3000/addProduct', {
+      method:'POST',
+      headers:{'Content-Type': 'application/json'},
+      body:JSON.stringify(msg)             
+    })
+    .then(async res =>{
+      const data = await res.json()
+      if (!res.ok) {
+        //gestione errori caricamento prodotto
+        //if(res.status===xxx){}
+        //
+      }
+    })
+  })
+})

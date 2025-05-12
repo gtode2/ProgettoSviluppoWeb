@@ -64,16 +64,16 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         // Invia i dati al backend
+        /*
         try {
-            const response = await fetch("http://localhost:3000/RegAct", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
+            
             });
             if (response.ok) {
                 window.location.href = response.url
-        
             } 
+            else{
+                
+            }
 
             const text = await response.json();
             alert(text);
@@ -81,5 +81,40 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Errore di rete.");
             console.error(error);
         }
+
+        */
+
+        const response = await fetch("http://localhost:3000/RegAct", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+        })
+        .then(async res=>{
+            const data = await res.json()
+            if (!res.ok) {
+                if (res.status===401) {
+                    if (data.error==="missing token") {
+                        alert("token mancante")
+                        window.location.href = "http://localhost:3000/login"                        
+                    }
+                    else if (data.error==="invalid token") {
+                        //rimanda a refresh
+                    }
+                else if (res.status===409) {
+                    alert("hai già un attività")
+                    window.location.href = "http://localhost:3000/"
+                }
+                }else{
+                    alert("errore sconosciuto")
+                }
+            }else{
+                    window.location.href = "http://localhost:3000/"
+                    //redirect a homepage
+            }   
+        })
+        .catch(err=>{
+            console.log(err);
+            alert("Errore di rete.");
+        })
     });
 });

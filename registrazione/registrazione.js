@@ -75,21 +75,29 @@ document.addEventListener("DOMContentLoaded", () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData)
         })
-        .then(res=>res.json())
-        .then(data =>{
-            console.log(data.access);
-            
-            localStorage.setItem('accessToken', data.accessToken)
-            console.log("access token impostato correttamente");
-            localStorage.setItem('refreshToken', data.refreshToken)
-            console.log("refresh token impostato correttamente");
-            if (data.redirect) {
-                window.location.href = data.redirect
+        .then(async res=>{
+            const data = await res.json()
+            if (!res.ok) {
+                if (res.status===409) {
+                    alert("utente già registrato")
+                }else{
+                    alert("errore sconosciuto")
+                }
             }else{
-                window.location.href = "http://localhost:3000/"
-                //redirect a homepage
-            }
-        })
+                console.log(data.access);
+            
+                localStorage.setItem('accessToken', data.accessToken)
+                console.log("access token impostato correttamente");
+                localStorage.setItem('refreshToken', data.refreshToken)
+                console.log("refresh token impostato correttamente");
+                if (data.redirect) {
+                    window.location.href = data.redirect
+                }else{
+                    window.location.href = "http://localhost:3000/"
+                    //redirect a homepage
+                }
+            }   
+        })  
         .catch(err=>{
             console.log(err);
             alert("Errore di rete.");
