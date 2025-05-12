@@ -127,8 +127,35 @@ async function main(params) {
         res.sendFile(path.join(__dirname,"registrazione", "regact.html"))
     })
     app.post("/RegAct",async(req,res)=>{
+        const user =checkToken(req,res) 
+        if (user==-1) {
+            return
+        }
         //verifico che utente non abbia attività
+        var query = `
+            SELECT * FROM ATTIVITA
+            WHERE actid = $1`
+
+        var values = [user.id]
+        var result = await pool.query(query,values)
+        if (result.rows.length>0) {
+            res.status(409).json({error:"utente ha già attività"})
+            return
+        }
         //aggiungo a DB
+        query = `
+            INSERT INTO attivita(actid, nome, indirizzo, email, ntel, descr)
+            VALUES ($1,$2,$3,$4,$5,$6)
+        `
+        const {name, email, phone, address, descryption} = req.body
+        values = [user.id, name, address, email, phone, descryption]
+        try {
+            result = pool.query(query,values)
+            res.status(200)
+        } catch (err) {
+            console.log(err);
+            res.status(500)           
+        }
     })
     /////////////////////////////////////////////////////////////////////////
     //LOGIN
@@ -136,7 +163,7 @@ async function main(params) {
     app.get("/login",(req,res)=>{
         res.sendFile(path.join(__dirname,"login","login.html"))
     })
-    app.post("/login", async(req,res)=>{  //NOME ROUTE TEMPORANEO
+    app.post("/login", async(req,res)=>{  
         console.log("iniziata sequenza login");
         const {cred, pw} = req.body
         const query = "SELECT * FROM utenti WHERE username = $1"
@@ -156,7 +183,15 @@ async function main(params) {
             const tokens = await registerToken(user, pool)
             console.log(tokens);
             
-            res.status(200).json({accessToken: tokens["access"], refreshToken:tokens["refresh"] });
+            var red = "http://localhost:3000/"
+            console.log(user.rows[0].usertype);
+            
+            if (user.rows[0].usertype==2) {
+                console.log("usertype=2");
+                
+                var red = "http://localhost:3000/TESTaddprod"
+            }
+            res.status(200).json({accessToken: tokens["access"], refreshToken:tokens["refresh"], redirect:red });
         }else{
             
             res.status(401).send("Credenziali non valide")
@@ -215,40 +250,18 @@ async function main(params) {
 
     app.post("/addProduct", async(req,res)=>{
         console.log("add product avviata");
+        const user = checkToken(req,res)
         
-        const {token} = req.body
-
-        if (!token) {
-            console.log("no token");
-            
-            res.status(401).json({error:"missing token"})
+        if (user.role!=2) {
+            console.log("tipo utente errato");
+            res.status(401).json({error:"unauthorized"})
         }else{
-            console.log("token presente");
-            
-            const user = checkToken(token)
-            console.log("eseguita verifica token");
-            console.log(user);
-            
-            if (user==-1) {
-                console.log("token non valido");
-            
-                res.status(401).json({error:"invalid token"})
+            console.log(req.body);
+            const result = await addProduct(req,pool)
+            if (result==0) {
+                res.status(200)
             }else{
-                if (user.role!=2) {
-                    console.log("tipo utente errato");
-                    
-                    res.status(401).json({error:"unauthorized"})
-                }else{
-                    console.log(req.body);
-                    /*
-                    const result = await addProduct(req,pool)
-                    if (result==0) {
-                        res.status(200)
-                    }else{
-                        res.status(500)
-                    }
-                    */
-                }
+                res.status(500)
             }
         }
         
