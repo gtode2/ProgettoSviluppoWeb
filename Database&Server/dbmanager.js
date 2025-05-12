@@ -112,7 +112,7 @@ async function checkTables(){
 
 async function creaUtenti(){
     try {
-        await pool.query("CREATE TABLE utenti(uid SERIAL PRIMARY KEY ,nome VARCHAR NOT NULL,cognome VARCHAR NOT NULL,username VARCHAR NOT NULL,email VARCHAR NOT NULL,ntel BIGINT NOT NULL,password VARCHAR NOT NULL,usertype INT NOT NULL,activity SERIAL)")
+        await pool.query("CREATE TABLE utenti(uid SERIAL PRIMARY KEY ,nome VARCHAR NOT NULL,cognome VARCHAR NOT NULL,username VARCHAR NOT NULL,email VARCHAR NOT NULL,ntel BIGINT NOT NULL,password VARCHAR NOT NULL,usertype INT NOT NULL)")
         return true
     } catch (error) {
         console.log(error);        
@@ -121,7 +121,7 @@ async function creaUtenti(){
 }
 async function creaAttivita(){
     try {
-        await pool.query("CREATE TABLE attivita(actid SERIAL PRIMARY KEY,nome VARCHAR NOT NULL,indirizzo VARCHAR,email VARCHAR NOT NULL,ntel INT, descr VARCHAR NOT NULL)")
+        await pool.query("CREATE TABLE attivita(actid INT PRIMARY KEY,nome VARCHAR NOT NULL,indirizzo VARCHAR,email VARCHAR NOT NULL,ntel INT, descr VARCHAR NOT NULL, FOREIGN KEY(actid) REFERENCES utenti(uid))")
         return true
     } catch (error) {
         console.log(error);

@@ -19,13 +19,33 @@ function createRefreshToken(user) {
     return jwt.sign({ id: user.uid, nome: user.nome, mail: user.email }, REFRESH_SECRET_KEY, { expiresIn: '7d' });
 }
 
-function checkToken(token){
+function checkToken(req,res){
+    const {token} = req.body
+
+        if (!token) {      
+            console.log("no token");    
+            res.status(401).json({error:"missing token"})
+            return -1
+        }else{
+            console.log("token presente");
+            const user = verify(token)
+            console.log("eseguita verifica token");
+            if (user==-1) {
+                console.log("token non valido");
+                res.status(401).json({error:"invalid token"})
+                return -1
+            }
+            return user
+        }
+
+}
+
+function verify(token) {
     try {
         const user = jwt.verify(token, SECRET_KEY)
         return user
     } catch (error) {
         console.log(error);
-        
         return -1
     }
 }

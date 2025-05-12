@@ -55,12 +55,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Se tutto è valido, prepara i dati
         const formData = {
+            token: localStorage.getItem('accessToken'),
             name: document.getElementById("name").value,
-            surname: document.getElementById("surname").value,
             email: document.getElementById("email").value,
-            phone: document.getElementById("phone").value,
-            password: document.getElementById("password").value,
-            user_type: document.getElementById("user_type").value
+            phone: document.getElementById("num").value,
+            address: document.getElementById("addr").value,
+            descryption: document.getElementById("descr").value
         };
 
         // Invia i dati al backend
@@ -75,8 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
         
             } 
 
-            //const text = await response.text();
-            //alert(text);
+            const text = await response.json();
+            alert(text);
         } catch (error) {
             alert("Errore di rete.");
             console.error(error);
