@@ -20,33 +20,31 @@ document.addEventListener("DOMContentLoaded", ()=>{
             cred: cred.value,
             pw: pw.value
         }
-        // Invia i dati al backend
         
-        const response = await fetch("http://localhost:3000/login", {
+        try {
+            const response = await fetch("http://localhost:3000/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData)
-        })
-        .then(res=>res.json())
-        .then(data =>{
             
-            localStorage.setItem('accessToken', data.accessToken)
-            console.log("access token impostato correttamente");
-            localStorage.setItem('refreshToken', data.refreshToken)
-            console.log("refresh token impostato correttamente");
-            if (data.redirect) {
-                window.location.href = data.redirect
+            })
+            const data = await response.json()
+            console.log("AAAAA");
+            
+            if (!response.ok) {
+                alert("Credenziali errate")
             }else{
+                localStorage.setItem('accessToken', data.accessToken)
+                console.log("access token impostato correttamente");
+                localStorage.setItem('refreshToken', data.refreshToken)
+                console.log("refresh token impostato correttamente");
                 window.location.href = "http://localhost:3000/"
                 //redirect a homepage
             }
-        })
-        .catch(err=>{
+        } catch (err) {
             console.log(err);
             alert("Errore di rete.");
-        })
-          
-
+        }
     })
 })
 

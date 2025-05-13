@@ -22,6 +22,8 @@ async function main(params) {
     app.use(express.static(path.join(__dirname, "homepage")));
     app.use(express.static(path.join(__dirname, "homepage_temp/unlogged")));
     app.use(express.static(path.join(__dirname, "homepage_temp/artigiano")));
+    app.use(express.static(path.join(__dirname, "homepage_temp/clienti")));
+    app.use(express.static(path.join(__dirname, "homepage_temp/tokencheck")));
 
 
     app.use(cors());
@@ -55,7 +57,36 @@ async function main(params) {
     /////////////////////////////////////////////////////////////////////////
     //HOMEPAGE
     app.get("/",(req,res)=>{
-        res.sendFile(path.join(__dirname,"homepage_temp/unlogged","unlogged.html"))
+        //apertura diretta da link
+        console.log("BBB");
+        res.sendFile(path.join(__dirname,"homepage_temp/tokencheck","tokencheck.html"))
+        return
+    })
+    app.post("/",(req,res)=>{
+        
+        //HOME VERA E PROPRIA
+        console.log("EEEE");
+
+        const user = checkToken(req,res)
+        if (user!==-1) {
+            switch (user.role) {
+                case 1:
+                    res.sendFile(path.join(__dirname,"homepage_temp/clienti","clienti.html"))
+                    break;
+                case 2:
+                    res.sendFile(path.join(__dirname,"homepage_temp/artigiano","artigiano.html"))
+                    break;
+                case 0:
+                    res.sendFile(path.join(__dirname,"homepage_temp/admin","admin.html"))
+                    break;
+                default:
+                    res.sendFile(path.join(__dirname,"homepage_temp/unlogged","unlogged.html"))
+                    break;
+            }
+        }
+        
+        //res.sendFile(path.join(__dirname,"homepage_temp/artigiano","artigiano.html"))
+       
     })
 
 
@@ -177,13 +208,14 @@ async function main(params) {
         const hashedpw = await bcrypt.hash(pw,10);
         const values = [cred]
         const user = await pool.query(query,values)
-        console.log(hashedpw)
+        //console.log(hashedpw)
         
         
         if (user.rows.length>0) {
+            
             const isCorrect = await bcrypt.compare(pw, user.rows[0].password)
             if (!isCorrect) {
-                    res.status(401).send("Credenziali non valide")
+                    res.status(401).json({error:"Credenziali non valide"})
                     console.log("password errata");
                     return
             }
@@ -191,20 +223,14 @@ async function main(params) {
             console.log(tokens);
             
             var red = "http://localhost:3000/"
-            console.log(user.rows[0].usertype);
-            
-            if (user.rows[0].usertype==2) {
-                console.log("usertype=2");
-                
-                var red = "http://localhost:3000/TESTaddprod"
-            }
             res.status(200).json({accessToken: tokens["access"], refreshToken:tokens["refresh"], redirect:red });
         }else{
-            
-            res.status(401).send("Credenziali non valide")
+            res.status(401).json({error:"Credenziali non valide"})
             console.log("no rows");
             
         } 
+
+        
 
     })
 
@@ -217,9 +243,10 @@ async function main(params) {
         const val = await renewToken(token,pool)
         console.log(val);
         if (val==-1) {
-           res.send("403")
+           res.status(403)
         }else{
-            res.send("")
+            //da sistemare
+            //res.send("")
         }
     })
     app.post('/logout', async (req, res) => {
@@ -291,11 +318,6 @@ async function main(params) {
         
     })
     
-
-    app.listen(port, () => {
-        console.log(`Server attivo su http://localhost:${port}`);
-    });
-
     app.post("/ESEMPIOPROTECTED",(req,res)=>{
         //verifica presenza di token nel res
         if (!token) {
@@ -304,6 +326,13 @@ async function main(params) {
 
     })
 
+
+
+
+
+    app.listen(port, () => {
+        console.log(`Server attivo su http://localhost:${port}`);
+    });
 
 }
 
