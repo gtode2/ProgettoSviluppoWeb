@@ -55,7 +55,7 @@ async function main(params) {
     /////////////////////////////////////////////////////////////////////////
     //HOMEPAGE
     app.get("/",(req,res)=>{
-        res.sendFile(path.join(__dirname,"homepage_temp/artigiano","artigiano.html"))
+        res.sendFile(path.join(__dirname,"homepage_temp/unlogged","unlogged.html"))
     })
 
 
@@ -83,7 +83,7 @@ async function main(params) {
             const existing = await pool.query(checkQuery, [email]);
 
             if (existing.rows.length > 0) {
-                return res.status(409).send("Email già registrata.");
+                return res.status(409).json({error:"Email già registrata."});
             }
 
             // Hash della password
@@ -120,11 +120,14 @@ async function main(params) {
                 })
             }
             else{
-
+                res.status(200).json({
+                    accessToken: tokens["access"],
+                    refreshToken: tokens["refresh"]
+                })
             }
         } catch (err) {
             console.error("Errore durante la registrazione:", err);
-            res.status(500).send("Errore interno al server.");
+            res.status(500).json({error:"Errore interno al server"});
         }
     });
     app.get("/RegAct",async(req,res)=>{
