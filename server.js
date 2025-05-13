@@ -57,38 +57,42 @@ async function main(params) {
     /////////////////////////////////////////////////////////////////////////
     //HOMEPAGE
     app.get("/",(req,res)=>{
-        //apertura diretta da link
-        console.log("BBB");
-        res.sendFile(path.join(__dirname,"homepage_temp/tokencheck","tokencheck.html"))
-        return
-    })
-    app.post("/",(req,res)=>{
+        console.log("richiesta homepage");
+        console.log(req.headers);
         
-        //HOME VERA E PROPRIA
-        console.log("EEEE");
-
-        const user = checkToken(req,res)
-        if (user!==-1) {
-            switch (user.role) {
-                case 1:
-                    res.sendFile(path.join(__dirname,"homepage_temp/clienti","clienti.html"))
-                    break;
-                case 2:
-                    res.sendFile(path.join(__dirname,"homepage_temp/artigiano","artigiano.html"))
-                    break;
-                case 0:
-                    res.sendFile(path.join(__dirname,"homepage_temp/admin","admin.html"))
-                    break;
-                default:
-                    res.sendFile(path.join(__dirname,"homepage_temp/unlogged","unlogged.html"))
-                    break;
+        if (!req.headers["token"]) {
+            console.log("no token");
+            res.status(401).sendFile(path.join(__dirname,"homepage_temp/tokencheck","tokencheck.html"))
+        }else{
+            token = req.headers["token"]
+            if (token===-1) {
+                console.log("-1");
+                
             }
+            const user = checkToken(req,res,token)
+            if (user!==-1) {
+                switch (user.role) {
+                    case 1:
+                        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAA UTENTE");
+                        
+                        res.sendFile(path.join(__dirname,"homepage_temp/utente","utente.html"))
+                        break;
+                    case 2:
+                        res.sendFile(path.join(__dirname,"homepage_temp/artigiano","artigiano.html"))
+                        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAA ARTIGIANO");
+                        break;
+                    case 0:
+                        res.sendFile(path.join(__dirname,"homepage_temp/admin","admin.html"))
+                        break;
+                    default:
+                        res.sendFile(path.join(__dirname,"homepage_temp/unlogged","unlogged.html"))
+                        break;
+                }
+            }
+            
         }
-        
-        //res.sendFile(path.join(__dirname,"homepage_temp/artigiano","artigiano.html"))
-       
     })
-
+    
 
     /////////////////////////////////////////////////////////////////////////
     //REGISTRAZIONE
@@ -291,15 +295,26 @@ async function main(params) {
             res.status(401).json({error:"unauthorized"})
         }else{
             console.log(req.body);
+            /*
             const result = await addProduct(req,pool)
             if (result===0) {
                 res.status(200)
             }else{
                 res.status(500)
             }
+            */
         }
         
     })
+
+
+
+
+
+
+
+
+
 
 //FUNZIONI DI TEST TEMPORANEE
     //pagina di test aggiunta prodotti

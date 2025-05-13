@@ -46,11 +46,18 @@ function gestisciOverlayArtigiano() {
 
 // Codice da eseguire dopo il caricamento totale del DOM
 document.addEventListener("DOMContentLoaded", function() {
+  console.log("loaded");
+  
   caricaProdotti();
   gestisciOverlayArtigiano();
   const send = this.document.getElementById("sendProduct")
-  send.addEventListener("click", async ()=>{
+  send.addEventListener("click", async (event)=>{
+    console.log("send");
+    
+    event.preventDefault()
+    //RIMUOVERE PREVENTDEFAULT E PARAMETRO EVENT UNA VOLTA RIMOSSO IL FORM E SISTEMATO IL CSS
     const msg = {
+      token: localStorage.getItem("accessToken"),
       name: document.getElementById("nome").value,
       descr: document.getElementById("descrizione").value,
       price: document.getElementById("prezzo").value,

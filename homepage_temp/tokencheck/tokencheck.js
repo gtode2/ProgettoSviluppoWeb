@@ -1,20 +1,30 @@
-(async ()=> {
+document.addEventListener("DOMContentLoaded", async()=>{
     console.log("AAA");
     var at = localStorage.getItem("accessToken")
+    console.log(at);
     
     if (!at) {
-        at=-1
+        at=-1        
     }
     
-    
-    const response = await fetch("http://localhost:3000/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({token:at})
-    })
-    .then(response => response.text()) 
-    .then(data => {
-        document.documentElement.innerHTML = data;
-    })
-    .catch(error => console.error('Errore:', error));
-})()
+    try {
+        const response = await fetch("http://localhost:3000/", {
+            method: "GET",
+            headers: { 
+            "Content-Type": "application/json",
+            "token": at.toString()
+            }
+        })
+        console.log("inviato");
+        
+        if(!response.ok){
+            console.log("errore");
+            
+            
+        }else{{
+            window.location.href = "http://localhost:3000/"
+        }}
+    } catch (error) {
+        alert("aaa")
+    }
+})
