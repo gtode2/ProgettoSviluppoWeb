@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         }
         
         try {
-            const response = await fetch("http://localhost:3000/login", {
+            const response = await fetch("/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData)
@@ -34,10 +34,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
             if (!response.ok) {
                 alert("Credenziali errate")
             }else{
-                localStorage.setItem('accessToken', data.accessToken)
-                console.log("access token impostato correttamente");
-                localStorage.setItem('refreshToken', data.refreshToken)
-                console.log("refresh token impostato correttamente");
+                console.log("tentativo di href");
+                
                 window.location.href = "http://localhost:3000/"
                 //redirect a homepage
             }

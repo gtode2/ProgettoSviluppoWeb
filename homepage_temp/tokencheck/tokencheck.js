@@ -1,18 +1,11 @@
 document.addEventListener("DOMContentLoaded", async()=>{
     console.log("AAA");
-    var at = localStorage.getItem("accessToken")
-    console.log(at);
-    
-    if (!at) {
-        at=-1        
-    }
     
     try {
-        const response = await fetch("http://localhost:3000/", {
+        const response = await fetch("/", {
             method: "GET",
             headers: { 
             "Content-Type": "application/json",
-            "token": at.toString()
             }
         })
         console.log("inviato");
@@ -22,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async()=>{
             
             
         }else{{
-            window.location.href = "http://localhost:3000/"
+            window.location.href = "/"
         }}
     } catch (error) {
         alert("aaa")

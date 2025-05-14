@@ -50,21 +50,20 @@ document.addEventListener("DOMContentLoaded", function() {
   
   caricaProdotti();
   gestisciOverlayArtigiano();
-  const send = this.document.getElementById("sendProduct")
+  const send = document.getElementById("sendProduct")
   send.addEventListener("click", async (event)=>{
     console.log("send");
     
     event.preventDefault()
     //RIMUOVERE PREVENTDEFAULT E PARAMETRO EVENT UNA VOLTA RIMOSSO IL FORM E SISTEMATO IL CSS
     const msg = {
-      token: localStorage.getItem("accessToken"),
       name: document.getElementById("nome").value,
       descr: document.getElementById("descrizione").value,
       price: document.getElementById("prezzo").value,
       amm: document.getElementById("quantita").value
       //img: 
     }
-    await fetch('http://localhost:3000/addProduct', {
+    await fetch('/addProduct', {
       method:'POST',
       headers:{'Content-Type': 'application/json'},
       body:JSON.stringify(msg)             

@@ -4,6 +4,9 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const { Pool } = require("pg");
 const path = require('path');
+const cookieParser = require('cookie-parser');
+
+
 const { checkdb } = require("./Database&Server/dbmanager.js");
 const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Database&Server/userToken.js")
 const {addProduct} = require("./Database&Server/products.js");
@@ -26,7 +29,11 @@ async function main(params) {
     app.use(express.static(path.join(__dirname, "homepage_temp/tokencheck")));
 
 
-    app.use(cors());
+    app.use(cookieParser());
+    app.use(cors({
+        origin:'http://localhost:3000',
+        credentials:true
+    }));
     app.use(bodyParser.json());
     const pool = await initDb()
 
@@ -59,27 +66,23 @@ async function main(params) {
     app.get("/",(req,res)=>{
         console.log("richiesta homepage");
         console.log(req.headers);
-        
-        if (!req.headers["token"]) {
+        try {
+            const token = req.cookies.accessToken;
+            if (!token) {
             console.log("no token");
             res.status(401).sendFile(path.join(__dirname,"homepage_temp/tokencheck","tokencheck.html"))
         }else{
-            token = req.headers["token"]
-            if (token===-1) {
-                console.log("-1");
-                
-            }
+            console.log(token);
+            
             const user = checkToken(req,res,token)
             if (user!==-1) {
                 switch (user.role) {
                     case 1:
-                        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAA UTENTE");
                         
-                        res.sendFile(path.join(__dirname,"homepage_temp/utente","utente.html"))
+                        res.sendFile(path.join(__dirname,"homepage_temp/clienti","clienti.html"))
                         break;
                     case 2:
                         res.sendFile(path.join(__dirname,"homepage_temp/artigiano","artigiano.html"))
-                        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAA ARTIGIANO");
                         break;
                     case 0:
                         res.sendFile(path.join(__dirname,"homepage_temp/admin","admin.html"))
@@ -89,6 +92,12 @@ async function main(params) {
                         break;
                 }
             }
+            
+        }
+        } catch (error) {
+            console.log(error);
+            res.status(500)
+            
             
         }
     })
@@ -226,8 +235,14 @@ async function main(params) {
             const tokens = await registerToken(user, pool)
             console.log(tokens);
             
-            var red = "http://localhost:3000/"
-            res.status(200).json({accessToken: tokens["access"], refreshToken:tokens["refresh"], redirect:red });
+            res.status(200)
+                .cookie('accessToken', tokens["access"],{
+                    httpOnly:true,
+                    secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
+                    sameSite:'Strict',
+                    maxAge: 50 * 60 * 1000 //50 minuti
+                }).json({})
+            
         }else{
             res.status(401).json({error:"Credenziali non valide"})
             console.log("no rows");
@@ -256,7 +271,6 @@ async function main(params) {
     app.post('/logout', async (req, res) => {
         console.log("logout");
         const { token } = req.body;
-        
                 //disabilitazione token
         const query = `UPDATE reftok SET revoked = true WHERE token=$1`
         const values = [token]
@@ -269,7 +283,16 @@ async function main(params) {
         }
         console.log("logout effettuato");
         
-        res.json({ message: 'Logout effettuato' });
+        res.clearCookie('accessToken', {
+            httpOnly: true,
+          secure: false,      // oppure true, in base a come era stato impostato
+            sameSite: 'Strict', // deve corrispondere alle opzioni originali
+        })
+        .clearCookie('refreshToken', {
+            httpOnly: true,
+          secure: false,      // oppure true, in base a come era stato impostato
+            sameSite: 'Strict', // deve corrispondere alle opzioni originali
+        });
         
         
     });
@@ -289,22 +312,22 @@ async function main(params) {
     app.post("/addProduct", async(req,res)=>{
         console.log("add product avviata");
         const user = checkToken(req,res)
-        
+        if (user===-1) {
+            return
+        }
         if (user.role!=2) {
             console.log("tipo utente errato");
             res.status(401).json({error:"unauthorized"})
         }else{
             console.log(req.body);
-            /*
-            const result = await addProduct(req,pool)
+            
+            const result = await addProduct(req, user.id,pool)
             if (result===0) {
                 res.status(200)
             }else{
                 res.status(500)
             }
-            */
         }
-        
     })
 
 
