@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  app:
+    build: ./backend
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    environment:
+      db_user: myuser
+      db_pw: mypassword
+      db_port: 5432
+    volumes:
+      - ./backend:/app
+    command: ["node", "server.js"]
+
+volumes:
+  pgdata:

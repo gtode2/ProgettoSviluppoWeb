@@ -1,0 +1,39 @@
+CREATE TABLE IF NOT EXISTS utenti (
+  uid SERIAL PRIMARY KEY,
+  nome VARCHAR NOT NULL,
+  cognome VARCHAR NOT NULL,
+  username VARCHAR NOT NULL,
+  email VARCHAR NOT NULL,
+  ntel BIGINT NOT NULL,
+  password VARCHAR NOT NULL,
+  usertype INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS attivita (
+  actid INT PRIMARY KEY,
+  nome VARCHAR NOT NULL,
+  indirizzo VARCHAR,
+  email VARCHAR NOT NULL,
+  ntel INT,
+  descr VARCHAR NOT NULL,
+  FOREIGN KEY(actid) REFERENCES utenti(uid)
+);
+
+CREATE TABLE IF NOT EXISTS reftok (
+  id SERIAL PRIMARY KEY,
+  userid INT NOT NULL,
+  token VARCHAR,
+  exp TIMESTAMP NOT NULL,
+  revoked BOOLEAN,
+  FOREIGN KEY (userid) REFERENCES utenti(uid)
+);
+
+CREATE TABLE IF NOT EXISTS prodotti (
+  id SERIAL PRIMARY KEY,
+  actid INT NOT NULL,
+  name VARCHAR NOT NULL,
+  descr VARCHAR NOT NULL,
+  costo FLOAT NOT NULL,
+  amm INT NOT NULL,
+  FOREIGN KEY (actid) REFERENCES attivita(actid)
+);
