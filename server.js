@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 
 const { checkdb } = require("./Database&Server/dbmanager.js");
 const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Database&Server/userToken.js")
-const {addProduct} = require("./Database&Server/products.js");
+const {addProduct, getProducts} = require("./Database&Server/products.js");
 const {db_name, db_user, db_port, db_pw} = require("./config.js")
 
 
@@ -27,6 +27,7 @@ async function main(params) {
     app.use(express.static(path.join(__dirname, "homepage_temp/artigiano")));
     app.use(express.static(path.join(__dirname, "homepage_temp/clienti")));
     app.use(express.static(path.join(__dirname, "homepage_temp/tokencheck")));
+    app.use(express.static(path.join(__dirname, "homepage_temp")));
 
 
     app.use(cookieParser());
@@ -70,7 +71,7 @@ async function main(params) {
             const token = req.cookies.accessToken;
             if (!token) {
             console.log("no token");
-            res.status(401).sendFile(path.join(__dirname,"homepage_temp/tokencheck","tokencheck.html"))
+            res.sendFile(path.join(__dirname,"homepage_temp/unlogged","unlogged.html"))
         }else{
             console.log(token);
             
@@ -82,7 +83,7 @@ async function main(params) {
                         res.sendFile(path.join(__dirname,"homepage_temp/clienti","clienti.html"))
                         break;
                     case 2:
-                        res.sendFile(path.join(__dirname,"homepage_temp/artigiano","artigiano.html"))
+                        res.sendFile(path.join(__dirname,"homepage_temp","/artigiano/artigiano.html"))
                         break;
                     case 0:
                         res.sendFile(path.join(__dirname,"homepage_temp/admin","admin.html"))
@@ -323,13 +324,18 @@ async function main(params) {
             
             const result = await addProduct(req, user.id,pool)
             if (result===0) {
-                res.status(200)
+                res.status(200).json({})
             }else{
-                res.status(500)
+                res.status(500).json({})
             }
         }
     })
-
+    app.post("/getProducts", async(req,res)=>{
+        console.log("Get products");
+        
+        const prod =await getProducts(pool)
+        res.status(200).json({prodotti:prod})
+    })
 
 
 

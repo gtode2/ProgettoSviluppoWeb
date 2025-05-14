@@ -17,4 +17,11 @@ async function addProduct(req, uid, pool) {
     
 }
 
-module.exports = {addProduct} 
+async function getProducts(pool){
+    const res = await pool.query(`SELECT * FROM prodotti ORDER BY id DESC`)
+    console.log(res.rows);
+    return res.rows
+    
+}
+
+module.exports = {addProduct, getProducts} 
