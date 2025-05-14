@@ -166,10 +166,33 @@ document.addEventListener("DOMContentLoaded", async() => {
 
   totale.textContent = `€${carrello.getTotale().toFixed(2)}`;
 
-  document.getElementById("proseguiPagamento").addEventListener("click", () => {
-    alert("Pagamento simulato! Grazie per l'acquisto.");
-    carrello.svuota();
-    location.reload();
+  document.getElementById("proseguiPagamento").addEventListener("click", async () => {
+    try {
+      const carrelloLista = carrello.getLista().map(p => ({
+        name: p.nome,
+        price: p.prezzo,
+        quantity: p.quantita || 1 // fallback quantità
+      }));
+
+      const res = await fetch("http://localhost:3000/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cart: carrelloLista })
+      });
+
+      const data = await res.json();
+
+      //implementazione di Stripe per la simulazione di pagamento
+      if (data.url) {
+        window.location.href = data.url; // reindirizza a Stripe
+      } else {
+        alert("Errore durante il checkout Stripe");
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert("Errore di rete nel processo di pagamento.");
+    }
   });
 
   document.getElementById("svuotaCarrello").addEventListener("click", () => {

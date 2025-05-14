@@ -155,6 +155,7 @@ async function creaProdotti() {
         return false
     }
 }
+<<<<<<< HEAD
 async function creaCarrello() {
     try {
         await pool.query("CREATE TABLE Carrello(uid INT NOT NULL, productid INT NOT NULL, quantita INT NOT NULL, PRIMARY KEY (uid, productid),FOREIGN KEY (uid) REFERENCES utenti(uid), FOREIGN KEY (productid) REFERENCES prodotti(id))")
@@ -167,5 +168,7 @@ async function creaCarrello() {
 
 
 
+=======
+>>>>>>> b2ff0cd (Aggiunta simulazione di pagamento nel carrello)
 
 module.exports={checkdb}
