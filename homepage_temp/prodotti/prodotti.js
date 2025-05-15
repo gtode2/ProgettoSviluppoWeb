@@ -9,8 +9,10 @@ async function caricaProdotti() {
     const data = await res.json()
     const container = document.querySelector(".row");
     container.innerHTML = "";
+    
     data.prodotti.forEach(el => {
       console.log(el.name);
+      console.log(el);
       
       const col = document.createElement("div");
       col.className = "col-md-4 mb-4";
@@ -25,7 +27,7 @@ async function caricaProdotti() {
           <p class="price text-success fw-bold">€${el.costo}</p>
 
           <div class="d-flex justify-content-center gap-2 product-actions cliente">
-            <button class="btn btn-primary aggiungi-carrello">Aggiungi al carrello</button>
+            <button class="btn btn-primary aggiungi-carrello" onclick="addToCart(${el.id},'${el.name}',${el.costo})" >Aggiungi al carrello</button>
             <button class="btn btn-outline-primary">Rimuovi</button>
           </div>
 
@@ -45,7 +47,7 @@ async function caricaProdotti() {
     
   }
 }
-function addProduct(name, image, descr, cost) {
+function addProduct(name, image, descr, cost, id) {
       var container = document.querySelector(".row");
       var col = document.createElement("div");
       col.className = "col-md-4 mb-4";
@@ -58,7 +60,7 @@ function addProduct(name, image, descr, cost) {
           <p class="price text-success fw-bold">€${cost}</p>
 
           <div class="d-flex justify-content-center gap-2 product-actions cliente">
-            <button class="btn btn-primary aggiungi-carrello">Aggiungi al carrello</button>
+            <button class="btn btn-primary aggiungi-carrello" onclick="addToCart(${id},'${name}',${cost})">Aggiungi al carrello</button>
             <button class="btn btn-outline-primary">Rimuovi</button>
           </div>
 
@@ -71,8 +73,10 @@ function addProduct(name, image, descr, cost) {
     `;
     container.prepend(col);
 }
-
-
+function addToCart(id, name, price){
+  const iframeWin = window.parent.document.getElementById("lat-iframe").contentWindow;
+    iframeWin.addToCart(id, name, price);
+}
 document.addEventListener("DOMContentLoaded", () => {
   
   

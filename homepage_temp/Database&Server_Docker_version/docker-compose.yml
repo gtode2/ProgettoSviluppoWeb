@@ -1,13 +1,12 @@
-version: '3.8'
 
 services:
   db:
     image: postgres:15
     restart: always
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dbprogetto
     ports:
       - "5432:5432"
     volumes:
@@ -21,8 +20,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      db_user: myuser
-      db_pw: mypassword
+      db_user: postgres
+      db_pw: postgres
       db_port: 5432
     volumes:
       - ./backend:/app

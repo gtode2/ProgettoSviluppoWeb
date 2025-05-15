@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 
 const { checkdb } = require("./Database&Server/dbmanager.js");
 const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Database&Server/userToken.js")
-const {addProduct, getProducts} = require("./Database&Server/products.js");
+const {addProduct, getProducts, addCart, getCart} = require("./Database&Server/products.js");
 const {db_name, db_user, db_port, db_pw} = require("./config.js")
 
 
@@ -336,7 +336,42 @@ async function main(params) {
         const prod =await getProducts(pool)
         res.status(200).json({prodotti:prod})
     })
-
+    
+    
+    
+    app.post("/addCart", async (req,res) => {
+        
+        const {id} = req.body
+        if (!id) {
+            console.log("missing product");
+                        
+            res.status(401).json({error:"missing product"})
+            return
+        }
+        const user = checkToken(req,res)
+        if (user!== -1) {
+            if (user.role!==1) {
+                res.status(401).json({error:"unauthorized"})
+                return
+            }   
+            const status = await addCart(pool, id, user.id)
+            if (status===-1) {
+                res.status(500).json({})
+            } else if (status === 0) {
+                res.status(200).json({res:"added"})
+            } else {
+                console.log(status);
+                
+                res.status(200).json({res:status})
+            }
+        }
+        
+        
+    })
+    app.post("/getCart", async (req,res) => {
+        
+    })
+    
 
 
 

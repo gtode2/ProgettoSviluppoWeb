@@ -72,6 +72,9 @@ async function createTables(){
         if (! await creaProdotti()) {
             corr=false
         }
+        if (! await creaCarrello()) {
+            corr=false
+        }
 
 
         if (!corr) {
@@ -105,8 +108,14 @@ async function checkTables(){
         await creaProdotti()
         console.log("Creata tabella prodotti");
     }
+    res_carr = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='carrello')")
+    if(!res_prod.rows[0].exists){
+        await creaCarrello()
+        console.log("Creata tabella carrello");
+    }
    
 }
+
 
 
 
@@ -146,7 +155,15 @@ async function creaProdotti() {
         return false
     }
 }
-
+async function creaCarrello() {
+    try {
+        await pool.query("CREATE TABLE Carrello(uid INT NOT NULL, productid INT NOT NULL, quantita INT NOT NULL, PRIMARY KEY (uid, productid),FOREIGN KEY (uid) REFERENCES utenti(uid), FOREIGN KEY (productid) REFERENCES prodotti(id))")
+        return true
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
 
 
 

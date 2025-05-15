@@ -1,3 +1,4 @@
+/*
 class Carrello {
   constructor() {
     this.prodotti = JSON.parse(localStorage.getItem("carrello")) || [];
@@ -34,14 +35,71 @@ class Carrello {
     console.table(this.prodotti);
   }
 }
+*/
+
+async function addToCart(id, name, price) {
+  console.log(name);
+  try {
+    const response = await fetch("http://localhost:3000/addCart", {
+      method:"POST",
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify({id:id})
+    })
+    const data = await response.json()
+    if (response.ok) {
+      
+      if (data.res==="added") {
+        add(id, name, price)
+        console.log("aggiunto");
+        
+      }else{
+        increase()
+        console.log("duplicato");
+        console.log(data.res);
+        
+      }
+    }else{
+      //gestione errori
+    }
+  } catch (error) {
+    console.log(err);
+    alert("Errore di rete.");
+  }
+  //comunica con server inviando id prodotto per carrello
+  //se res.ok -> aggiunge prodotto
+  //aggiunge valore a totale
+  
+}
+
+function add(id, name, price) {
+  console.log("nome ="+name);
+  
+  const riepilogo = document.getElementById("riepilogo");
+  const totale = document.getElementById("totale");
+  
+  const riga = document.createElement("div");
+    riga.className = "d-flex justify-content-between align-items-center border-bottom py-2";
+    riga.innerHTML = `
+      <div><strong>${name}</strong></div>
+      <div>€${price}</div>
+    `;
+    riepilogo.appendChild(riga);
+  var tot = totale.innerText
+  tot = tot.replace("€", "").trim()
+  var prezzo = parseFloat(tot)+price
+  totale.innerText = "€"+prezzo
+}
+function increase(){}
+function decrease(){}
 
 // DOM: genera riepilogo dinamico
 document.addEventListener("DOMContentLoaded", () => {
+  const totale = document.getElementById("totale");
+  
+  /*
   const carrello = new Carrello();
   const lista = carrello.getLista();
-  const riepilogo = document.getElementById("riepilogo");
-  const totale = document.getElementById("totale");
-
+  
   if (lista.length === 0) {
     riepilogo.innerHTML = `<div class="alert alert-info">Il carrello è vuoto.</div>`;
     totale.textContent = "€0";
@@ -72,4 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
       location.reload();
     }
   });
+  */
+  
+  
 });

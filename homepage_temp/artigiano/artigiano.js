@@ -52,9 +52,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }else{
           const iframe = document.getElementById("prodotti-iframe")
           const iframeWin = iframe.contentWindow;
-        
+          const id = data.id        
           if (iframeWin && typeof iframeWin.addProduct === "function") {
-            iframeWin.addProduct(document.getElementById("nome").value, document.getElementById("nome").value,document.getElementById("descrizione").value , document.getElementById("prezzo").value);
+            iframeWin.addProduct(document.getElementById("nome").value, document.getElementById("nome").value,document.getElementById("descrizione").value , document.getElementById("prezzo").value, id);
           } else {
             console.error("Funzione addProduct non trovata!");
           }
