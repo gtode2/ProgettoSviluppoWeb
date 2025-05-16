@@ -1,0 +1,77 @@
+/* Impostazioni di base */
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  #header {
+    background-color: rgb(89, 100, 243);
+    height: 60px;
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centra orizzontalmente */
+    align-items: center;    /* Centra verticalmente */
+    padding: 0 10px;
+  }
+  
+  #search-container {
+    display: flex;
+    justify-content: flex-start; /* Mantiene gli elementi centrati orizzontalmente */
+    align-items: center;         /* Centra verticalmente gli elementi */
+    gap: 20px;                    /* Separazione tra gli elementi */
+    flex-shrink: 0;               /* Previene che gli elementi si comprimano */
+  }
+  
+  #searchbar {
+    height: 40px;
+    background-color: #f5f5f5;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    width: 60%;  /* La larghezza della barra di ricerca */
+  }
+  
+  #searchbar:focus {
+    outline: none;
+    border-color: #f4c10f;
+    padding-left: 16px;
+    box-shadow: 0 0 8px rgba(244, 193, 10, 0.7);
+  }
+  
+  #homebtn {
+    width: 75px; /* Larghezza maggiore per il bottone */
+    height: 40px;
+    background-color: #ccc;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+  }
+  
+  #utente {
+    width: 75px; /* Stessa larghezza di homebtn */
+    height: 40px; /* Stessa altezza di homebtn */
+    background-color: #ccc;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+  }
+  
+  /* Media query per schermi piccoli */
+  @media (max-width: 572px) {
+    #searchbar {
+      width: 90%;
+      max-width: none;
+    }
+  }
+  
+  /* Media query per schermi più grandi */
+  @media (min-width: 573px) {
+    #searchbar {
+      width: 60%;
+    }
+  }
+  

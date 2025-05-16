@@ -10,9 +10,7 @@ const cookieParser = require('cookie-parser');
 const { checkdb } = require("./Database&Server/dbmanager.js");
 const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Database&Server/userToken.js")
 const {addProduct, getProducts, addCart, getCart, emptyCart} = require("./Database&Server/products.js");
-const {addReport, getReports} = require("./Database&Server/reports.js");
 const {db_name, db_user, db_port, db_pw} = require("./config.js")
-
 
 
 
@@ -244,13 +242,7 @@ async function main(params) {
                     secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
                     sameSite:'Strict',
                     maxAge: 50 * 60 * 1000 //50 minuti
-                })
-                .cookie('refreshToken', tokens["refresh"],{
-                    httpOnly:true,
-                    secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
-                    sameSite:'Strict',
-                    maxAge:7 * 24 * 60 * 60 * 1000 //7 giorni
-                }).json({usertyoe:user.role})
+                }).json({})
             
         }else{
             res.status(401).json({error:"Credenziali non valide"})
@@ -340,15 +332,9 @@ async function main(params) {
     })
     app.post("/getProducts", async(req,res)=>{
         console.log("Get products");
-        const user = await checkToken(req,res, false)
-        const prod =await getProducts(pool)
-        console.log(user);
         
-        if (user!==-1) {
-            res.status(200).json({prodotti:prod, usertype:user.role})
-        }else{
-            res.status(200).json({prodotti:prod, usertype:3})
-        }
+        const prod =await getProducts(pool)
+        res.status(200).json({prodotti:prod})
     })
     
     
@@ -425,49 +411,7 @@ async function main(params) {
     })
     
 
-    app.post("/addReport", async(req,res)=>{
-        console.log("add report");
-        
-        user = await checkToken(req,res)
-        if (user===-1) {
-            return
-        }
-        const {productid, dove, desc} = req.body
-        if (!productid && !dove && !desc) {
-            console.log("informazioni mancanti");
-            res.status(400).json({})
-            return
-        }
-        const response = await addReport(pool,user.id, productid, dove, desc)
-        console.log(response);
-        if (response===0) {
-            res.status(200).json({})
-        }else{
-            res.status(500).json({})
-        }
-        
-    })
-    app.post("/getReports", async(req,res)=>{
-        //verifica token
-        const user = checkToken(req,res)
-        if (user!==-1) {
-              if (user.role!==0) {
-                res.status(401).json({error:"unauthorized"})
-                return
-            }
-            const response = await getReports(pool)
-            if (response!==-1) {
-                res.status(200).json({reports:response})
-                console.log("AAA");
-                
-            }else{
-                res.status(500).json({})
-                console.log("BBB");
-                
-            }
-        }
-        //chiamata funzione reporst/getReports        
-    })
+
 
 
 

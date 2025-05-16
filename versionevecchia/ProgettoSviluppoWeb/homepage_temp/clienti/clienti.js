@@ -1,20 +1,7 @@
-function report(id) {
-  console.log("AAAAAA");  
-  document.getElementById('lat-iframe').src = './clienti/report/report.html?id=' + encodeURIComponent(id);;
-}
-
-function loadCart(id) {
-    console.log("AAAAAA");
-    
-    document.getElementById('lat-iframe').src = '../carrello/carrello.html';
-  }
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("acquistoForm");
   const quantita = document.getElementById("quantita");
   const feedback = document.getElementById("feedback");
-
-  
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();

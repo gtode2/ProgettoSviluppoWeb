@@ -75,9 +75,6 @@ async function createTables(){
         if (! await creaCarrello()) {
             corr=false
         }
-        if (! await creaReport()) {
-            corr=false
-        }
 
 
         if (!corr) {
@@ -115,11 +112,6 @@ async function checkTables(){
     if(!res_prod.rows[0].exists){
         await creaCarrello()
         console.log("Creata tabella carrello");
-    }
-    res_report = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='report')")
-    if(!res_prod.rows[0].exists){
-        await creaReport()
-        console.log("Creata tabella report");
     }
    
 }
@@ -163,6 +155,7 @@ async function creaProdotti() {
         return false
     }
 }
+<<<<<<< HEAD
 async function creaCarrello() {
     try {
         await pool.query("CREATE TABLE Carrello(uid INT NOT NULL, productid INT NOT NULL, quantita INT NOT NULL, PRIMARY KEY (uid, productid),FOREIGN KEY (uid) REFERENCES utenti(uid), FOREIGN KEY (productid) REFERENCES prodotti(id))")
@@ -173,17 +166,9 @@ async function creaCarrello() {
     }
 }
 
-async function creaReport() {
-    try {
-        await pool.query("CREATE TABLE report(id SERIAL PRIMARY KEY, uid INT NOT NULL, prodid INT NOT NULL, type VARCHAR NOT NULL, descr VARCHAR NOT NULL, solved BOOLEAN,FOREIGN KEY(uid) REFERENCES utenti(uid), FOREIGN KEY(prodid) REFERENCES prodotti(id))")
-        return true
-    } catch (error) {
-        console.log(error);
-        return false
-    }
-}
 
 
-
+=======
+>>>>>>> b2ff0cd (Aggiunta simulazione di pagamento nel carrello)
 
 module.exports={checkdb}

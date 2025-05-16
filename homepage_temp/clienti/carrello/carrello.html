@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Riepilogo d'acquisto</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="carrello.css" />
+</head>
+<body>
+  <div class="container my-5">
+    <h1 class="text-center mb-4">Riepilogo d'acquisto</h1>
+
+    <div id="riepilogo" class="mb-4">
+      <!-- I prodotti verranno inseriti qui -->
+    </div>
+
+    <div class="text-end fw-bold fs-5 mb-3">
+      Totale: <span id="totale">€0</span>
+    </div>
+
+    <div class="d-grid gap-2">
+      <button class="btn btn-success" id="proseguiPagamento">Procedi al pagamento</button>
+      <button class="btn btn-outline-danger" id="svuotaCarrello" onclick="remove()">Svuota carrello</button>
+    </div>
+  </div>
+
+  <script src="carrello.js"></script>
+</body>
+</html>
