@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 
 const { checkdb } = require("./Database&Server/dbmanager.js");
 const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Database&Server/userToken.js")
-const {addProduct, getProducts, addCart, getCart} = require("./Database&Server/products.js");
+const {addProduct, getProducts, addCart, getCart, emptyCart} = require("./Database&Server/products.js");
 const {db_name, db_user, db_port, db_pw} = require("./config.js")
 
 
@@ -359,9 +359,7 @@ async function main(params) {
                 res.status(500).json({})
             } else if (status === 0) {
                 res.status(200).json({res:"added"})
-            } else {
-                console.log(status);
-                
+            } else {        
                 res.status(200).json({res:status})
             }
         }
@@ -369,7 +367,47 @@ async function main(params) {
         
     })
     app.post("/getCart", async (req,res) => {
+        console.log("getCart");
         
+        const user = checkToken(req,res)
+        if (user!==-1) {
+              if (user.role!==1) {
+                res.status(401).json({error:"unauthorized"})
+                return
+            }
+            const response = await getCart(pool, user.id)
+            if (response!==-1) {
+                res.status(200).json({carrello:response})
+                console.log("AAA");
+                
+            }else{
+                res.status(500).json({})
+                console.log("BBB");
+                
+            }
+        }
+    })
+
+    app.post("/emptyCart", async (req,res) => {
+        console.log("emptyCart");
+        
+        const user = checkToken(req,res)
+        if (user!==-1) {
+              if (user.role!==1) {
+                res.status(401).json({error:"unauthorized"})
+                return
+            }
+            const response = await emptyCart(pool, user.id)
+            if (response===0) {
+                res.status(200).json({})
+                console.log("AAA");
+                
+            }else{
+                res.status(500).json({})
+                console.log("BBB");
+                
+            }
+        }
     })
     
 
@@ -381,13 +419,6 @@ async function main(params) {
 
 
 //FUNZIONI DI TEST TEMPORANEE
-    //pagina di test aggiunta prodotti
-    app.get("/TESTaddprod",(req,res)=>{
-        res.sendFile(path.join(__dirname,"./testPages/prova.html"))
-    }) 
-    app.get("/TESTusertype",(req,res)=>{
-        res.sendFile(path.join(__dirname,"./testPages/testusertype.html"))
-    }) 
     
     app.get("/test",(req,res)=>{
         res.sendFile(path.join(__dirname,"prova.html"))

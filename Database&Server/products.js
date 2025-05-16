@@ -20,7 +20,6 @@ async function addProduct(req, uid, pool) {
 
 async function getProducts(pool, filters=null){
     const res = await pool.query(`SELECT * FROM prodotti ORDER BY id DESC`)
-    console.log(res.rows);
     return res.rows
     
 }
@@ -72,8 +71,24 @@ async function increment(pool, prodid, uid) {
         
     }
 }
-async function getCart(){
-    
+async function getCart(pool, uid){
+    try {
+        const res = await pool.query(`SELECT * FROM carrello JOIN prodotti ON carrello.productid = prodotti.id WHERE uid = $1 `, [uid])
+        console.log(res.rows);
+        return res.rows
+    } catch (error) {
+        console.log(error);
+        return -1    
+    }
+}
+async function emptyCart(pool, uid){
+    try {
+        await pool.query(`DELETE FROM carrello WHERE uid = $1`, [uid])
+        return 0
+    } catch (error) {
+        console.log(error);
+        return -1    
+    }
 }
 
-module.exports = {addProduct, getProducts, addCart, getCart} 
+module.exports = {addProduct, getProducts, addCart, getCart, emptyCart} 

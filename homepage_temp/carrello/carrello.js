@@ -89,12 +89,60 @@ function add(id, name, price) {
   var prezzo = parseFloat(tot)+price
   totale.innerText = "€"+prezzo
 }
+async function remove(){
+  try {
+    const response = await fetch("http://localhost:3000/emptyCart", {
+      method:"POST",
+      headers: { "Content-Type": "application/json"},
+    })
+    if (response.ok) {
+      console.log("response ok");
+      
+      const riepilogo = document.getElementById("riepilogo");
+      const totale = document.getElementById("totale");  
+      riepilogo.innerHTML= ''
+      totale.innerText = "€0"      
+    }else{
+      //gestione errori
+    }
+  } catch (error) {
+    console.log(err);
+    alert("Errore di rete.");
+  }
+
+
+
+
+  
+
+}
 function increase(){}
 function decrease(){}
 
 // DOM: genera riepilogo dinamico
-document.addEventListener("DOMContentLoaded", () => {
-  const totale = document.getElementById("totale");
+document.addEventListener("DOMContentLoaded", async() => {
+  try {
+    const response = await fetch("http://localhost:3000/getCart", {
+      method:"POST",
+      headers: { "Content-Type": "application/json"},
+    })
+    const data = await response.json()
+    if (response.ok) {
+      console.log(data);
+      data.carrello.forEach(el => {
+      add(el.productid, el.name, el.costo)        
+      });
+      
+    }else{
+      //gestione errori
+    }
+  } catch (error) {
+    console.log(err);
+    alert("Errore di rete.");
+  }
+  
+  
+  //const totale = document.getElementById("totale");
   
   /*
   const carrello = new Carrello();
