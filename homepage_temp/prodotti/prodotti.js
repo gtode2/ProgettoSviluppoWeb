@@ -1,158 +1,97 @@
+// 🔁 Caricamento asincrono dei prodotti dal backend
 async function caricaProdotti() {
   try {
-    const res = await fetch("/getProducts",{
-            method: "POST",
-            headers: { "Content-Type": "application/json" }
-    })
-
-
-    const data = await res.json()
-    const container = document.querySelector(".row");
-    container.innerHTML = "";
-    
-    data.prodotti.forEach(el => {
-      console.log(el.name);
-      console.log(el);
-      
-      const col = document.createElement("div");
-      col.className = "col-md-4 mb-4";
-      
-
-      col.innerHTML = `
-      <div class="card text-center shadow-sm">
-        <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
-        <div class="card-body">
-          <h5 class="card-title">${el.name}</h5>
-          <p class="card-text">${el.descr}</p>
-          <p class="price text-success fw-bold">€${el.costo}</p>
-
-          <div class="d-flex justify-content-center gap-2 product-actions cliente">
-            <button class="btn btn-primary aggiungi-carrello" onclick="addToCart(${el.id},'${el.name}',${el.costo})" >Aggiungi al carrello</button>
-            <button class="btn btn-outline-primary">Rimuovi</button>
-          </div>
-
-          <div class="d-flex justify-content-center gap-2 product-actions artigiano">
-            <button class="btn btn-warning">Modifica</button>
-            <button class="btn btn-danger">Elimina</button>
-          </div>
-        </div>
-      </div>
-    `;
-    container.appendChild(col);
-
+    const res = await fetch("/getProducts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
     });
 
+    const data = await res.json();
+    const container = document.getElementById("lista-prodotti");
+    container.innerHTML = "";
+
+    data.prodotti.forEach(p => addProduct(p.nome, p.immagine, p.descrizione, p.prezzo, p.id));
   } catch (error) {
-    console.log(error);
-    
+    console.error("Errore nel caricamento prodotti:", error);
   }
 }
-function addProduct(name, image, descr, cost, id) {
-      var container = document.querySelector(".row");
-      var col = document.createElement("div");
-      col.className = "col-md-4 mb-4";
-      col.innerHTML = `
-      <div class="card text-center shadow-sm">
-        <img src="${image}" class="card-img-top" alt="${name}">
-        <div class="card-body">
-          <h5 class="card-title">${name}</h5>
-          <p class="card-text">${descr}</p>
-          <p class="price text-success fw-bold">€${cost}</p>
 
-          <div class="d-flex justify-content-center gap-2 product-actions cliente">
-            <button class="btn btn-primary aggiungi-carrello" onclick="addToCart(${id},'${name}',${cost})">Aggiungi al carrello</button>
-            <button class="btn btn-outline-primary">Rimuovi</button>
-          </div>
+// 🧱 Costruzione dinamica della card prodotto
+function addProduct(nome, immagine, descrizione, prezzo, id) {
+  const container = document.getElementById("lista-prodotti");
+  const col = document.createElement("div");
+  col.className = "col-md-4 mb-4";
 
-          <div class="d-flex justify-content-center gap-2 product-actions artigiano">
-            <button class="btn btn-warning">Modifica</button>
-            <button class="btn btn-danger">Elimina</button>
-          </div>
+  col.innerHTML = `
+    <div class="card text-center shadow-sm">
+      <img src="${immagine}" class="card-img-top" alt="${nome}">
+      <div class="card-body">
+        <h5 class="card-title">${nome}</h5>
+        <p class="card-text">${descrizione}</p>
+        <p class="price text-success fw-bold">€${prezzo}</p>
+        <input type="number" class="form-control quantita-input my-2" value="1" min="1" />
+
+        <div class="d-flex justify-content-center gap-2 product-actions cliente">
+          <button class="btn btn-primary aggiungi-carrello">Aggiungi al carrello</button>
+          <button class="btn btn-outline-primary">Rimuovi</button>
+        </div>
+
+        <div class="d-flex justify-content-center gap-2 product-actions artigiano">
+          <button class="btn btn-warning">Modifica</button>
+          <button class="btn btn-danger">Elimina</button>
         </div>
       </div>
-    `;
-    container.prepend(col);
+    </div>
+  `;
+  container.appendChild(col);
 }
-function addToCart(id, name, price){
-  const iframeWin = window.parent.document.getElementById("lat-iframe").contentWindow;
+
+// 📦 Comunicazione con iframe
+function addToCart(id, name, price) {
+  const iframeWin = window.parent.document.getElementById("lat-iframe")?.contentWindow;
+  if (iframeWin?.addToCart) {
     iframeWin.addToCart(id, name, price);
+  }
 }
+
+// 🛒 Carrello globale
+const carrello = [];
+
+// 🧠 Logica evento click su tutta la lista
+document.getElementById("lista-prodotti").addEventListener("click", (e) => {
+  if (e.target.classList.contains("aggiungi-carrello")) {
+    const card = e.target.closest(".card");
+    const nome = card.querySelector(".card-title").textContent;
+    const prezzo = parseFloat(card.querySelector(".price").textContent.replace("€", ""));
+    const quantità = parseInt(card.querySelector(".quantita-input").value) || 1;
+
+    aggiungiAlCarrello(nome, prezzo, quantità);
+  }
+});
+
+// ➕ Funzione gestione carrello
+function aggiungiAlCarrello(nome, prezzo, quantità) {
+  console.log(`Aggiunta al carrello: ${quantità} x ${nome} (€${prezzo})`);
+  const esistente = carrello.find(item => item.nome === nome);
+
+  if (esistente) {
+    esistente.quantità += quantità;
+  } else {
+    carrello.push({ nome, prezzo, quantità });
+  }
+
+  alert(`${quantità} x "${nome}" aggiunto al carrello!`);
+}
+
+// 🟢 Gestione visibilità ruoli
 document.addEventListener("DOMContentLoaded", () => {
-  
-  
-  caricaProdotti()
+  caricaProdotti();
 
-  const tipoUtente = document.body.dataset.utente; // "cliente" o "artigiano"
-
-  // Mostra/Nasconde pulsanti in base al tipo utente
+  const tipoUtente = document.body.dataset.utente;
   document.querySelectorAll(".cliente").forEach(el => {
     el.classList.toggle("hidden", tipoUtente !== "cliente");
   });
   document.querySelectorAll(".artigiano").forEach(el => {
     el.classList.toggle("hidden", tipoUtente !== "artigiano");
   });
-
-  /*const prodotti = [
-    {
-      nome: "Collana in rame",
-      descrizione: "Fatta a mano con tecnica wire wrapping",
-      prezzo: 45,
-      immagine: "img/prodotto1.jpg"
-    },
-    {
-      nome: "Bracciale in cuoio",
-      descrizione: "Lavorazione artigianale italiana",
-      prezzo: 30,
-      immagine: "img/prodotto2.jpg"
-    }
-  ];
-
-  const container = document.querySelector(".row");
-  container.innerHTML = ""; // Pulisce eventuali template statici
-
-  /*
-  prodotti.forEach(p => {
-    const col = document.createElement("div");
-    col.className = "col-md-4 mb-4";
-
-    col.innerHTML = `
-      <div class="card text-center shadow-sm">
-        <img src="${p.immagine}" class="card-img-top" alt="${p.nome}">
-        <div class="card-body">
-          <h5 class="card-title">${p.nome}</h5>
-          <p class="card-text">${p.descrizione}</p>
-          <p class="price text-success fw-bold">€${p.prezzo}</p>
-
-          <div class="d-flex justify-content-center gap-2 product-actions cliente">
-            <button class="btn btn-primary aggiungi-carrello">Aggiungi al carrello</button>
-            <button class="btn btn-outline-primary">Rimuovi</button>
-          </div>
-
-          <div class="d-flex justify-content-center gap-2 product-actions artigiano">
-            <button class="btn btn-warning">Modifica</button>
-            <button class="btn btn-danger">Elimina</button>
-          </div>
-        </div>
-      </div>
-    `;
-    container.appendChild(col);
-  });
-  */
-
-  
-
-
-  container.addEventListener("click", (e) => {
-    if (e.target.classList.contains("aggiungi-carrello")) {
-      const card = e.target.closest(".card");
-      const titolo = card.querySelector(".card-title").textContent;
-      const prezzo = parseFloat(card.querySelector(".price").textContent.replace("€", ""));
-      aggiungiAlCarrello(titolo, prezzo);
-    }
-  });
-
-  function aggiungiAlCarrello(nome, prezzo) {
-    console.log(`Prodotto aggiunto al carrello: ${nome} - €${prezzo}`);
-    // Implementazione futura
-  }
 });
