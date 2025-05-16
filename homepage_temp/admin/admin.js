@@ -70,3 +70,59 @@ function rimuoviSegnalazione(segId) {
     alert("Segnalazione non trovata.");
   }
 }
+document.addEventListener('DOMContentLoaded', function () {
+  const btnOpenOverlay = document.getElementById('btn-toggle-overlay');
+  const btnCloseOverlay = document.getElementById('btn-close-overlay');
+  const adminOverlay = document.getElementById('admin-overlay');
+
+  btnOpenOverlay.addEventListener('click', () => adminOverlay.classList.add('active'));
+  btnCloseOverlay.addEventListener('click', () => adminOverlay.classList.remove('active'));
+
+  const listaSegnalazioni = document.getElementById('lista-segnalazioni');
+
+  const segnalazioni = [
+    { id: 1, message: "Errore nel caricamento del prodotto", date: "2025-04-28", prodottoId: 101, utenteId: 201 },
+    { id: 2, message: "Richiesta di aggiornamento informazioni", date: "2025-04-30", prodottoId: 102, utenteId: 202 },
+    { id: 3, message: "Problema di visualizzazione su mobile", date: "2025-05-01", prodottoId: 103, utenteId: 203 }
+  ];
+
+  segnalazioni.forEach(seg => {
+    const li = document.createElement('li');
+    li.setAttribute('data-segid', seg.id);
+    li.innerHTML = `
+      <div><strong>Messaggio:</strong> ${seg.message}</div>
+      <div><strong>Data:</strong> ${seg.date}</div>
+      <div class="admin-actions mt-2">
+        <button class="btn btn-danger" onclick="rimuoviSegnalazione(${seg.id})">🗑 Rimuovi Segnalazione</button>
+        <button class="btn btn-outline-danger" onclick="rimuoviProdotto(${seg.prodottoId})">❌ Rimuovi Prodotto #${seg.prodottoId}</button>
+        <button class="btn btn-dark" onclick="bannaUtente(${seg.utenteId})">🚫 Banna Utente #${seg.utenteId}</button>
+      </div>`;
+    listaSegnalazioni.appendChild(li);
+  });
+});
+
+// Azioni rapide
+function generaReport() {
+  alert("Generazione report mensile...");
+}
+
+function verificaDatabase() {
+  alert("Verifica integrità del database...");
+}
+
+// Azioni per segnalazione
+function rimuoviSegnalazione(id) {
+  const el = document.querySelector(`li[data-segid="${id}"]`);
+  if (el) {
+    el.remove();
+    alert(`Segnalazione ${id} rimossa.`);
+  }
+}
+
+function rimuoviProdotto(id) {
+  alert(`Prodotto con ID ${id} rimosso dal database.`);
+}
+
+function bannaUtente(id) {
+  alert(`Utente con ID ${id} è stato bannato.`);
+}

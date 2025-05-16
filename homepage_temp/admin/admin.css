@@ -1,6 +1,7 @@
 .layout-container {
   display: flex;
   flex-direction: row;
+  flex-direction: row;
   height: 100vh;
 }
 
@@ -8,7 +9,10 @@
   flex: 2;
   background: linear-gradient(45deg, #f8f0e3, #e4d6c2);
   padding: 1rem;
+  background: linear-gradient(45deg, #f8f0e3, #e4d6c2);
+  padding: 1rem;
 }
+
 
 .view-prodotti iframe {
   width: 100%;
@@ -17,6 +21,9 @@
 }
 
 .admin-overlay {
+  flex: 1;
+  background-color: white;
+  border-left: 2px solid #ddd;
   flex: 1;
   background-color: white;
   border-left: 2px solid #ddd;
@@ -47,7 +54,17 @@
 
 .segnalazioni li {
   background-color: #f8f9fa;
+}
+
+.admin-header h1 {
+  font-weight: bold;
+  font-size: 1.8rem;
+}
+
+.segnalazioni li {
+  background-color: #f8f9fa;
   padding: 1rem;
+  border-radius: 0.5rem;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
   border-left: 4px solid #dc3545;
@@ -72,4 +89,10 @@
     border-left: none;
     border-top: 2px solid #ddd;
   }
+  border-left: 4px solid #dc3545;
+}
+
+.admin-actions .btn {
+  width: 100%;
+  margin-top: 0.3rem;
 }
