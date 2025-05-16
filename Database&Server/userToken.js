@@ -52,7 +52,6 @@ function verify(token) {
 async function renewToken(token, pool){
     //verifico esistenza token
     const query = `SELECT * FROM reftok WHERE token=$1`
-    token = token["token"]
     const values = [token]
     console.log(token);
     var res = null
@@ -102,6 +101,7 @@ async function registerToken(user, pool) {
 
     const accessToken = createAccessToken(user.rows[0])
     const refreshToken = createRefreshToken(user.rows[0])
+    
     console.log("creati token");
     
     //inserire refreshToken in db
