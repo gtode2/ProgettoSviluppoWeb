@@ -7,10 +7,10 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 
 
-const { checkdb } = require("./Database&Server/dbmanager.js");
-const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Database&Server/userToken.js")
-const {addProduct, getProducts, addCart, getCart, emptyCart} = require("./Database&Server/products.js");
-const {addReport, getReports} = require("./Database&Server/reports.js");
+const { checkdb } = require("./Backend/dbmanager.js");
+const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
+const {addProduct, getProducts, addCart, getCart, emptyCart} = require("./Backend/products.js");
+const {addReport, getReports} = require("./Backend/reports.js");
 const {db_name, db_user, db_port, db_pw} = require("./config.js")
 
 
@@ -25,11 +25,11 @@ async function main(params) {
     app.use(express.static(path.join(__dirname, "login")));
     app.use(express.static(path.join(__dirname, "registrazione")));
     app.use(express.static(path.join(__dirname, "homepage")));
-    app.use(express.static(path.join(__dirname, "homepage_temp/unlogged")));
-    app.use(express.static(path.join(__dirname, "homepage_temp/artigiano")));
-    app.use(express.static(path.join(__dirname, "homepage_temp/clienti")));
-    app.use(express.static(path.join(__dirname, "homepage_temp/tokencheck")));
-    app.use(express.static(path.join(__dirname, "homepage_temp")));
+    app.use(express.static(path.join(__dirname, "Frontend/unlogged")));
+    app.use(express.static(path.join(__dirname, "Frontend/artigiano")));
+    app.use(express.static(path.join(__dirname, "Frontend/clienti")));
+    app.use(express.static(path.join(__dirname, "Frontend/tokencheck")));
+    app.use(express.static(path.join(__dirname, "Frontend")));
 
 
     app.use(cookieParser());
@@ -73,7 +73,7 @@ async function main(params) {
             const token = req.cookies.accessToken;
             if (!token) {
             console.log("no token");
-            res.sendFile(path.join(__dirname,"homepage_temp/unlogged","unlogged.html"))
+            res.sendFile(path.join(__dirname,"Frontend/unlogged","unlogged.html"))
         }else{
             console.log(token);
             
@@ -82,16 +82,16 @@ async function main(params) {
                 switch (user.role) {
                     case 1:
                         
-                        res.sendFile(path.join(__dirname,"homepage_temp/clienti","clienti.html"))
+                        res.sendFile(path.join(__dirname,"Frontend/clienti","clienti.html"))
                         break;
                     case 2:
-                        res.sendFile(path.join(__dirname,"homepage_temp","/artigiano/artigiano.html"))
+                        res.sendFile(path.join(__dirname,"Frontend","/artigiano/artigiano.html"))
                         break;
                     case 0:
-                        res.sendFile(path.join(__dirname,"homepage_temp/admin","admin.html"))
+                        res.sendFile(path.join(__dirname,"Frontend/admin","admin.html"))
                         break;
                     default:
-                        res.sendFile(path.join(__dirname,"homepage_temp/unlogged","unlogged.html"))
+                        res.sendFile(path.join(__dirname,"Frontend/unlogged","unlogged.html"))
                         break;
                 }
             }
