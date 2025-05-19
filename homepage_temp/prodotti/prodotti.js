@@ -4,10 +4,41 @@ async function caricaProdotti() {
             method: "POST",
             headers: { "Content-Type": "application/json" }
     })
-
-
     const data = await res.json()
-    const container = document.querySelector(".row");
+    
+    load(data)
+
+  } catch (error) {
+    console.log(error);
+    alert("Errore di rete")
+  }
+}
+async function cerca(){
+  //estrarre dato da searchbar
+  const txt = document.getElementById("searchbar").value.trim()
+  if (!txt) {
+    console.log("vuoto");
+  }else{
+    console.log(txt);  
+  }
+  try {
+    const res = await fetch("/search",{
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({string:txt})
+    })
+    const data = await res.json()
+    load(data)
+  } catch (error) {
+    console.log(error);
+    alert("Errore di rete")
+  }
+  
+}
+
+
+function load(data) {
+  const container = document.querySelector(".row");
     container.innerHTML = "";
     const usertype = data.usertype
     console.log("usertype = "+usertype);
@@ -57,18 +88,14 @@ async function caricaProdotti() {
       
       //unlogged
     }
-    
     container.appendChild(col);
-
-    });
-
-  } catch (error) {
-    console.log(error);
-    
-  }
+  });
 }
+
+
+
 //aggiornare add product a nuovo sistema di rappresentazione prodotti
-function addProduct(name, image, descr, cost, id) {
+function addProduct(name, immagine, descr, costo, id) {
       var container = document.querySelector(".row");
       var col = document.createElement("div");
       col.className = "col-md-4 mb-4";

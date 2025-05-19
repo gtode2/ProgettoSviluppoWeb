@@ -469,6 +469,17 @@ async function main(params) {
         //chiamata funzione reporst/getReports        
     })
 
+    app.post("/search", async (req,res) => {
+        user = await checkToken(req,res,false)
+        if (user!==-1) {
+            if (user.role!==2) {
+                //ipotetica gestione produttore (se non gestiti da funzione)
+                res.status(200).json({AAA:"AAAA"})
+                return
+            }
+        }
+        //gestione utenti / unlogged / admin
+    })
 
 
 
