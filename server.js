@@ -22,8 +22,6 @@ async function main(params) {
     const port = 3000;
 
 
-    app.use(express.static(path.join(__dirname, "login")));
-    app.use(express.static(path.join(__dirname, "registrazione")));
     app.use(express.static(path.join(__dirname, "homepage")));
     app.use(express.static(path.join(__dirname, "Frontend/unlogged")));
     app.use(express.static(path.join(__dirname, "Frontend/artigiano")));
@@ -110,7 +108,7 @@ async function main(params) {
     //REGISTRAZIONE
 
     app.get("/registrazione",(req,res)=>{
-        res.sendFile(path.join(__dirname,"registrazione","registrazione.html"))
+        res.sendFile(path.join(__dirname,"Frontend","registrazione/registrazione.html"))
     })
     // Endpoint registrazione
     app.post("/registrazione", async (req, res) => {
@@ -178,7 +176,7 @@ async function main(params) {
         }
     });
     app.get("/RegAct",async(req,res)=>{
-        res.sendFile(path.join(__dirname,"registrazione", "regact.html"))
+        res.sendFile(path.join(__dirname,"Frontend", "registrazione/regact.html"))
     })
     app.post("/RegAct",async(req,res)=>{
         const user =checkToken(req,res) 
@@ -215,7 +213,7 @@ async function main(params) {
     //LOGIN
 
     app.get("/login",(req,res)=>{
-        res.sendFile(path.join(__dirname,"login","login.html"))
+        res.sendFile(path.join(__dirname,"Frontend","login/login.html"))
     })
     app.post("/login", async(req,res)=>{  
         console.log("iniziata sequenza login");
