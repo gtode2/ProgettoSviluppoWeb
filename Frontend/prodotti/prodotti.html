@@ -12,11 +12,20 @@
   <link rel="stylesheet" href="prodotti.css" />
 </head>
 <body data-utente="cliente"> <!-- Cambia a "artigiano" per vedere pulsanti admin -->
-
+  <nav class="navbar navbar-light bg-light">
+    <div class="mx-auto">
+      <form class="form-inline">
+      <input class="fform-control me-2 flex-grow-1" type="search" placeholder="Search" aria-label="Search" id="searchbar">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="cerca()">Search</button>
+    </form>
+    </div>
+  </nav>
   <!-- Sfondo con iframe -->
-  <iframe class="background-frame" src="../../HomePage/HomePage.html" title="Sfondo HomePage"></iframe>
+  <iframe class="background-frame" src="../HomePage/HomePage.html" title="Sfondo HomePage"></iframe>
 
+  
   <!-- Contenitore prodotti -->
+  
   <div class="container my-5 position-relative" style="z-index: 1;">
     <h1 class="text-center mb-4">Prodotti disponibili</h1>
     <div class="row justify-content-center" id="lista-prodotti">
