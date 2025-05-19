@@ -129,7 +129,7 @@ async function checkTables(){
 
 async function creaUtenti(){
     try {
-        await pool.query("CREATE TABLE utenti(uid SERIAL PRIMARY KEY ,nome VARCHAR NOT NULL,cognome VARCHAR NOT NULL,username VARCHAR NOT NULL,email VARCHAR NOT NULL,ntel BIGINT NOT NULL,password VARCHAR NOT NULL,usertype INT NOT NULL)")
+        await pool.query("CREATE TABLE utenti(uid SERIAL PRIMARY KEY ,nome VARCHAR NOT NULL,cognome VARCHAR NOT NULL,username VARCHAR NOT NULL,email VARCHAR NOT NULL,ntel BIGINT NOT NULL,password VARCHAR NOT NULL,usertype INT NOT NULL, banned BOOLEAN NOT NUL DEFAULT FALSE)")
         return true
     } catch (error) {
         console.log(error);        
@@ -156,7 +156,7 @@ async function creaRefTok(){
 }
 async function creaProdotti() {
     try {
-        await pool.query("CREATE TABLE Prodotti(id SERIAL PRIMARY KEY,actid INT NOT NULL,name VARCHAR NOT NULL, descr VARCHAR NOT NULL, costo FLOAT NOT NULL, amm INT NOT NULL, FOREIGN KEY (actid) REFERENCES attivita(actid))")
+        await pool.query("CREATE TABLE Prodotti(id SERIAL PRIMARY KEY,actid INT NOT NULL,name VARCHAR NOT NULL, descr VARCHAR NOT NULL, costo FLOAT NOT NULL, amm INT NOT NULL, banned BOOLEAN NOT NULL DEFAULT FALSE, FOREIGN KEY (actid) REFERENCES attivita(actid))")
         return true
     } catch (error) {
         console.log(error);

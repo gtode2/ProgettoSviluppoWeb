@@ -10,13 +10,13 @@ const cookieParser = require('cookie-parser');
 const { checkdb } = require("./Backend/dbmanager.js");
 const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
 const {addProduct, getProducts, addCart, getCart, emptyCart} = require("./Backend/products.js");
-const {addReport, getReports} = require("./Backend/reports.js");
+const {addReport, getReports, removeReport, removeReportedProduct} = require("./Backend/reports.js");
 const {db_name, db_user, db_port, db_pw} = require("./config.js")
 
 
 
 
-async function main(params) {
+async function main() {
     
     const app = express();
     const port = 3000;
@@ -145,7 +145,7 @@ async function main(params) {
                     return 1
                 }
             }
-            const values = [name, surname, username, email, phone, hashedPassword, type()];     
+            const values = [name, surname, username, email, phone, hashedPassword, type(), false];     
             const user = await pool.query(query, values);
 
             console.log("user in database");
@@ -465,6 +465,62 @@ async function main(params) {
             }
         }
         //chiamata funzione reporst/getReports        
+    })
+    app.post("/closeReport", async (req,res) => {
+        const user = checkToken(req,res)
+        if (user===-1) {
+            console.log("wrong token");
+            return
+        }
+        if (user.role!==0) {
+            console.log("wrong usertype");
+            res.status(401).json({error:"unauthorized"})
+            return
+        }
+        const {id}=req.body
+        if (!id) {
+            res.status(400).json({})
+            console.log("missing id");
+            
+            return
+        }
+
+        const result = await removeReport(pool, id)    
+        if (result===0) {
+            res.status(200).json({})
+            console.log("report chiuso correttamente");
+            
+        }else{
+            res.status(500).json({})
+        }
+    })
+
+
+    app.post("/removeProduct", async (req,res) => {
+        const user = checkToken(req,res)
+        if (user===-1) {
+            console.log("wrong token");
+            return
+        }
+        if (user.role!==0) {
+            console.log("wrong usertype");
+            res.status(401).json({error:"unauthorized"})
+            return
+        }
+        const {id}=req.body
+        if (!id) {
+            res.status(400).json({})
+            console.log("missing id");
+            return
+        }
+        const result = await removeReportedProduct(pool,id)    
+        if (result===0) {
+            res.status(200).json({})
+            console.log("prodotto rimosso correttamente");
+        }else{
+            res.status(500).json({})
+        }
+        
     })
 
     app.post("/search", async (req,res) => {

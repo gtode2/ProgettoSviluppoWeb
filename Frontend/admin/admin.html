@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Area Admin</title>
   <link rel="stylesheet" href="artigiano.css" />
+   <link rel="stylesheet" href="report.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
@@ -26,15 +27,13 @@
       <!-- ❌ Bottone chiusura (solo mobile) -->
       <button id="btn-close-overlay" class="btn-close-overlay">✖</button>
 
-      <header class="admin-header">
-        <h1>Benvenuto, Admin</h1>
-      </header>
+      
 
       <!-- 📋 Lista prodotti caricata via DOM -->
       <section class="prodotti-artigiano">
-        <h2>Nuovi report</h2>
+        
         <div id="lista-report" class="lista-report">
-          <iframe src="./admin/report/report.html" frameborder="0" style="width: 100%; height: 500px;"></iframe>
+          <iframe src="./admin/report/report.html" frameborder="0" style="width: 100%; height: 92vh;"></iframe>
         </div>
       </section>
 

@@ -11,12 +11,34 @@ document.addEventListener("DOMContentLoaded", async()=>{
                 alert("Credenziali errate")
             }else{
                 data.reports.forEach(e => {
+                    const type = (e)=>{
+                        switch (e.type) {
+                            case "NA":
+                                return "Nome artigiano"
+                            case "NP":
+                                return "Nome prodotto"
+                            case "IP":
+                                return "Immagine prodotto"
+                            case "DP":
+                                return "Descrizione prodotto"
+                            default:
+                                return "Errore sconosciuto"
+                        }
+                    }
                     const riepilogo = document.getElementById("lista-report"); 
                     const riga = document.createElement("div");
-                    riga.className = "d-flex justify-content-between align-items-center border-bottom py-2";
+                    riga.className = "justify-content-between align-items-center border-bottom py-2";
+                    riga.id = "reportblock"+e.id
                     riga.innerHTML = `
-                      <div><strong>${e.prodid}</strong></div>
-                    `;
+                        <div><strong>Errore in:</strong> ${type(e)}</div>
+                        <div><strong>Descrizione:</strong> ${e.descr}</div>
+                        <div><strong>Fatta da:</strong> ${e.username}</div>
+                        <div class="admin-actions mt-2">
+                          <button class="btn btn-danger" onclick="removeReport(${e.id})">🗑 Rimuovi Segnalazione</button>
+                          <button class="btn btn-outline-danger" onclick="openProd(${e.prodid})">🔎 Visualizza Prodotto</button>
+                          <button class="btn btn-outline-danger" onclick="removeProd(${e.id})">❌ Rimuovi Prodotto </button>
+                          <button class="btn btn-dark" onclick="userBan(${e.prodid})">🚫 Banna Artigiano</button>
+                        </div>`;
                     riepilogo.appendChild(riga);
                 });
                 
@@ -25,7 +47,49 @@ document.addEventListener("DOMContentLoaded", async()=>{
             console.log(err);
             alert("Errore di rete.");
         }
-
-
-    
 })
+
+
+async function removeReport(id) {
+    try {
+        const response = await fetch("/closeReport", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },            
+        body: JSON.stringify({id:id})
+        })
+        const data = await response.json()
+        console.log("AAAAA");
+        
+        if (!response.ok) {
+            //gestione response 
+        }else{
+          const riepilogo = document.getElementById("lista-report"); 
+          riepilogo.removeChild(document.getElementById("reportblock"+id))
+        }
+    } catch (err) {
+        console.log(err);
+        alert("Errore di rete.");
+    }
+}
+async function removeProd(id) {
+    try {
+        const response = await fetch("/removeProduct", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },            
+        body: JSON.stringify({id:id})
+        })
+        const data = await response.json()
+        console.log("AAAAA");
+        
+        if (!response.ok) {
+            //gestione response 
+        }else{
+        //deve aprire una schermata per richiedere la conferma del ban del prodotto
+          const riepilogo = document.getElementById("lista-report"); 
+          riepilogo.removeChild(document.getElementById("reportblock"+id))
+        }
+    } catch (err) {
+        console.log(err);
+        alert("Errore di rete.");
+    }
+}

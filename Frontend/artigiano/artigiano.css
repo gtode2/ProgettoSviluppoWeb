@@ -5,6 +5,7 @@
   padding: 0;
 }
 body {
+  overflow: hidden;
   font-family: Arial, sans-serif;
   line-height: 1.6;
 }
@@ -41,7 +42,8 @@ body {
   height: 100vh;
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(4px);
-  padding: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
   overflow-y: auto;
   z-index: 1000;
   transform: translateX(100%);

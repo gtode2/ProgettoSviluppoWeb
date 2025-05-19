@@ -27,7 +27,7 @@
   flex: 1;
   background-color: white;
   border-left: 2px solid #ddd;
-  padding: 2rem;
+  padding-left: 2rem;
   overflow-y: auto;
 }
 
@@ -89,7 +89,6 @@
     border-left: none;
     border-top: 2px solid #ddd;
   }
-
 }
 
 .admin-actions .btn {
