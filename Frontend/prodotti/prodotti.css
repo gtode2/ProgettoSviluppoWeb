@@ -25,3 +25,52 @@
 .hidden {
   display: none !important;
 }
+
+/* Nasconde scrollbar per fullscreen */
+#lista-prodotti::-webkit-scrollbar {
+  display: none;
+}
+#lista-prodotti {
+  -ms-overflow-style: none;  /* IE e Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* === Modalità Card === */
+.row.justify-content-center .card {
+  height: 100%;
+}
+
+/* === Modalità Lista === */
+.col-12 .card {
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.col-12 .card img {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* === Modalità Fullscreen === */
+#lista-prodotti.d-flex {
+  height: 100vh;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+.flex-shrink-0 .card {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  scroll-snap-align: start;
+  padding: 2rem;
+}
+.flex-shrink-0 .card img {
+  max-height: 50vh;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}

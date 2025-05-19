@@ -18,6 +18,11 @@
       <input class="fform-control me-2 flex-grow-1" type="search" placeholder="Search" aria-label="Search" id="searchbar">
       <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="cerca()">Search</button>
     </form>
+    <div class="text-center my-3" id="view-buttons">
+        <button class="btn btn-outline-primary me-2" onclick="setViewMode('card')">Card</button>
+        <button class="btn btn-outline-secondary me-2" onclick="setViewMode('list')">Lista</button>
+        <button class="btn btn-outline-dark" onclick="setViewMode('fullscreen')">Fullscreen</button>
+    </div>
     </div>
   </nav>
   <!-- Sfondo con iframe -->
@@ -38,5 +43,8 @@
 
   <!-- Script custom -->
   <script src="prodotti.js"></script>
+  
+  <!-- Script che gestisce modale filtri -->
+  <script src="filtro/filtro.js"></script>
 </body>
 </html>

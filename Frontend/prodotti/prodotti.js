@@ -210,3 +210,86 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   */
 });
+//Implementazione della componente di filtro
+
+let currentView = "card"; // Default
+
+function setViewMode(mode) {
+  currentView = mode;
+  renderProducts(lastLoadedProducts); // Rende dinamico il layout
+}
+
+function cerca() {
+  const query = document.getElementById("searchbar").value.trim().toLowerCase();
+  if (!query) return;
+
+  currentView = "list"; // 👈 Imposta modalità lista per ricerca
+
+  const filtered = lastLoadedProducts.filter(p =>
+    p.nome.toLowerCase().includes(query) || 
+    p.descrizione.toLowerCase().includes(query)
+  );
+
+  renderProducts(filtered);
+}
+
+let lastLoadedProducts = [];
+
+function renderProducts(data) {
+  const container = document.getElementById("lista-prodotti");
+  container.innerHTML = "";
+
+  if (currentView === "fullscreen") {
+    container.className = "d-flex overflow-auto flex-row gap-4 px-4";
+    container.style.scrollSnapType = "x mandatory";
+  } else {
+    container.className = "row justify-content-center";
+    container.style = "";
+  }
+
+  data.forEach(p => {
+    let card = document.createElement("div");
+    let layoutClass = "";
+
+    if (currentView === "card") {
+      layoutClass = "col-md-4 mb-4";
+    } else if (currentView === "list") {
+      layoutClass = "col-12 mb-3";
+    } else if (currentView === "fullscreen") {
+      layoutClass = "flex-shrink-0";
+      card.style.minWidth = "100vw";
+      card.style.scrollSnapAlign = "start";
+    }
+
+    card.className = layoutClass;
+
+    card.innerHTML = `
+      <div class="card h-100 shadow-sm">
+        <img src="${p.immagine}" class="card-img-top" alt="${p.nome}">
+        <div class="card-body">
+          <h5 class="card-title">${p.nome}</h5>
+          <p class="card-text">${p.descrizione}</p>
+          <p class="price text-success fw-bold">€${p.prezzo}</p>
+          <button class="btn btn-primary" onclick="addToCart(${p.id}, '${p.nome}', ${p.prezzo})">Aggiungi al carrello</button>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+// Al caricamento iniziale
+/*async function caricaProdotti() {
+  try {
+    const res = await fetch("/getProducts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+    const data = await res.json();
+    lastLoadedProducts = data.prodotti;
+    renderProducts(data.prodotti);
+  } catch (err) {
+    console.error(err);
+  }
+}*/
