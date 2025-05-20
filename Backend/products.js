@@ -18,8 +18,13 @@ async function addProduct(req, uid, pool) {
     
 }
 
-async function getProducts(pool, filters=null){
-    const res = await pool.query(`SELECT * FROM prodotti WHERE banned = FALSE ORDER BY id DESC`)
+async function getProducts(pool, filters=null, id=null){
+    var res=null
+    if (id!==null) {
+        res = await pool.query(`SELECT * FROM prodotti WHERE id = $1`, [id]) 
+    }else{
+        res = await pool.query(`SELECT * FROM prodotti WHERE banned = FALSE ORDER BY id DESC`)    
+    }
     return res.rows
     
 }

@@ -24,6 +24,7 @@ async function main() {
 
     app.use(express.static(path.join(__dirname, "homepage")));
     app.use(express.static(path.join(__dirname, "Frontend/unlogged")));
+    app.use(express.static(path.join(__dirname, "Frontend/admin")));
     app.use(express.static(path.join(__dirname, "Frontend/artigiano")));
     app.use(express.static(path.join(__dirname, "Frontend/clienti")));
     app.use(express.static(path.join(__dirname, "Frontend/tokencheck")));
@@ -80,16 +81,16 @@ async function main() {
                 switch (user.role) {
                     case 1:
                         
-                        res.sendFile(path.join(__dirname,"Frontend/clienti","clienti.html"))
+                        res.sendFile(path.join(__dirname,"Frontend","/clienti/clienti.html"))
                         break;
                     case 2:
                         res.sendFile(path.join(__dirname,"Frontend","/artigiano/artigiano.html"))
                         break;
                     case 0:
-                        res.sendFile(path.join(__dirname,"Frontend/admin","admin.html"))
+                        res.sendFile(path.join(__dirname,"Frontend","/admin/admin.html"))
                         break;
                     default:
-                        res.sendFile(path.join(__dirname,"Frontend/unlogged","unlogged.html"))
+                        res.sendFile(path.join(__dirname,"Frontend","/unlogged/unlogged.html"))
                         break;
                 }
             }
@@ -339,7 +340,18 @@ async function main() {
     app.post("/getProducts", async(req,res)=>{
         console.log("Get products");
         const user = await checkToken(req,res, false)
-        const prod =await getProducts(pool)
+        const {id} = req.body
+        var prod = null
+        if (!id) {
+            console.log("richiesta prodotti");
+            
+            //richiesta prodotti
+            prod = await getProducts(pool) 
+        }else{
+            console.log("richiesta prodotto specifico");
+            //richiesta prodotto specifico
+            prod = await getProducts(pool, null, id)
+        }
         console.log(user);
         
         if (user!==-1) {

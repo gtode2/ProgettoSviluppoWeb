@@ -71,8 +71,11 @@ async function removeReport(id) {
     }
 }
 function removeProd(id) {
-    window.parent.document.getElementById("reportFrame").src="./admin/report/banProdotto.html?id="+id
+    window.parent.document.getElementById("lat-iframe").src="./admin/report/banProdotto.html?id="+id
+}
+function openProd(id){
+    window.parent.openProduct(id)
 }
 function banArtigiano(id) {
-    window.parent.document.getElementById("reportFrame").src="./admin/report/banArtigiano.html?id="+id
+    window.parent.document.getElementById("lat-iframe").src="./admin/report/banArtigiano.html?id="+id
 }

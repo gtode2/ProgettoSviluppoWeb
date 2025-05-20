@@ -1,3 +1,6 @@
+.card-body{
+  cursor: pointer;
+}
 /* Sfondo iframe */
 .background-frame {
   position: fixed;

@@ -48,19 +48,19 @@ function load(data) {
       console.log(el);
       
       const col = document.createElement("div");
-      col.className = "col-md-4 mb-4";
-      
+      col.className = "col-md-4 mb-5 mt-5";
+      //PT per gestire responsive
       
       col.innerHTML = `
       <div class="card text-center shadow-sm">
         <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
-        <div class="card-body">
+        <div class="card-body" onclick="openProduct(${el.id})">
           <h5 class="card-title">${el.name}</h5>
           <p class="card-text">${el.descr}</p>
           <p class="price text-success fw-bold">€${el.costo}</p>`;
     if (usertype===1) {
       col.innerHTML=col.innerHTML+`
-      <div class="d-flex justify-content-center gap-2 product-actions cliente">
+      <div class="d-flex justify-content-center gap-2 product-actions cliente" style="padding-bottom:50px">
             <button class="btn btn-primary aggiungi-carrello" onclick="addToCart(${el.id},'${el.name}',${el.costo})" >Aggiungi al carrello</button>
             <button class="btn btn-outline-primary">Rimuovi</button>
             <button class="btn btn-outline-primary" onclick="report(${el.id})">Segnala</button>
@@ -203,6 +203,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+
+
+
+
+
+
+
   /*
   function aggiungiAlCarrello(nome, prezzo) {
     console.log(`Prodotto aggiunto al carrello: ${nome} - €${prezzo}`);
@@ -218,8 +225,6 @@ function setViewMode(mode) {
   currentView = mode;
   renderProducts(lastLoadedProducts); // Rende dinamico il layout
 }
-
-
 
 /*
 function cerca() {
@@ -296,3 +301,8 @@ function renderProducts(data) {
     console.error(err);
   }
 }*/
+
+function openProduct(id) {
+  console.log(id);
+  window.parent.openProduct(id)  
+}
