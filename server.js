@@ -146,7 +146,7 @@ async function main() {
                     return 1
                 }
             }
-            const values = [name, surname, username, email, phone, hashedPassword, type(), false];     
+            const values = [name, surname, username, email, phone, hashedPassword, type()];     
             const user = await pool.query(query, values);
 
             console.log("user in database");
