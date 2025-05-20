@@ -9,7 +9,7 @@ var pool = new Pool({
     port:db_port    
 })
 
-const nomeDb = "dbprogetto"
+const nomeDb = "carmelo"
 
 async function checkdb()  {
     try {
@@ -129,7 +129,7 @@ async function checkTables(){
 
 async function creaUtenti(){
     try {
-        await pool.query("CREATE TABLE utenti(uid SERIAL PRIMARY KEY ,nome VARCHAR NOT NULL,cognome VARCHAR NOT NULL,username VARCHAR NOT NULL,email VARCHAR NOT NULL,ntel BIGINT NOT NULL,password VARCHAR NOT NULL,usertype INT NOT NULL, banned BOOLEAN NOT NUL DEFAULT FALSE)")
+        await pool.query("CREATE TABLE utenti(uid SERIAL PRIMARY KEY ,nome VARCHAR NOT NULL,cognome VARCHAR NOT NULL,username VARCHAR NOT NULL,email VARCHAR NOT NULL,ntel BIGINT NOT NULL,password VARCHAR NOT NULL,usertype INT NOT NULL, banned BOOLEAN NOT NULL DEFAULT FALSE)")
         return true
     } catch (error) {
         console.log(error);        

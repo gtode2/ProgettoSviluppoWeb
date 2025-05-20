@@ -85,11 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }else{
                 console.log(data.access);
-            
-                localStorage.setItem('accessToken', data.accessToken)
-                console.log("access token impostato correttamente");
-                localStorage.setItem('refreshToken', data.refreshToken)
-                console.log("refresh token impostato correttamente");
                 if (data.redirect) {
                     window.location.href = data.redirect
                 }else{

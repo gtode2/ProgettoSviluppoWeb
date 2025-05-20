@@ -158,18 +158,36 @@ async function main() {
             console.log("altro token")
             console.log(tokens["refresh"]);
             if (user_type=="artigiano") {
-                res.status(200).json({
+                res.status(200)
+                .cookie('accessToken', tokens["access"],{
+                    httpOnly:true,
+                    secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
+                    sameSite:'Strict',
+                    maxAge: 50 * 60 * 1000 //50 minuti
+                })
+                .cookie('refreshToken', tokens["refresh"],{
+                    httpOnly:true,
+                    secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
+                    sameSite:'Strict',
+                    maxAge:7 * 24 * 60 * 60 * 1000 //7 giorni
+                }).json({
                     redirect: '/regAct',
-                    accessToken: tokens["access"],
-                    refreshToken: tokens["refresh"]
-
                 })
             }
             else{
-                res.status(200).json({
-                    accessToken: tokens["access"],
-                    refreshToken: tokens["refresh"]
+                res.status(200)
+                .cookie('accessToken', tokens["access"],{
+                    httpOnly:true,
+                    secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
+                    sameSite:'Strict',
+                    maxAge: 50 * 60 * 1000 //50 minuti
                 })
+                .cookie('refreshToken', tokens["refresh"],{
+                    httpOnly:true,
+                    secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
+                    sameSite:'Strict',
+                    maxAge:7 * 24 * 60 * 60 * 1000 //7 giorni
+                }).json({})
             }
         } catch (err) {
             console.error("Errore durante la registrazione:", err);

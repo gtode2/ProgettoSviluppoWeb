@@ -55,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Se tutto è valido, prepara i dati
         const formData = {
-            token: localStorage.getItem('accessToken'),
             name: document.getElementById("name").value,
             email: document.getElementById("email").value,
             phone: document.getElementById("num").value,
