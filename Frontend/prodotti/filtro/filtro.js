@@ -17,7 +17,7 @@ function creaBottoneFiltro() {
 }
 
 function caricaModaleFiltri() {
-  fetch("filtri.html")
+  fetch("/prodotti/filtro/filtro.html")
     .then(res => res.text())
     .then(html => {
       document.body.insertAdjacentHTML("beforeend", html);

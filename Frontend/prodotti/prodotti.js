@@ -219,6 +219,9 @@ function setViewMode(mode) {
   renderProducts(lastLoadedProducts); // Rende dinamico il layout
 }
 
+
+
+/*
 function cerca() {
   const query = document.getElementById("searchbar").value.trim().toLowerCase();
   if (!query) return;
@@ -232,8 +235,8 @@ function cerca() {
 
   renderProducts(filtered);
 }
+*/
 
-let lastLoadedProducts = [];
 
 function renderProducts(data) {
   const container = document.getElementById("lista-prodotti");

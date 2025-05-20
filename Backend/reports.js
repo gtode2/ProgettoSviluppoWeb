@@ -51,5 +51,36 @@ async function removeReportedProduct(pool, id) {
         return -1
     }
 }
+async function banArtigiano(pool, id) {
+    try {
+        await pool.query(`BEGIN`) 
+        await pool.query(`UPDATE report SET solved=true WHERE id=$1`,[id])
+        const res = await pool.query(`
+            SELECT attivita.actid FROM report 
+            JOIN prodotti ON report.prodid=prodotti.id
+            JOIN attivita ON prodotti.actid = attivita.actid
+            WHERE report.id=$1`, [id]) //ottengo id utente (che corrisponde a id attività)
+        const user = res.rows[0].actid
+        console.log(user);
+        
+        await pool.query(`UPDATE utenti SET banned=TRUE WHERE uid=$1`,[user])
+        await pool.query(`
+            UPDATE report SET solved=true FROM prodotti, attivita, utenti 
+            WHERE report.prodid= prodotti.id
+            AND prodotti.actid = attivita.actid
+            AND attivita.actid = utenti.uid
+            AND utenti.uid = $1`,[user])
+        //ban di tutti i prodotti di utente 
+        await pool.query(`UPDATE prodotti SET banned=true WHERE actid=$1`, [user])
+        await pool.query(`COMMIT`)
+        return 0
+    } catch (error) {
+        await pool.query(`ROLLBACK`)
+        console.log(error);
+        console.log("esecuzione rollback");
+        
+        return -1
+    }
+}
 
-module.exports = {addReport, getReports, removeReport, removeReportedProduct}
+module.exports = {addReport, getReports, removeReport, removeReportedProduct, banArtigiano}

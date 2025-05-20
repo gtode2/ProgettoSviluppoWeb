@@ -37,11 +37,10 @@ document.addEventListener("DOMContentLoaded", async()=>{
                           <button class="btn btn-danger" onclick="removeReport(${e.id})">🗑 Rimuovi Segnalazione</button>
                           <button class="btn btn-outline-danger" onclick="openProd(${e.prodid})">🔎 Visualizza Prodotto</button>
                           <button class="btn btn-outline-danger" onclick="removeProd(${e.id})">❌ Rimuovi Prodotto </button>
-                          <button class="btn btn-dark" onclick="userBan(${e.prodid})">🚫 Banna Artigiano</button>
+                          <button class="btn btn-dark" onclick="banArtigiano(${e.id})">🚫 Banna Artigiano</button>
                         </div>`;
                     riepilogo.appendChild(riga);
                 });
-                
             }
         } catch (err) {
             console.log(err);
@@ -71,25 +70,9 @@ async function removeReport(id) {
         alert("Errore di rete.");
     }
 }
-async function removeProd(id) {
-    try {
-        const response = await fetch("/removeProduct", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },            
-        body: JSON.stringify({id:id})
-        })
-        const data = await response.json()
-        console.log("AAAAA");
-        
-        if (!response.ok) {
-            //gestione response 
-        }else{
-        //deve aprire una schermata per richiedere la conferma del ban del prodotto
-          const riepilogo = document.getElementById("lista-report"); 
-          riepilogo.removeChild(document.getElementById("reportblock"+id))
-        }
-    } catch (err) {
-        console.log(err);
-        alert("Errore di rete.");
-    }
+function removeProd(id) {
+    window.parent.document.getElementById("reportFrame").src="./admin/report/banProdotto.html?id="+id
+}
+function banArtigiano(id) {
+    window.parent.document.getElementById("reportFrame").src="./admin/report/banArtigiano.html?id="+id
 }

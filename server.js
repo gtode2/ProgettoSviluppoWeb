@@ -10,7 +10,7 @@ const cookieParser = require('cookie-parser');
 const { checkdb } = require("./Backend/dbmanager.js");
 const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
 const {addProduct, getProducts, addCart, getCart, emptyCart} = require("./Backend/products.js");
-const {addReport, getReports, removeReport, removeReportedProduct} = require("./Backend/reports.js");
+const {addReport, getReports, removeReport, removeReportedProduct, banArtigiano} = require("./Backend/reports.js");
 const {db_name, db_user, db_port, db_pw} = require("./config.js")
 
 
@@ -496,7 +496,7 @@ async function main() {
     })
 
 
-    app.post("/removeProduct", async (req,res) => {
+    app.post("/ban", async (req,res) => {
         const user = checkToken(req,res)
         if (user===-1) {
             console.log("wrong token");
@@ -507,18 +507,30 @@ async function main() {
             res.status(401).json({error:"unauthorized"})
             return
         }
-        const {id}=req.body
-        if (!id) {
+        const {id, type}=req.body
+        if (!id && !type) {
             res.status(400).json({})
-            console.log("missing id");
+            console.log("missing info");
             return
         }
-        const result = await removeReportedProduct(pool,id)    
-        if (result===0) {
-            res.status(200).json({})
-            console.log("prodotto rimosso correttamente");
+
+        if (type===0) {    
+            const result = await removeReportedProduct(pool,id)    
+            if (result===0) {
+                res.status(200).json({})
+                console.log("prodotto rimosso correttamente");
+            }else{
+                res.status(500).json({})
+            }
         }else{
-            res.status(500).json({})
+            const result = await banArtigiano(pool,id)    
+            if (result===0) {
+                res.status(200).json({})
+                console.log("prodotto rimosso correttamente");
+            }else{
+                res.status(500).json({})
+            }
+            //ban artigiano
         }
         
     })
