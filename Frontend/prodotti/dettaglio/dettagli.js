@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async() => {
 
     if (!response.ok) {
       //gestione errore
-    }else{
+    }else{      
       mostraDettaglioProdotto(data.prodotti[0]);
     }
   } catch (err) {

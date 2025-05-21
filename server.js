@@ -267,7 +267,7 @@ async function main() {
                     secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
                     sameSite:'Strict',
                     maxAge:7 * 24 * 60 * 60 * 1000 //7 giorni
-                }).json({usertyoe:user.role})
+                }).json({usertype:user.role})
             
         }else{
             res.status(401).json({error:"Credenziali non valide"})
@@ -355,28 +355,64 @@ async function main() {
             }
         }
     })
-    app.post("/getProducts", async(req,res)=>{
+
+
+    app.post("/getProducts", async(req,res)=>{     
         console.log("Get products");
-        const user = await checkToken(req,res, false)
+        var {filters} = req.body  
+        user = await checkToken(req,res,false)
         const {id} = req.body
-        var prod = null
+
+
         if (!id) {
             console.log("richiesta prodotti");
+            if (user!==-1 && user.role===2) {
+                if (!filters) {
+                    var filters = {}
+                }
+                filters.produttore = user.id
+            }
+            if (!filters) {
+                var result = await getProducts(pool)    
+            }else{
+                var result = await getProducts(pool, filters)
+            }
+
+            //verifica quantità risultati
             
-            //richiesta prodotti
-            prod = await getProducts(pool) 
+            if (result.length===0) {
+                console.log("nessun risultato trovato");
+                res.status(200).json({prodotti:0})
+            }else{
+                console.log(result);
+                if (user!==-1) {
+                    res.status(200).json({prodotti:result, usertype:user.role})
+                }else{
+                    res.status(200).json({prodotti:result, usertype:3})
+                }
+            }
         }else{
+            console.log("richiesta prodotto specifico");
+            //richiesta prodotto specifico
+            var result  = await getProducts(pool, null, id)
+            if (user!==-1) {
+               res.status(200).json({prodotti:result, usertype:user.role})
+            }else{
+                res.status(200).json({prodotti:result, usertype:3})
+            }
+        
+        }
+        /*
+        
+        else{
             console.log("richiesta prodotto specifico");
             //richiesta prodotto specifico
             prod = await getProducts(pool, null, id)
         }
         console.log(user);
         
-        if (user!==-1) {
-            res.status(200).json({prodotti:prod, usertype:user.role})
-        }else{
-            res.status(200).json({prodotti:prod, usertype:3})
-        }
+        
+        */
     })
     
     
@@ -564,19 +600,6 @@ async function main() {
         }
         
     })
-
-    app.post("/search", async (req,res) => {
-        user = await checkToken(req,res,false)
-        if (user!==-1) {
-            if (user.role!==2) {
-                //ipotetica gestione produttore (se non gestiti da funzione)
-                res.status(200).json({AAA:"AAAA"})
-                return
-            }
-        }
-        //gestione utenti / unlogged / admin
-    })
-
 
 
 

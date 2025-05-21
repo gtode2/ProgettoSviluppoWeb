@@ -1,39 +1,53 @@
-async function caricaProdotti() {
-  try {
-    const res = await fetch("/getProducts",{
-            method: "POST",
-            headers: { "Content-Type": "application/json" }
-    })
-    const data = await res.json()
-    
-    load(data)
-
-  } catch (error) {
-    console.log(error);
-    alert("Errore di rete")
-  }
-}
 async function cerca(){
-  //estrarre dato da searchbar
   const txt = document.getElementById("searchbar").value.trim()
+  var filters = getfilters()
+  console.log(filters);
   if (!txt) {
     console.log("vuoto");
   }else{
-    console.log(txt);  
+    console.log(txt);
+    filters.search = txt
   }
+  loadFromServer(filters)
+}
+
+async function addFilters(params) {
+  //funzione per ottenere filtri da filtro.js
+    filters = null
+  
+  
+}
+
+async function loadFromServer(filters=null) {
   try {
-    const res = await fetch("/search",{
+    if (filters!==null) {
+      console.log("ricerca con filtri");
+      
+      var res = await fetch("/getProducts",{
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({string:txt})
+      body:JSON.stringify({filters:filters})
     })
-    const data = await res.json()
-    load(data)
-  } catch (error) {
-    console.log(error);
-    alert("Errore di rete")
+  }else{
+    console.log("no filtri");
+    
+    var res = await fetch("/getProducts",{
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    })
   }
-  
+  const data = await res.json()
+    if (data.prodotti===0) {
+      //gestione mancanza prodotti
+      console.log("no prodotti");
+      
+    }else{
+      load(data)
+    }
+  } catch (error) {
+   console.log(error);
+  alert("Errore di rete")    
+  }
 }
 
 
@@ -130,9 +144,7 @@ function report(id){
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  
-  
-  caricaProdotti()
+  loadFromServer()
 
   const tipoUtente = document.body.dataset.utente; // "cliente" o "artigiano"
 

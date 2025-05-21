@@ -19,9 +19,68 @@ async function addProduct(req, uid, pool) {
 }
 
 async function getProducts(pool, filters=null, id=null){
+        
     var res=null
     if (id!==null) {
         res = await pool.query(`SELECT * FROM prodotti WHERE id = $1`, [id]) 
+    }else if (filters!==null) {
+        console.log("FILTRI = "+filters);
+        
+        var query = `SELECT * FROM prodotti WHERE banned = FALSE `
+        //array contenente parametri
+
+        var values = []
+        //ricerca
+        if (filters.search) {
+            query = query + "AND name ILIKE $"+(values.length+1)+" OR descr ILIKE $"+(values.length+1)
+            values.push("%"+filters.search+"%")
+            console.log(query);
+            console.log(values)
+        }
+
+        //prezzo minimo
+        if (filters.min) {
+            query = query + " AND costo >= $"+(values.length+1)
+            values.push(filters.min)
+            console.log(query);
+            console.log(values)
+        }
+
+        //prezzo massimo
+        if (filters.max) {
+            query = query + " AND costo <= $"+(values.length+1)
+            values.push(filters.max)
+            console.log(query);
+            console.log(values)
+        }
+
+        //categoria
+        if (filters.cat) {
+            query = query + " AND cat =$"+(values.length+1)
+            values.push(filters.cat)   
+            console.log(query);
+            console.log(values)         
+        }
+
+        //produttore
+        if (filters.produttore) {
+            query = query + " AND actid = $"+(values.length+1)
+            values.push(filters.produttore)
+            console.log(query);
+            console.log(values)
+        }
+        //ordine
+        if (!filters.order) {
+            //order id desc default 
+            query = query + " ORDER BY id DESC"
+        }else{
+            //gestione ordine
+        }
+        console.log(query);
+        console.log(values)
+        res = await pool.query(query, values)
+        console.log(res);
+        
     }else{
         res = await pool.query(`SELECT * FROM prodotti WHERE banned = FALSE ORDER BY id DESC`)    
     }
