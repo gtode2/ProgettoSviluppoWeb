@@ -11,13 +11,6 @@ async function cerca(){
   loadFromServer(filters)
 }
 
-async function addFilters(params) {
-  //funzione per ottenere filtri da filtro.js
-    filters = null
-  
-  
-}
-
 async function loadFromServer(filters=null) {
   try {
     if (filters!==null) {

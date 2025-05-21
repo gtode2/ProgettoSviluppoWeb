@@ -1,5 +1,4 @@
 
-
 async function addProduct(req, uid, pool) {   
     const query = `
         INSERT INTO prodotti(actid, name, descr, costo, amm)

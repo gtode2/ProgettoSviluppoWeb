@@ -3,9 +3,31 @@
 
 
 let applica = false
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async() => {
   const modalEl = document.getElementById('modalFiltri');
   const closebtn = document.getElementById("apply")
+
+  //caricamento produttori
+  try {
+    const res = await fetch("/artigiani",{
+      method: "POST",
+      headers: { "Content-Type": "application/json" }})
+    const data = await res.json()
+    if (data!==0) {
+      const block = document.getElementById("produttori")
+      data.art.forEach(el => {
+        const option = document.createElement("option")
+        option.value = el.actid
+        option.textContent = el.nome
+        block.appendChild(option)
+      });
+    }else{
+      //rimuovere selezione
+    }
+  } catch (error) {
+    console.log(error);
+    
+  }
 
   closebtn.addEventListener("click", () => {
       applica = true

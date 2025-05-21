@@ -602,6 +602,25 @@ async function main() {
     })
 
 
+    app.post("/artigiani", async(req,res)=>{
+        console.log("richiesta artigiani");
+        
+        user = checkToken(req,res,false)
+        if (user!==-1 && user.role===2) {
+            res.status(200).send({art:0})
+            console.log("utente artigiano");
+            
+        }
+        try {
+            response = await pool.query("SELECT actid, nome FROM attivita")
+            res.status(200).json({art:response.rows})
+            console.log(response.rows);
+            
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({})
+        }
+    })
 
 
 //FUNZIONI DI TEST TEMPORANEE
