@@ -35,15 +35,4 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = "http://localhost:3000/registrazione";
         });
     }
-
-    // Riguardo al tuo commento:
-    // "//rimuovere parametro event e preventDefault una volta rimosso il form"
-    // Se i pulsanti "login" e "register" NON sono più dentro un tag <form> nell'HTML,
-    // allora event.preventDefault() non sarà più strettamente necessario per impedire
-    // l'invio del form. Potresti rimuoverlo in quel caso.
-    // Tuttavia, mantenerlo non causa problemi.
-    // Un'alternativa sarebbe specificare type="button" sui tuoi bottoni HTML:
-    // <button id="login" type="button">Accedi</button>
-    // In quel caso, event.preventDefault() non sarebbe necessario anche se fossero in un form,
-    // perché un button di tipo "button" non invia il form di default.
 });

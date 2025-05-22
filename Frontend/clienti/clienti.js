@@ -9,28 +9,23 @@ function loadCart(id) {
     document.getElementById('lat-iframe').src = '../carrello/carrello.html';
   }
 
-/*
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("acquistoForm");
-  const quantita = document.getElementById("quantita");
-  const feedback = document.getElementById("feedback");
+document.addEventListener('DOMContentLoaded', function() {
+  // Seleziona gli elementi
+  const toggleOverlayButton = document.getElementById('btn-toggle-overlay');
+  const artigianoOverlay = document.getElementById('cliente-overlay');
+  const closeOverlayButton = document.getElementById('btn-close-cliente-overlay');
 
-  
+  // Gestione apertura overlay
+  if (toggleOverlayButton) {
+    toggleOverlayButton.addEventListener('click', function() {
+      artigianoOverlay.classList.add('visible');
+    });
+  }
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const valore = parseInt(quantita.value.trim());
-
-    if (isNaN(valore) || valore <= 0) {
-      feedback.textContent = "❌ Inserisci una quantità valida (maggiore di 0).";
-      feedback.className = "text-danger mt-2";
-      return;
-    }
-
-    feedback.textContent = `✅ Acquisto confermato! Quantità: ${valore}`;
-    feedback.className = "text-success mt-2";
-    form.reset();
-  });
+  // Gestione chiusura overlay
+  if (closeOverlayButton) {
+    closeOverlayButton.addEventListener('click', function() {
+      artigianoOverlay.classList.remove('visible');
+    });
+  }
 });
-*/

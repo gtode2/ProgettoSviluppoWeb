@@ -106,3 +106,22 @@ button[type="reset"] {
     border-top: 1px solid #ccc;
   }
 }
+.cliente-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  padding: 2rem;
+  overflow-y: auto;
+  z-index: 1000;
+  transform: translateX(100%); /* Overlay nascosto */
+  transition: transform 0.3s ease-in-out;
+}
+
+.cliente-overlay.visible {
+  transform: translateX(0); /* Overlay mostrato */
+}
+
