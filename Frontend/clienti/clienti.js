@@ -9,6 +9,7 @@ function loadCart(id) {
     document.getElementById('lat-iframe').src = '../carrello/carrello.html';
   }
 
+/*
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("acquistoForm");
   const quantita = document.getElementById("quantita");
@@ -32,3 +33,4 @@ document.addEventListener("DOMContentLoaded", () => {
     form.reset();
   });
 });
+*/

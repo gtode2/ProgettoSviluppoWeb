@@ -296,7 +296,7 @@ async function main() {
     })
     app.post('/logout', async (req, res) => {
         console.log("logout");
-        const { token } = req.body;
+        const token = req.cookies.refreshToken
                 //disabilitazione token
         const query = `UPDATE reftok SET revoked = true WHERE token=$1`
         const values = [token]
@@ -309,7 +309,8 @@ async function main() {
         }
         console.log("logout effettuato");
         
-        res.clearCookie('accessToken', {
+        res.status(200)
+        .clearCookie('accessToken', {
             httpOnly: true,
           secure: false,      // oppure true, in base a come era stato impostato
             sameSite: 'Strict', // deve corrispondere alle opzioni originali
@@ -318,7 +319,7 @@ async function main() {
             httpOnly: true,
           secure: false,      // oppure true, in base a come era stato impostato
             sameSite: 'Strict', // deve corrispondere alle opzioni originali
-        });
+        }).json({});
         
         
     });
@@ -622,9 +623,37 @@ async function main() {
         }
     })
 
+    app.post("/userArea", async(req,res)=>{        
+        const user = checkToken(req,res)
+        if (user.role===2) {
+            console.log("artigiano");
+            try {
+                response = await pool.query(`SELECT utenti.nome AS unome, utenti.cognome AS ucognome, utenti.username, utenti.email AS umail, utenti.ntel AS untel, attivita.nome AS anome, attivita.indirizzo, attivita.email AS amail, attivita.ntel AS antel, attivita.descr  FROM utenti JOIN attivita ON utenti.uid=attivita.actid WHERE uid = $1`, [user.uid])
+                //gestire richiesta acquisti
+                res.status(200).json({user:response.rows})
+            } catch (error) {
+                console.log(error);
+                res.status(500).json({})
+            }
+        }else{
+            console.log("cliente");
+            try {
+                response = await pool.query(`SELECT nome, cognome, username, email, ntel FROM utenti WHERE uid = $1`, [user.uid])
+                //gestire richiesta acquisti
+                res.status(200).json({user:response.rows})
+            } catch (error) {
+                console.log(error);
+                res.status(500).json({})
+            }
+        }
+        
+    })
+    
 
 //FUNZIONI DI TEST TEMPORANEE
-    
+    app.get("/userArea", (req,res)=>{
+        res.sendFile(path.join(__dirname,"Frontend/userArea/userArea.html"))
+    })
     app.get("/test",(req,res)=>{
         res.sendFile(path.join(__dirname,"prova.html"))
     })

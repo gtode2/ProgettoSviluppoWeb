@@ -1,3 +1,39 @@
+document.addEventListener("DOMContentLoaded", async () => {
+  console.log("LOAD");
+  const logout = document.getElementById("logout")
+  try {
+    const response = await fetch("/userArea", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    })
+    const data = await response.json()
+    
+    if (!response.ok) {
+        window.location.href = "http://localhost:3000/"
+    }else{
+      //inserimento elementi
+    }
+  } catch (err) {
+      console.log(err);
+      alert("Errore di rete.");
+  }  
+  logout.addEventListener("click", async ()=>{
+    try {
+      const response = await fetch("/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      })
+      const data = await response.json()
+      window.location.href = "http://localhost:3000/"
+    } catch (error) {
+      window.location.href = "http://localhost:3000/"
+    }
+  })  
+})
+
+
+
+/*
 const express = require('express');
 const router = express.Router();
 const dbManager = require('./dbManager'); // verificare che il path sia corretto
@@ -36,3 +72,5 @@ router.get('/log', async (req, res) => {
 });
 
 module.exports = router;
+
+*/
