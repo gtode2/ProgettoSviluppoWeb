@@ -39,12 +39,35 @@ document.addEventListener("DOMContentLoaded", async () => {
   salva.addEventListener("click", async ()=>{
     console.log("salva");
     //eseguire controlli validità informazioni inserite
+    var values = {}
+    if (document.getElementById("nome")) {
+      values.nome = document.getElementById("nome").value
+    }
+    if (document.getElementById("cognome")) {
+      values.cognome = document.getElementById("cognome").value
+    }
+    if (document.getElementById("username")) {
+      values.username = document.getElementById("username").value
+    }
+    if (document.getElementById("email")) {
+      values.email = document.getElementById("email").value
+    }
+    if (document.getElementById("telefono")) {
+      values.ntel = document.getElementById("telefono").value
+    }
     try {
       const response = await fetch("/updateUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body:JSON.stringify(values)
       })
-      window.location.href = "http://localhost:3000/"
+      if (response.ok) {
+        window.location.href = "http://localhost:3000/userArea"
+      }else{
+        //gestione errori
+        console.log(response.status);
+        
+      }
     } catch (error) {
       window.location.href = "http://localhost:3000/"
     }

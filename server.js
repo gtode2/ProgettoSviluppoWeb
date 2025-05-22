@@ -656,7 +656,72 @@ async function main() {
     })
 
     app.post("/updateUser", async (req,res) => {
+        const {nome, cognome, username, email, ntel} = req.body
+        const user = checkToken(req,res)
+        if (user===-1) {
+            return
+        }
+        //gestione dati generici (nome, cognome, username, email, numero telefono)
+        var query = `UPDATE utenti SET `
+        var values = []
+
+        if(nome){
+            query += ` nome = $`+(values.length+1)
+            values.push(nome)
+        }
+        if (cognome) {
+            if (values.length!==0) {
+                query += ` , `
+            }
+            query += ` cognome = $`+(values.length+1)
+            values.push(cognome)
+        }
+        if (username) {
+            if (values.length!==0) {
+                query += ' , '
+            }
+            query += ` username = $`+(values.length+1)
+            values.push(username)
+        }
+        if (email) {
+            if (values.length!==0) {
+                query += ' , '
+            }
+            query += ` email = $`+(values.length+1)
+            values.push(email)
+        }
+        if (ntel) {
+            if (values.length!==0) {
+                query += ' , '
+            }
+            query += ` ntel = $`+(values.length+1)
+            values.push(ntel)
+        }
+
+        if (user===2) {
+            //gestione update dati artigiano
+        }
+
+        query = query + ` WHERE uid = $`+(values.length+1)
+        values.push(user.id)
+        try {
+            if (values.length<2) {
+                res.status(400).json({})
+                return
+            }
+            console.log(query);
+            console.log(values);
+            
+            const result = await pool.query(query, values)
+            res.status(200).json({})
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({})
+        }
         
+        
+
+
     })
     
 
