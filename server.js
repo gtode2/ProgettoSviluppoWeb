@@ -24,6 +24,7 @@ async function main() {
 
     app.use(express.static(path.join(__dirname, "homepage")));
     app.use(express.static(path.join(__dirname, "Frontend/unlogged")));
+    app.use(express.static(path.join(__dirname, "Frontend/registrazione")));
     app.use(express.static(path.join(__dirname, "Frontend/admin")));
     app.use(express.static(path.join(__dirname, "Frontend/artigiano")));
     app.use(express.static(path.join(__dirname, "Frontend/clienti")));
@@ -628,24 +629,33 @@ async function main() {
         if (user.role===2) {
             console.log("artigiano");
             try {
-                response = await pool.query(`SELECT utenti.nome AS unome, utenti.cognome AS ucognome, utenti.username, utenti.email AS umail, utenti.ntel AS untel, attivita.nome AS anome, attivita.indirizzo, attivita.email AS amail, attivita.ntel AS antel, attivita.descr  FROM utenti JOIN attivita ON utenti.uid=attivita.actid WHERE uid = $1`, [user.uid])
+                const response = await pool.query(`SELECT utenti.nome AS unome, utenti.cognome AS ucognome, utenti.username, utenti.email AS umail, utenti.ntel AS untel, attivita.nome AS anome, attivita.indirizzo, attivita.email AS amail, attivita.ntel AS antel, attivita.descr  FROM utenti JOIN attivita ON utenti.uid=attivita.actid WHERE uid = $1`, [user.uid])
                 //gestire richiesta acquisti
-                res.status(200).json({user:response.rows})
+                
+                res.status(200).json({user:response.rows[0]})
             } catch (error) {
                 console.log(error);
                 res.status(500).json({})
             }
         }else{
             console.log("cliente");
-            try {
-                response = await pool.query(`SELECT nome, cognome, username, email, ntel FROM utenti WHERE uid = $1`, [user.uid])
+            try {                
+                console.log("ID = "+user.id);
+                
+                const response = await pool.query(`SELECT nome, cognome, username, email, ntel FROM utenti WHERE uid = $1`, [user.id])
                 //gestire richiesta acquisti
-                res.status(200).json({user:response.rows})
+                res.status(200).json({user:response.rows[0]})
+                console.log(response);
+                
             } catch (error) {
                 console.log(error);
                 res.status(500).json({})
             }
         }
+        
+    })
+
+    app.post("/updateUser", async (req,res) => {
         
     })
     

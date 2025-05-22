@@ -1,7 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const token = localStorage.getItem('accessToken');
-    console.log(token); // dovrebbe stampare il valore se tutto è andato bene
-
     
     const form = document.querySelector("form");
     const prevmail = document.getElementById("prevmail")

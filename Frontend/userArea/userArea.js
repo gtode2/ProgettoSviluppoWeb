@@ -1,29 +1,61 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("LOAD");
   const logout = document.getElementById("logout")
+  const annulla = document.getElementById("annulla")
+  const salva = document.getElementById("salva")
+
+  var data
+
   try {
     const response = await fetch("/userArea", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     })
-    const data = await response.json()
+    data = await response.json()
+    console.log(data.user);
+    
     
     if (!response.ok) {
         window.location.href = "http://localhost:3000/"
     }else{
-      //inserimento elementi
+      document.getElementById("nome").placeholder = data.user.nome
+      document.getElementById("cognome").placeholder= data.user.cognome
+      document.getElementById("username").placeholder= data.user.username
+      document.getElementById("email").placeholder= data.user.email
+      document.getElementById("telefono").placeholder= data.user.ntel
+
     }
   } catch (err) {
       console.log(err);
       alert("Errore di rete.");
   }  
+  annulla.addEventListener("click", ()=>{
+    document.getElementById("nome").value = ""
+    document.getElementById("cognome").value = ""
+    document.getElementById("username").value = ""
+    document.getElementById("email").value = ""
+    document.getElementById("telefono").value = ""
+    
+  })
+  salva.addEventListener("click", async ()=>{
+    console.log("salva");
+    //eseguire controlli validità informazioni inserite
+    try {
+      const response = await fetch("/updateUser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      })
+      window.location.href = "http://localhost:3000/"
+    } catch (error) {
+      window.location.href = "http://localhost:3000/"
+    }
+  })
+  
   logout.addEventListener("click", async ()=>{
     try {
       const response = await fetch("/logout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       })
-      const data = await response.json()
       window.location.href = "http://localhost:3000/"
     } catch (error) {
       window.location.href = "http://localhost:3000/"
