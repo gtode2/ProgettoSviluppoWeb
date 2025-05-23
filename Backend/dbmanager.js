@@ -201,17 +201,7 @@ async function creaReport() {
 
 async function creaOrdini() {
     try {
-        await pool.query("CREATE TABLE ordini (id SERIAL PRIMARY KEY, uid INT NOT NULL, products JSONB NOT NULL, pending BOOLEAN DEFAULT TRUE, sent BOOLEAN DEFAULT FALSE, created TIMESTAMP NOT NULL, FOREIGN KEY (uid) REFERENCES utenti(uid))")
-        return true
-    } catch (error) {
-        console.log(error);
-        return false
-    }
-}
-
-async function creaPending() {
-    try {
-        await pool.query("CREATE TABLE incorso(id SERIAL PRIMARY KEY, orderid INT NOT NULL, expires_at TIMESTAMP NOT NULL, FOREIGN KEY (orderid) REFERENCES ordini(id))")
+        await pool.query("CREATE TABLE ordini (id SERIAL PRIMARY KEY, uid INT NOT NULL, products JSONB NOT NULL, sent BOOLEAN DEFAULT FALSE, created TIMESTAMP NOT NULL, expires_at TIMESTAMP, FOREIGN KEY (uid) REFERENCES utenti(uid))")
         return true
     } catch (error) {
         console.log(error);

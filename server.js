@@ -64,6 +64,31 @@ async function main() {
             process.exit(0)
         }
     }
+    cron.schedule('* * * * *', async() => {
+        console.log("Controllo ordini scaduti...");
+        try {
+            await pool.query("BEGIN")
+            const pending = await pool.query("SELECT id, expires_at, products FROM ordini WHERE expires_at<NOW()")
+            console.log(pending.rows);
+            
+            for(const el of pending.rows){
+                //rimuovo da db
+                await pool.query("DELETE FROM ordini WHERE id=$1",[el.id])
+                console.log("ordine rimosso");
+                //aggiungo elementi a prodotti
+                const prodotti = el.products
+                for (const [id, qt] of Object.entries(prodotti)) {
+                    await pool.query(`UPDATE prodotti set amm=amm+$1 WHERE id=$2`,[qt, id])
+                    console.log("reinseriti prodotti "+id);  
+                }
+            }
+            await pool.query("COMMIT")
+        } catch (error) {
+            await pool.query("ROLLBACK")
+            console.log(error);
+        }
+        console.log("procedura completata");
+    });
 
     /////////////////////////////////////////////////////////////////////////
     //HOMEPAGE
@@ -744,6 +769,9 @@ async function main() {
             console.log(products.rows);
             var ord = {}
         
+            if (products.rowCount===0) {
+                res.status(401).json({})
+            }
             for (const el of products.rows) {
                 var qt = await pool.query(`SELECT amm FROM prodotti WHERE id=$1`, [el.productid])
                 console.log("\nprodotto: "+el.productid);
@@ -767,12 +795,11 @@ async function main() {
             console.log("prodotti verificati e bloccati");
             console.log(ord);
             //aggiungi ordine
-            await pool.query(`INSERT INTO ordini(uid, products, created) VALUES ($1,$2,NOW())`, [user.id, ord])
+            const exp = new Date(Date.now()+15*60*1000)
+            await pool.query(`INSERT INTO ordini(uid, products, created, expires_at) VALUES ($1,$2,NOW(), $3)`, [user.id, ord, exp])
+            await pool.query(`DELETE FROM carrello WHERE uid=$1`, [user.id])
             //invia pagina
             res.status(200).json({})
-
-            
-            
             await pool.query(`COMMIT`)
         } catch (error) {
             await pool.query(`ROLLBACK`)
@@ -784,7 +811,7 @@ async function main() {
 
     })
     app.get("/checkout", (req,res)=>{
-        res.sendFile(path.join(__dirname,"/checkout/checkout.html"))
+        res.sendFile(path.join(__dirname,"Frontend","/checkout/checkout.html"))
     })
 
 //FUNZIONI DI TEST TEMPORANEE

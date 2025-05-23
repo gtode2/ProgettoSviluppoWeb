@@ -191,7 +191,7 @@ async function checkout(){
     })
     const data = await response.json()
     if (response.ok) {
-      window.location.href = "/checkout";
+      parent.window.location.href = "/checkout";
     }else{
       //gestione errori
     }
