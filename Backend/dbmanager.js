@@ -9,7 +9,7 @@ var pool = new Pool({
     port:db_port    
 })
 
-const nomeDb = "carmelo"
+const nomeDb = "dbprogetto"
 
 async function checkdb()  {
     try {
@@ -78,6 +78,12 @@ async function createTables(){
         if (! await creaReport()) {
             corr=false
         }
+        if (! await creaOrdini()) {
+            corr=false
+        }
+        if (! await creaPending()) {
+            corr=false
+        }
 
 
         if (!corr) {
@@ -120,6 +126,16 @@ async function checkTables(){
     if(!res_prod.rows[0].exists){
         await creaReport()
         console.log("Creata tabella report");
+    }
+    res_ordini = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='ordini')")
+    if(!res_prod.rows[0].exists){
+        await creaOrdini()
+        console.log("Creata tabella ordini");
+    }
+    res_pending = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='pending')")
+    if(!res_prod.rows[0].exists){
+        await creaPending()
+        console.log("Creata tabella pending");
     }
    
 }
@@ -176,6 +192,26 @@ async function creaCarrello() {
 async function creaReport() {
     try {
         await pool.query("CREATE TABLE report(id SERIAL PRIMARY KEY, uid INT NOT NULL, prodid INT NOT NULL, type VARCHAR NOT NULL, descr VARCHAR NOT NULL, solved BOOLEAN,FOREIGN KEY(uid) REFERENCES utenti(uid), FOREIGN KEY(prodid) REFERENCES prodotti(id))")
+        return true
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
+async function creaOrdini() {
+    try {
+        await pool.query("CREATE TABLE ordini (id SERIAL PRIMARY KEY, uid INT NOT NULL, products JSONB NOT NULL, pending BOOLEAN DEFAULT TRUE, sent BOOLEAN DEFAULT FALSE, created TIMESTAMP NOT NULL, FOREIGN KEY (uid) REFERENCES utenti(uid))")
+        return true
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
+async function creaPending() {
+    try {
+        await pool.query("CREATE TABLE incorso(id SERIAL PRIMARY KEY, orderid INT NOT NULL, expires_at TIMESTAMP NOT NULL, FOREIGN KEY (orderid) REFERENCES ordini(id))")
         return true
     } catch (error) {
         console.log(error);

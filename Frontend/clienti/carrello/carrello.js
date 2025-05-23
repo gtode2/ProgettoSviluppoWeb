@@ -179,6 +179,24 @@ document.addEventListener("DOMContentLoaded", async() => {
     }
   });
   */
-  
-  
 });
+
+async function checkout(){
+  console.log("checkout");
+  
+  try {
+    const response = await fetch("http://localhost:3000/checkout", {
+      method:"POST",
+      headers: { "Content-Type": "application/json"},
+    })
+    const data = await response.json()
+    if (response.ok) {
+      window.location.href = "/checkout";
+    }else{
+      //gestione errori
+    }
+  } catch (error) {
+    console.log(error);
+    alert("Errore di rete.");
+  }
+}

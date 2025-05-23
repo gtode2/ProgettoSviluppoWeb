@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const { Pool } = require("pg");
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const cron = require('node-cron');
 
 
 const { checkdb } = require("./Backend/dbmanager.js");
@@ -724,6 +725,67 @@ async function main() {
 
     })
     
+    app.post("/checkout", async(req,res)=>{
+        //verifica utente
+        user = checkToken(req,res)
+        if (user===-1) {
+            return
+        }
+        if (user.role !== 1) {
+            res.status(400).json({})
+            return
+        }
+        
+        try {
+            await pool.query(`BEGIN`)
+
+            //verifica quantità prodotti richiesti    
+            const products = await pool.query(`SELECT * FROM carrello WHERE uid=$1`, [user.id])
+            console.log(products.rows);
+            var ord = {}
+        
+            for (const el of products.rows) {
+                var qt = await pool.query(`SELECT amm FROM prodotti WHERE id=$1`, [el.productid])
+                console.log("\nprodotto: "+el.productid);
+                
+                console.log("disponibile = "+qt.rows[0].amm);
+                console.log("richiesta = "+el.quantita);
+                
+                if (qt.rows[0].amm<el.quantita) {
+                    console.log("troppo pochi")
+                    await pool.query(`ROLLBACK`)
+                    res.status(409).json({error:"prodotti non sufficienti"})
+                    return
+                }else{
+                    //riduci quantità
+                    await pool.query(`UPDATE prodotti SET amm=$1 WHERE id=$2`, [(qt.rows[0].amm-el.quantita), el.productid])
+                    console.log(`qtità corretta \n ${qt.rows[0].amm-el.quantita} rimanente`);
+                    ord[el.productid]= el.quantita
+                }
+            }
+            
+            console.log("prodotti verificati e bloccati");
+            console.log(ord);
+            //aggiungi ordine
+            await pool.query(`INSERT INTO ordini(uid, products, created) VALUES ($1,$2,NOW())`, [user.id, ord])
+            //invia pagina
+            res.status(200).json({})
+
+            
+            
+            await pool.query(`COMMIT`)
+        } catch (error) {
+            await pool.query(`ROLLBACK`)
+            console.log(error);
+            
+            res.status(500).json({})
+        }
+        
+
+    })
+    app.get("/checkout", (req,res)=>{
+        res.sendFile(path.join(__dirname,"/checkout/checkout.html"))
+    })
 
 //FUNZIONI DI TEST TEMPORANEE
     app.get("/userArea", (req,res)=>{
