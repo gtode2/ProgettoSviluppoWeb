@@ -1,11 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout</title>
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="checkout.css" />
 </head>
-<body>
-    
+<body class="bg-light">
+
+  <div class="container-fluid">
+    <!-- Pulsante per aprire il checkout in modalità mobile (visibile solo su dispositivi piccoli) -->
+    <div class="d-md-none text-end p-2">
+      <button id="openCheckout" class="btn btn-primary">Apri Checkout</button>
+    </div>
+
+    <div class="row">
+      <!-- Parte prodotti a sinistra -->
+      <div class="col-md-8 view-prodotti">
+        <iframe src="https://example.com" class="w-100" style="height: 100vh; border: none;"></iframe>
+      </div>
+
+      <!-- Overlay/Checkout a destra -->
+      <!-- In modalità mobile questo elemento è nascosto di default, salvo che venga aggiunta la classe "aperto" -->
+      <div class="col-md-4 admin-overlay">
+        <!-- Pulsante per chiudere il checkout -->
+        <button class="btn-close-overlay">&times;</button>
+        <h2>Checkout Pagamento</h2>
+        <form id="checkoutForm" class="form-prodotto">
+          <div class="mb-3">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" id="nome" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="cognome" class="form-label">Cognome</label>
+            <input type="text" id="cognome" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="numeroCarta" class="form-label">Numero carta</label>
+            <input type="number" id="numeroCarta" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="cvc" class="form-label">CVC</label>
+            <input type="number" id="cvc" class="form-control" required>
+          </div>
+          <div class="form-check mb-3">
+            <input type="checkbox" id="approva" class="form-check-input">
+            <label for="approva" class="form-check-label">Approva pagamento</label>
+          </div>
+          <button type="submit" class="btn btn-primary">Procedi al pagamento</button>
+          <button type="button" class="btn btn-outline-secondary" id="annullaBtn">Annulla</button>
+          <div id="outputMsg" class="mt-3 fw-bold"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="checkout.js"></script>
 </body>
 </html>

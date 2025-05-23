@@ -1,0 +1,56 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.admin-overlay {
+  padding: 20px;
+  background-color: #fff;
+  border-left: 1px solid #ddd;
+  position: relative;
+}
+
+/* Modalità mobile: nascondi il checkout a meno che non venga esplicitamente aperto */
+@media (max-width: 767.98px) {
+  .admin-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 80%;
+    height: 100%;
+    z-index: 1050;
+    overflow-y: auto;
+    box-shadow: -4px 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  .admin-overlay.aperto {
+    display: block;
+  }
+}
+
+/* Modalità desktop: forza la visualizzazione dell'overlay */
+@media (min-width: 768px) {
+  .admin-overlay {
+    display: block !important;
+    position: relative;
+    width: 100%;
+    height: auto;
+    box-shadow: none;
+  }
+}
+
+/* Stile per il pulsante di chiusura */
+.btn-close-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Stile per il pulsante di apertura del checkout (modalità mobile) */
+#openCheckout {
+  margin: 10px;
+}
