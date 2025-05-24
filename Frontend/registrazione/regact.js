@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return name.length >= 1;
         };
         const checkAddress = () => {
-            const surname = document.getElementById("addr").value.trim();
-            return surname.length >= 1;
+            const addr = document.getElementById("addr").value.trim();
+            return addr.length >= 1;
         };
 
         //controlla che l'email sia corretta
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         const checkPhone = () => {
-            const phone = document.getElementById("num").value.trim();
+            const phone = document.getElementById("phone").value.trim();
             const regex = /^[0-9]{9,15}$/;
             return regex.test(phone);
         };
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = {
             name: document.getElementById("name").value,
             email: document.getElementById("email").value,
-            phone: document.getElementById("num").value,
+            phone: document.getElementById("phone").value,
             address: document.getElementById("addr").value,
             descryption: document.getElementById("descr").value
         };
