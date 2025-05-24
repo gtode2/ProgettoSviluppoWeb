@@ -9,23 +9,20 @@ function loadCart(id) {
     document.getElementById('lat-iframe').src = '../carrello/carrello.html';
   }
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Seleziona gli elementi
-  const toggleOverlayButton = document.getElementById('btn-toggle-overlay');
-  const artigianoOverlay = document.getElementById('cliente-overlay');
-  const closeOverlayButton = document.getElementById('btn-close-cliente-overlay');
+document.addEventListener('DOMContentLoaded', function () {
+  const btnToggle = document.getElementById('btn-toggle-overlay');
+  const btnClose = document.getElementById('btn-close-cliente-overlay');
+  const overlay = document.getElementById('client-overlay');
 
-  // Gestione apertura overlay
-  if (toggleOverlayButton) {
-    toggleOverlayButton.addEventListener('click', function() {
-      artigianoOverlay.classList.add('visible');
-    });
-  }
+  // Apertura overlay: su mobile il pulsante apre il riepilogo acquisto in full screen
+  btnToggle.addEventListener('click', function () {
+    overlay.classList.add('visible');
+    btnToggle.classList.add('d-none'); // Nasconde il pulsante una volta aperto il riepilogo
+  });
 
-  // Gestione chiusura overlay
-  if (closeOverlayButton) {
-    closeOverlayButton.addEventListener('click', function() {
-      artigianoOverlay.classList.remove('visible');
-    });
-  }
+  // Chiusura overlay: il pulsante in alto a sinistra chiude l'overlay e ripristina il pulsante mobile
+  btnClose.addEventListener('click', function () {
+    overlay.classList.remove('visible');
+    btnToggle.classList.remove('d-none');
+  });
 });
