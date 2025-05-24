@@ -1,17 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     
     const form = document.querySelector("form");
-    const prevmail = document.getElementById("prevmail")
-    prevmail.addEventListener("change", ()=>{
-        const mail = document.getElementById("mail")
-        if (prevmail.checked) {
-            mail.disabled=true
-            mail.value="aaa" //inserire mail precedente
-        }else{
-            mail.disabled=false
-            mail.value=""
-        }
-    })
+
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
