@@ -247,7 +247,7 @@ async function main() {
             VALUES ($1,$2,$3,$4,$5,$6)
         `
         const {name, email, phone, address, desc} = req.body
-        values = [user.id, name, address, email, phone, descryption]
+        values = [user.id, name, address, email, phone, desc]
         try {
             result = pool.query(query,values)
             res.status(200)
