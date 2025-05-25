@@ -283,6 +283,21 @@ async function main() {
                     console.log("password errata");
                     return
             }
+
+            if (user.rows[0].banned===true) {
+                res.status(403)
+                .clearCookie('accessToken', {
+                    httpOnly: true,
+                    secure: false,      //IMPOSTARE A TRUE DOPO PASSAGGIO A HTTPS
+                    sameSite: 'Strict', 
+                })
+                .clearCookie('refreshToken', {
+                    httpOnly: true,
+                    secure: false,      //IMPOSTARE A TRUE DOPO PASSAGGIO A HTTPS
+                    sameSite: 'Strict', 
+                }).json({err:"banned"})
+                return
+            }
             const tokens = await registerToken(user, pool)
             console.log(tokens);
             
@@ -343,13 +358,13 @@ async function main() {
         res.status(200)
         .clearCookie('accessToken', {
             httpOnly: true,
-          secure: false,      // oppure true, in base a come era stato impostato
-            sameSite: 'Strict', // deve corrispondere alle opzioni originali
+            secure: false,      //IMPOSTARE A TRUE DOPO PASSAGGIO A HTTPS
+            sameSite: 'Strict', 
         })
         .clearCookie('refreshToken', {
             httpOnly: true,
-          secure: false,      // oppure true, in base a come era stato impostato
-            sameSite: 'Strict', // deve corrispondere alle opzioni originali
+            secure: false,      //IMPOSTARE A TRUE DOPO PASSAGGIO A HTTPS
+            sameSite: 'Strict', 
         }).json({});
         
         
@@ -873,6 +888,13 @@ async function main() {
         }
     })
 
+
+
+
+
+    app.get("/ban", (req,res)=>{
+        res.sendFile(path.join(__dirname,"Frontend/login/accountbannato/ban.html"))
+    })
 
 //FUNZIONI DI TEST TEMPORANEE
     app.get("/userArea", (req,res)=>{

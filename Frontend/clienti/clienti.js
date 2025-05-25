@@ -3,9 +3,7 @@ function report(id) {
   document.getElementById('lat-iframe').src = './clienti/report/report.html?id=' + encodeURIComponent(id);;
 }
 
-function loadCart(id) {
-    console.log("AAAAAA");
-    
+function loadCart() {
     document.getElementById('lat-iframe').src = '../carrello/carrello.html';
   }
 

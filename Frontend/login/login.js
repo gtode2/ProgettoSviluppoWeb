@@ -32,7 +32,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
             console.log("AAAAA");
             
             if (!response.ok) {
+              if (response.status===403) {
+                window.location.href = "/ban"
+              }
+              else{
                 alert("Credenziali errate")
+              }
             }else{
                 console.log("tentativo di href");
                 

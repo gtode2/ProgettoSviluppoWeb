@@ -47,27 +47,14 @@
         ✖
       </button>
       <!-- Contenuto del riepilogo acquisto -->
-      <h1 class="h4 text-center mt-5">Riepilogo Acquisto</h1>
-      <div class="container mt-4">
-        <!-- Puoi usare direttamente il form oppure, in alternativa, includere un iframe se il riepilogo è in un file separato -->
-        <form id="acquistoForm" novalidate>
-          <div class="mb-3">
-            <label for="quantita" class="form-label">Inserisci quantità</label>
-            <input
-              type="number"
-              class="form-control"
-              id="quantita"
-              name="quantita"
-              min="1"
-              required
-            />
-          </div>
-          <div class="d-flex gap-2 mb-3 actions">
-            <button type="submit" class="btn btn-success w-50">Conferma</button>
-            <button type="reset" class="btn btn-danger w-50">Annulla</button>
-          </div>
-          <div id="feedback" class="fw-semibold"></div>
-        </form>
+      <div
+        class="bg-white border-start shadow d-none d-md-block"
+        style="max-width: 440px; min-width: 340px;"
+      >
+        <iframe
+          src="./clienti/carrello/carrello.html"
+          id="lat-iframe"
+        ></iframe>
       </div>
     </div>
     
