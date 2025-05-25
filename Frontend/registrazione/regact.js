@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
             email: document.getElementById("email").value,
             phone: document.getElementById("phone").value,
             address: document.getElementById("addr").value,
-            descryption: document.getElementById("descr").value
+            desc: document.getElementById("descr").value
         };
 
         // Invia i dati al backend
