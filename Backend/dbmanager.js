@@ -1,12 +1,13 @@
 const { Pool } = require("pg");
-const {db_user, db_port, db_pw} = require("../config.js")
+require('dotenv').config({path: './ini.env' });
+
 
 var pool = new Pool({
-    user:db_user,
+    user:process.env.db_user,
     host:'localhost',
     database:'postgres',
-    password:db_pw,
-    port:db_port    
+    password:process.env.db_pw,
+    port:process.env.db_port    
 })
 
 const nomeDb = "dbprogetto"
@@ -46,11 +47,11 @@ async function setDb(nomedb){
     console.log("Pool chiuso");
     
     pool = new Pool({
-        user:db_user,
+        user:process.env.db_user,
         host:'localhost',
         database:nomedb,
-        password:db_pw,
-        port:db_port    
+        password:process.env.db_pw,
+        port:process.env.db_port    
     })
     } catch (error) {
         console.log("impossibile chiudere il db\n"+error);
@@ -81,10 +82,7 @@ async function createTables(){
         if (! await creaOrdini()) {
             corr=false
         }
-        if (! await creaPending()) {
-            corr=false
-        }
-
+        
 
         if (!corr) {
             //gestione creazione tabelle errata    
@@ -132,11 +130,7 @@ async function checkTables(){
         await creaOrdini()
         console.log("Creata tabella ordini");
     }
-    res_pending = await pool.query("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='pending')")
-    if(!res_prod.rows[0].exists){
-        await creaPending()
-        console.log("Creata tabella pending");
-    }
+
    
 }
 
@@ -145,7 +139,7 @@ async function checkTables(){
 
 async function creaUtenti(){
     try {
-        await pool.query("CREATE TABLE utenti(uid SERIAL PRIMARY KEY ,nome VARCHAR NOT NULL,cognome VARCHAR NOT NULL,username VARCHAR NOT NULL,email VARCHAR NOT NULL,ntel BIGINT NOT NULL,password VARCHAR NOT NULL,usertype INT NOT NULL, banned BOOLEAN NOT NULL DEFAULT FALSE)")
+        await pool.query("CREATE TABLE utenti(uid SERIAL PRIMARY KEY ,nome VARCHAR NOT NULL,cognome VARCHAR NOT NULL,username VARCHAR NOT NULL,email VARCHAR NOT NULL,ntel VARCHAR NOT NULL,password VARCHAR NOT NULL,usertype INT NOT NULL, banned BOOLEAN NOT NULL DEFAULT FALSE)")
         return true
     } catch (error) {
         console.log(error);        
@@ -154,7 +148,7 @@ async function creaUtenti(){
 }
 async function creaAttivita(){
     try {
-        await pool.query("CREATE TABLE attivita(actid INT PRIMARY KEY,nome VARCHAR NOT NULL,indirizzo VARCHAR,email VARCHAR NOT NULL,ntel INT, descr VARCHAR NOT NULL, FOREIGN KEY(actid) REFERENCES utenti(uid))")
+        await pool.query("CREATE TABLE attivita(actid INT PRIMARY KEY,nome VARCHAR NOT NULL,indirizzo VARCHAR,email VARCHAR NOT NULL,ntel VARCHAR, descr VARCHAR NOT NULL, FOREIGN KEY(actid) REFERENCES utenti(uid))")
         return true
     } catch (error) {
         console.log(error);
