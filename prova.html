@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <button onclick="prova()"></button>
+    <script>
+        const stripe = Stripe("pk_test_51RS1sSCVBLOChcNpv66SvPBqQHL2ywIF6b2U7JV55lojCqexs9UclwyWCgDSwLgyZnEPP8m6fHymSbfuNIiQP5VS00nymP7hWO")
+        async function prova(){
+            try {
+            const response = await fetch("/confirmCheckout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }            
+            })
+            const data = await response.json()
+            console.log("AAAAA");
+            
+            if (!response.ok) {
+                alert("Credenziali errate")
+            }else{
+                const res = await stripe.redirectToCheckout({sessionId:data.id})
+                if (res.error) {
+                    alert(res.error.message)
+                }
+            }
+        } catch (err) {
+            console.log(err);
+            alert("Errore di rete.");
+        }
+        }
+
+
+    </script>
+</body>
+</html>

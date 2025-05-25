@@ -70,15 +70,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         */
 
-        const response = await fetch("http://localhost:3000/RegAct", {
+
+        try {
+            const response = await fetch("/RegAct", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData)
-        })
-        .then(async res=>{
-            const data = await res.json()
-            if (!res.ok) {
-                if (res.status===401) {
+            
+            })
+            const data = await response.json()     
+            console.log(response.status);       
+            if (!response.ok) {
+                
+                if (response.status===401) {
                     if (data.error==="missing token") {
                         alert("token mancante")
                         window.location.href = "http://localhost:3000/login"                        
@@ -86,21 +90,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     else if (data.error==="invalid token") {
                         //rimanda a refresh
                     }
-                else if (res.status===409) {
+                }else if (response.status===409) {
                     alert("hai già un attività")
                     window.location.href = "http://localhost:3000/"
-                }
                 }else{
                     alert("errore sconosciuto")
                 }
+                
             }else{
-                    window.location.href = "http://localhost:3000/"
-                    //redirect a homepage
-            }   
-        })
-        .catch(err=>{
+                console.log("Registrazione attività completata");
+                
+                window.location.href = "http://localhost:3000/"
+                //redirect a homepage
+            }
+        } catch (err) {
             console.log(err);
             alert("Errore di rete.");
-        })
+        }
     });
 });

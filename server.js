@@ -77,8 +77,10 @@ async function main() {
                 console.log("ordine rimosso");
                 //aggiungo elementi a prodotti
                 const prodotti = el.products
-                for (const [id, qt] of Object.entries(prodotti)) {
-                    await pool.query(`UPDATE prodotti set amm=amm+$1 WHERE id=$2`,[qt, id])
+                for (const [id, prod] of Object.entries(prodotti)) {   
+                    console.log(prod);
+                                    
+                    await pool.query(`UPDATE prodotti set amm=amm+$1 WHERE id=$2`,[prod.quantita, id])
                     console.log("reinseriti prodotti "+id);  
                 }
             }
@@ -228,15 +230,15 @@ async function main() {
     app.post("/RegAct",async(req,res)=>{
         const user =checkToken(req,res) 
         if (user==-1) {
+            console.log("utente non valido");
             return
         }
         //verifico che utente non abbia attività
         var query = `
             SELECT * FROM ATTIVITA
             WHERE actid = $1`
-
-        var values = [user.id]
-        var result = await pool.query(query,values)
+        
+        var result = await pool.query(query,[user.id])
         if (result.rows.length>0) {
             res.status(409).json({error:"utente ha già attività"})
             return
@@ -247,13 +249,14 @@ async function main() {
             VALUES ($1,$2,$3,$4,$5,$6)
         `
         const {name, email, phone, address, desc} = req.body
-        values = [user.id, name, address, email, phone, desc]
+        const values = [user.id, name, address, email, phone, desc]
         try {
-            result = pool.query(query,values)
-            res.status(200)
+            result = await pool.query(query,values)
+            console.log("Aggiunta attività completata");
+            res.status(200).json({})
         } catch (err) {
             console.log(err);
-            res.status(500)           
+            res.status(500).json({})  
         }
     })
     /////////////////////////////////////////////////////////////////////////
@@ -824,17 +827,46 @@ async function main() {
         //verifica id utente
         const user = checkToken(req,res)
         if (user===-1) {
+            console.log("errore");
+            
             return
         }
-        const prod = await pool.query(`SELECT FROM ordini WHERE uid = $1, `)
+        //prendo informazioni ordine
+        var elementi = await pool.query(`SELECT products FROM ordini WHERE uid=$1 AND expires_at IS NOT NULL`, [user.id])
+        //creo array con elementi
+        var li = []
+        if (elementi.rows.length===0) {
+            res.status(401).json({err:"no order"})
+            return
+        }
+        elementi = elementi.rows[0].products
+        console.log(elementi);
+        
+        for(const [id, prod] of Object.entries(elementi)){
+            var p = {}
+            var pricedata = {}
+            pricedata.currency = "eur"
+            pricedata.product_data = {name:prod.nome}
+            pricedata.unit_amount = Math.round(prod.prezzo * 100)
+            p.price_data = pricedata
+            p.quantity = prod.quantita
+            li.push(p)
+        }
+
+        console.log("AAAAA");
+        
+        console.log(JSON.stringify(li));
         
 
         try {   
-
             const session = await stripe.checkout.sessions.create({
                 payment_method_types:['card'],
                 mode:'payment',
+                line_items:li,
+                success_url:`http://localhost:3000/success`,
+                cancel_url:`http://localhost:3000/cancelTransaction`
             })
+            res.json({id:session.id})
         } catch (error) {
             console.log(error);
             
