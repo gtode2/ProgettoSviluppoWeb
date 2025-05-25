@@ -6,13 +6,16 @@ const { Pool } = require("pg");
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const cron = require('node-cron');
+const stripe = require('stripe')('sk_test_TUACHIAVESEGRETA'); // sostituisci con la tua
+require('dotenv').config({path: './ini.env' });
+
 
 
 const { checkdb } = require("./Backend/dbmanager.js");
 const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
 const {addProduct, getProducts, addCart, getCart, emptyCart} = require("./Backend/products.js");
 const {addReport, getReports, removeReport, removeReportedProduct, banArtigiano} = require("./Backend/reports.js");
-const {db_name, db_user, db_port, db_pw} = require("./config.js")
+//const {db_name, db_user, db_port, db_pw} = require("./config.js")
 
 
 
@@ -48,11 +51,11 @@ async function main() {
             console.log("Creazione pool");
 
             const pool = new Pool({
-            user: db_user,
+            user: process.env.db_user,
             host: "localhost",
-            database: db_name,
-            password: db_pw,
-            port: db_port,
+            database: process.env.db_name,
+            password: process.env.db_pw,
+            port: process.env.db_port,
             });
             console.log("Pool creata correttamente");
             return pool
@@ -65,12 +68,9 @@ async function main() {
         }
     }
     cron.schedule('* * * * *', async() => {
-        console.log("Controllo ordini scaduti...");
         try {
             await pool.query("BEGIN")
-            const pending = await pool.query("SELECT id, expires_at, products FROM ordini WHERE expires_at<NOW()")
-            console.log(pending.rows);
-            
+            const pending = await pool.query("SELECT id, expires_at, products FROM ordini WHERE expires_at<NOW()")            
             for(const el of pending.rows){
                 //rimuovo da db
                 await pool.query("DELETE FROM ordini WHERE id=$1",[el.id])
@@ -87,8 +87,9 @@ async function main() {
             await pool.query("ROLLBACK")
             console.log(error);
         }
-        console.log("procedura completata");
     });
+
+    const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
     /////////////////////////////////////////////////////////////////////////
     //HOMEPAGE
@@ -245,7 +246,7 @@ async function main() {
             INSERT INTO attivita(actid, nome, indirizzo, email, ntel, descr)
             VALUES ($1,$2,$3,$4,$5,$6)
         `
-        const {name, email, phone, address, descryption} = req.body
+        const {name, email, phone, address, desc} = req.body
         values = [user.id, name, address, email, phone, descryption]
         try {
             result = pool.query(query,values)
@@ -773,7 +774,7 @@ async function main() {
                 res.status(401).json({})
             }
             for (const el of products.rows) {
-                var qt = await pool.query(`SELECT amm FROM prodotti WHERE id=$1`, [el.productid])
+                var qt = await pool.query(`SELECT amm, costo, name FROM prodotti WHERE id=$1`, [el.productid])
                 console.log("\nprodotto: "+el.productid);
                 
                 console.log("disponibile = "+qt.rows[0].amm);
@@ -788,7 +789,11 @@ async function main() {
                     //riduci quantità
                     await pool.query(`UPDATE prodotti SET amm=$1 WHERE id=$2`, [(qt.rows[0].amm-el.quantita), el.productid])
                     console.log(`qtità corretta \n ${qt.rows[0].amm-el.quantita} rimanente`);
-                    ord[el.productid]= el.quantita
+                    const prodData = {}
+                    prodData["prezzo"] = qt.rows[0].costo
+                    prodData["quantita"] = qt.rows[0].amm
+                    prodData["nome"] = qt.rows[0].name
+                    ord[el.productid]= prodData
                 }
             }
             
@@ -810,9 +815,32 @@ async function main() {
         
 
     })
+    
     app.get("/checkout", (req,res)=>{
         res.sendFile(path.join(__dirname,"Frontend","/checkout/checkout.html"))
     })
+
+    app.post("/confirmCheckout", async (req,res)=>{
+        //verifica id utente
+        const user = checkToken(req,res)
+        if (user===-1) {
+            return
+        }
+        const prod = await pool.query(`SELECT FROM ordini WHERE uid = $1, `)
+        
+
+        try {   
+
+            const session = await stripe.checkout.sessions.create({
+                payment_method_types:['card'],
+                mode:'payment',
+            })
+        } catch (error) {
+            console.log(error);
+            
+        }
+    })
+
 
 //FUNZIONI DI TEST TEMPORANEE
     app.get("/userArea", (req,res)=>{
