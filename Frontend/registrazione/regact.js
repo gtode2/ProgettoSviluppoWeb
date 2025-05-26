@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }else if (response.status===409) {
                     alert("hai già un attività")
-                    window.location.href = "http://localhost:3000/"
+                    window.location.href = "/"
                 }else{
                     alert("errore sconosciuto")
                 }
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }else{
                 console.log("Registrazione attività completata");
                 
-                window.location.href = "http://localhost:3000/"
+                window.location.href = "/"
                 //redirect a homepage
             }
         } catch (err) {

@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
             }else{
                 console.log("tentativo di href");
                 
-                window.location.href = "http://localhost:3000/"
+                window.location.href = "/"
                 //redirect a homepage
             }
         } catch (err) {

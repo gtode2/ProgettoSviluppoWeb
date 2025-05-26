@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     
     if (!response.ok) {
-        window.location.href = "http://localhost:3000/"
+        window.location.href = "/"
     }else{
       document.getElementById("nome").placeholder = data.user.nome
       document.getElementById("cognome").placeholder= data.user.cognome
@@ -62,14 +62,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         body:JSON.stringify(values)
       })
       if (response.ok) {
-        window.location.href = "http://localhost:3000/userArea"
+        window.location.href = "/userArea"
       }else{
         //gestione errori
         console.log(response.status);
         
       }
     } catch (error) {
-      window.location.href = "http://localhost:3000/"
+      window.location.href = "/"
     }
   })
   
@@ -79,9 +79,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       })
-      window.location.href = "http://localhost:3000/"
+      window.location.href = "/"
     } catch (error) {
-      window.location.href = "http://localhost:3000/"
+      window.location.href = "/"
     }
   })  
 })

@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (loginButton) {
         loginButton.addEventListener('click', function(event) {
             event.preventDefault(); // Previene il comportamento predefinito del form (submit)
-            window.location.href = "http://localhost:3000/login";
+            window.location.href = "/login";
         });
     }
 
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (registerButton) {
         registerButton.addEventListener('click', function(event) {
             event.preventDefault(); // Previene il comportamento predefinito del form (submit)
-            window.location.href = "http://localhost:3000/registrazione";
+            window.location.href = "/registrazione";
         });
     }
 });

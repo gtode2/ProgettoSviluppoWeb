@@ -40,7 +40,7 @@ class Carrello {
 async function addToCart(id, name, price) {
   console.log(name);
   try {
-    const response = await fetch("http://localhost:3000/addCart", {
+    const response = await fetch("/addCart", {
       method:"POST",
       headers: { "Content-Type": "application/json"},
       body: JSON.stringify({id:id})
@@ -91,7 +91,7 @@ function add(id, name, price) {
 }
 async function remove(){
   try {
-    const response = await fetch("http://localhost:3000/emptyCart", {
+    const response = await fetch("/emptyCart", {
       method:"POST",
       headers: { "Content-Type": "application/json"},
     })
@@ -122,7 +122,7 @@ function decrease(){}
 // DOM: genera riepilogo dinamico
 document.addEventListener("DOMContentLoaded", async() => {
   try {
-    const response = await fetch("http://localhost:3000/getCart", {
+    const response = await fetch("/getCart", {
       method:"POST",
       headers: { "Content-Type": "application/json"},
     })
@@ -185,7 +185,7 @@ async function checkout(){
   console.log("checkout");
   
   try {
-    const response = await fetch("http://localhost:3000/checkout", {
+    const response = await fetch("/checkout", {
       method:"POST",
       headers: { "Content-Type": "application/json"},
     })

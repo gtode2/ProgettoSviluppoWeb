@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Invia i dati al backend
         
-        const response = await fetch("http://localhost:3000/registrazione", {
+        const response = await fetch("/registrazione", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData)
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (data.redirect) {
                     window.location.href = data.redirect
                 }else{
-                    window.location.href = "http://localhost:3000/"
+                    window.location.href = "/"
                     //redirect a homepage
                 }
             }   

@@ -11,7 +11,7 @@ async function send(){
         }
   
   try {
-    const response = await fetch("http://localhost:3000/addReport", {
+    const response = await fetch("/addReport", {
       method:"POST",
       headers: { "Content-Type": "application/json"},
       body: JSON.stringify(sdata)

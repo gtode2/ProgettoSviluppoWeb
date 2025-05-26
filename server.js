@@ -7,6 +7,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const cron = require('node-cron');
 require('dotenv').config({path: './.env' });
+const fs = require('fs');
+const https = require('https');
 
 
 
@@ -22,6 +24,12 @@ async function main() {
     
     const app = express();
     const port = 3000;
+
+
+    const options = {
+        key: fs.readFileSync('./key.pem'),
+        cert: fs.readFileSync('./cert.pem')
+    }
 
 
     app.use(express.static(path.join(__dirname, "homepage")));
@@ -189,13 +197,13 @@ async function main() {
                 res.status(200)
                 .cookie('accessToken', tokens["access"],{
                     httpOnly:true,
-                    secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
+                    secure:true,
                     sameSite:'Strict',
                     maxAge: 50 * 60 * 1000 //50 minuti
                 })
                 .cookie('refreshToken', tokens["refresh"],{
                     httpOnly:true,
-                    secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
+                    secure:true,
                     sameSite:'Strict',
                     maxAge:7 * 24 * 60 * 60 * 1000 //7 giorni
                 }).json({
@@ -206,13 +214,13 @@ async function main() {
                 res.status(200)
                 .cookie('accessToken', tokens["access"],{
                     httpOnly:true,
-                    secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
+                    secure:true,
                     sameSite:'Strict',
                     maxAge: 50 * 60 * 1000 //50 minuti
                 })
                 .cookie('refreshToken', tokens["refresh"],{
                     httpOnly:true,
-                    secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
+                    secure:true,
                     sameSite:'Strict',
                     maxAge:7 * 24 * 60 * 60 * 1000 //7 giorni
                 }).json({})
@@ -286,12 +294,12 @@ async function main() {
                 res.status(403)
                 .clearCookie('accessToken', {
                     httpOnly: true,
-                    secure: false,      //IMPOSTARE A TRUE DOPO PASSAGGIO A HTTPS
+                    secure: true,      
                     sameSite: 'Strict', 
                 })
                 .clearCookie('refreshToken', {
                     httpOnly: true,
-                    secure: false,      //IMPOSTARE A TRUE DOPO PASSAGGIO A HTTPS
+                    secure: true, 
                     sameSite: 'Strict', 
                 }).json({err:"banned"})
                 return
@@ -302,13 +310,13 @@ async function main() {
             res.status(200)
                 .cookie('accessToken', tokens["access"],{
                     httpOnly:true,
-                    secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
+                    secure:true, 
                     sameSite:'Strict',
                     maxAge: 50 * 60 * 1000 //50 minuti
                 })
                 .cookie('refreshToken', tokens["refresh"],{
                     httpOnly:true,
-                    secure:false, ////////IMPOSTARE SECURE TRUE UNA VOLTA ATTIVATO HTTPS
+                    secure:true,
                     sameSite:'Strict',
                     maxAge:7 * 24 * 60 * 60 * 1000 //7 giorni
                 }).json({usertype:user.role})
@@ -325,17 +333,11 @@ async function main() {
 
 
     app.post("/renewToken", async (req,res)=>{
-        console.log("chiamata a tokentest");
-        const token = req.body
-
-        
-        const val = await renewToken(token,pool)
-        console.log(val);
-        if (val==-1) {
-           res.status(403)
+        const token = renewToken(req.body["token"], pool)
+        if (token==-1) {
+            res.status(401)
         }else{
-            //da sistemare
-            //res.send("")
+            res.status(200).json({token:token})
         }
     })
     app.post('/logout', async (req, res) => {
@@ -356,28 +358,17 @@ async function main() {
         res.status(200)
         .clearCookie('accessToken', {
             httpOnly: true,
-            secure: false,      //IMPOSTARE A TRUE DOPO PASSAGGIO A HTTPS
+            secure: true,      
             sameSite: 'Strict', 
         })
         .clearCookie('refreshToken', {
             httpOnly: true,
-            secure: false,      //IMPOSTARE A TRUE DOPO PASSAGGIO A HTTPS
+            secure: true, 
             sameSite: 'Strict', 
         }).json({});
         
         
     });
-
-    app.post("/refreshToken", async(req,res)=>{
-        const token = renewToken(req.body["token"], pool)
-        if (token==-1) {
-            res.status(401)
-        }else{
-            res.status(200).json({
-                token:token
-            })
-        }
-    })
 
 
     app.post("/addProduct", async(req,res)=>{
@@ -901,24 +892,11 @@ async function main() {
     app.get("/test",(req,res)=>{
         res.sendFile(path.join(__dirname,"prova.html"))
     })
-    app.post("/test",async(req,res)=>{
-        
-        
-    })
-    
-    app.post("/ESEMPIOPROTECTED",(req,res)=>{
-        //verifica presenza di token nel res
-        if (!token) {
-            return res.status(401).json({ message: 'Token mancante' });
-        }
-
-    })
 
 
 
 
-
-    app.listen(port, () => {
+    https.createServer(options, app).listen(port, () => {
         console.log(`Server attivo su http://localhost:${port}`);
     });
 
