@@ -6,8 +6,7 @@ const { Pool } = require("pg");
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const cron = require('node-cron');
-const stripe = require('stripe')('sk_test_TUACHIAVESEGRETA'); // sostituisci con la tua
-require('dotenv').config({path: './ini.env' });
+require('dotenv').config({path: './.env' });
 
 
 
@@ -15,7 +14,6 @@ const { checkdb } = require("./Backend/dbmanager.js");
 const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
 const {addProduct, getProducts, addCart, getCart, emptyCart} = require("./Backend/products.js");
 const {addReport, getReports, removeReport, removeReportedProduct, banArtigiano} = require("./Backend/reports.js");
-//const {db_name, db_user, db_port, db_pw} = require("./config.js")
 
 
 
@@ -51,11 +49,11 @@ async function main() {
             console.log("Creazione pool");
 
             const pool = new Pool({
-            user: process.env.db_user,
-            host: "localhost",
-            database: process.env.db_name,
-            password: process.env.db_pw,
-            port: process.env.db_port,
+            user: process.env.DB_USER,
+            host: "postgres",
+            database: process.env.DB_NAME,
+            password: process.env.DB_PW,
+            port: process.env.DB_PORT,
             });
             console.log("Pool creata correttamente");
             return pool

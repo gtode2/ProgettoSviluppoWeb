@@ -1,6 +1,6 @@
 node_modules
 package-lock.json
 testPages
-config.js
-ini.env
-homepage_temp/Database&Server_Docker_version/docker-compose.yml
+.env
+./prova.html
+prova.html

@@ -1,13 +1,13 @@
 const { Pool } = require("pg");
-require('dotenv').config({path: './ini.env' });
+require('dotenv').config({path: './.env' });
 
 
 var pool = new Pool({
-    user:process.env.db_user,
-    host:'localhost',
+    user:process.env.DB_USER,
+    host:'postgres',
     database:'postgres',
-    password:process.env.db_pw,
-    port:process.env.db_port    
+    password:process.env.DB_PW,
+    port:process.env.DB_PORT    
 })
 
 const nomeDb = "dbprogetto"
@@ -47,11 +47,11 @@ async function setDb(nomedb){
     console.log("Pool chiuso");
     
     pool = new Pool({
-        user:process.env.db_user,
-        host:'localhost',
+        user:process.env.DB_USER,
+        host:'postgres',
         database:nomedb,
-        password:process.env.db_pw,
-        port:process.env.db_port    
+        password:process.env.DB_PW,
+        port:process.env.DB_PORT    
     })
     } catch (error) {
         console.log("impossibile chiudere il db\n"+error);
