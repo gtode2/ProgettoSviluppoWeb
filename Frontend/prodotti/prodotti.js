@@ -65,19 +65,18 @@ function load(data) {
           <h5 class="card-title">${el.name}</h5>
           <p class="card-text">${el.descr}</p>
           <p class="price text-success fw-bold">€${el.costo}</p>`;
-    if (usertype===1) {
-      col.innerHTML=col.innerHTML+`
-      <div class="d-flex justify-content-center gap-2 product-actions cliente" style="padding-bottom:50px">
-            <button class="btn btn-primary aggiungi-carrello" onclick="addToCart(${el.id},'${el.name}',${el.costo})" >Aggiungi al carrello</button>
-            <button class="btn btn-outline-primary">Rimuovi</button>
-            <button class="btn btn-outline-primary" onclick="report(${el.id})">Segnala</button>
-          </div>
-          </div>
-        </div>
-      </div>
-      
-      `
-    }else if(usertype===2){
+    if (usertype === 1) {
+  col.innerHTML = col.innerHTML + `
+    <div class="d-flex justify-content-center gap-2 product-actions cliente" style="padding-bottom:50px">
+      <button class="btn btn-primary aggiungi-carrello" onclick="addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
+      <button class="btn btn-outline-primary" onclick="report(${el.id})">Segnala</button>
+    </div>
+    </div>
+  </div>
+</div>
+  `;
+}
+else if(usertype===2){
       col.innerHTML=col.innerHTML+`
       <div class="d-flex justify-content-center gap-2 product-actions artigiano">
             <button class="btn btn-warning">Modifica</button>

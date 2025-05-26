@@ -1,26 +1,31 @@
 function report(id) {
-  console.log("AAAAAA");  
-  document.getElementById('lat-iframe').src = './clienti/report/report.html?id=' + encodeURIComponent(id);;
+  console.log("AAAAAA");
+  document.getElementById('carrello-iframe').src = './clienti/report/report.html?id=' + encodeURIComponent(id);
 }
 
 function loadCart() {
-    document.getElementById('lat-iframe').src = '../carrello/carrello.html';
-  }
+  document.getElementById('carrello-iframe').src = '../carrello/carrello.html';
+}
 
 document.addEventListener('DOMContentLoaded', function () {
-  const btnToggle = document.getElementById('btn-toggle-overlay');
-  const btnClose = document.getElementById('btn-close-cliente-overlay');
-  const overlay = document.getElementById('client-overlay');
+  const btnToggle   = document.getElementById('btn-toggle-overlay');
+  const btnClose    = document.getElementById('btn-close-overlay');
+  const overlay     = document.getElementById('admin-overlay');
+  const btnUserInfo = document.getElementById('btn-toggle-overlay2');
 
-  // Apertura overlay: su mobile il pulsante apre il riepilogo acquisto in full screen
+  // Apertura overlay: su mobile il pulsante apre l'overlay a full screen
   btnToggle.addEventListener('click', function () {
     overlay.classList.add('visible');
-    btnToggle.classList.add('d-none'); // Nasconde il pulsante una volta aperto il riepilogo
+    btnToggle.classList.add('d-none'); // Nasconde il pulsante di apertura
   });
 
-  // Chiusura overlay: il pulsante in alto a sinistra chiude l'overlay e ripristina il pulsante mobile
+  // Chiusura overlay: il bottone chiude l'overlay e ripristina il pulsante mobile
   btnClose.addEventListener('click', function () {
     overlay.classList.remove('visible');
     btnToggle.classList.remove('d-none');
+  });
+
+  btnUserInfo.addEventListener('click', function () {
+    window.location.href = '../userArea/userArea.html';
   });
 });
