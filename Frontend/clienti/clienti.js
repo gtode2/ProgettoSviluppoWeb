@@ -29,3 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
     window.location.href = '../userArea/userArea.html';
   });
 });
+function openProduct(id){
+    window.parent.document.getElementById("lat-iframe").src="/prodotti/dettaglio/dettagli.html?id="+id
+}
+
+function closeProduct() {
+    window.parent.document.getElementById("lat-iframe").src="/clienti/carrello/carrello.html"
+}
