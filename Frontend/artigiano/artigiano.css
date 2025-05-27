@@ -4,9 +4,10 @@
   margin: 0;
   padding: 0;
 }
-body {
-  overflow: hidden;
+html, body {
+  height: 100%;
   font-family: Arial, sans-serif;
+  overflow: hidden;
   line-height: 1.6;
 }
 
@@ -16,33 +17,31 @@ body {
   flex-direction: column;
   height: 100vh;
 }
-@media (min-width: 768px) {
-  .layout-container {
-    flex-direction: row;
-  }
-}
 
-/* ✅ AREA PRODOTTI PUBBLICI (iframe) */
+/* ✅ AREA PRODOTTI PUBBLICI (main view) */
 .view-prodotti {
-  flex: 2;
-  height: 100vh;
+  flex: 1;
+  position: relative;
+  height: 100%;
 }
 .view-prodotti iframe {
   width: 100%;
   height: 100%;
   border: none;
+  display: block;
 }
 
-/* ✅ OVERLAY ADMIN */
+/* ✅ OVERLAY ADMIN (a scomparsa da destra) */
 .admin-overlay {
   position: fixed;
   top: 0;
   right: 0;
   width: 100%;
+  max-width: 420px;
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(4px);
-  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(6px);
+  padding: 2rem 1.5rem;
   overflow-y: auto;
   z-index: 1000;
   transform: translateX(100%);
@@ -54,7 +53,6 @@ body {
 
 /* ✅ BOTTONE APERTURA MOBILE */
 .btn-toggle-overlay {
-  display: block;
   position: fixed;
   bottom: 1rem;
   left: 0.5rem;
@@ -79,31 +77,23 @@ body {
   cursor: pointer;
 }
 
-/* ✅ DESKTOP OVERRIDE */
-@media (min-width: 768px) {
-  .admin-overlay {
-    position: static;
-    transform: none !important;
-    width: 350px;
-    height: auto;
-    background: white;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-  }
-
-  .btn-toggle-overlay,
-  .btn-close-overlay {
-    display: none;
-  }
-}
-
-/* ✅ SEZIONI INTERNE */
+/* ✅ HEADER E CONTROLLI */
 .admin-header {
   margin-bottom: 1rem;
 }
+.admin-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+/* ✅ SEZIONI INTERNE */
 .prodotti-artigiano,
 .inserimento-prodotto {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
+
+/* ✅ LISTA PRODOTTI */
 .lista-prodotti .prodotto {
   border: 1px solid #ddd;
   background-color: #f9f9f9;
@@ -129,9 +119,10 @@ body {
   border: 1px solid #ccc;
 }
 
-/* ALLINEAMENTO A DESTRA DEL BUTTON */
-.admin-controls {
-  display: flex;
-  justify-content: flex-end;
-  padding-right: 1rem;
+/* ✅ RIMUOVI OVERRIDE DESKTOP */
+@media (min-width: 768px) {
+  /* Manteniamo l’overlay sempre fixed anche su desktop */
+  .admin-overlay {
+    max-width: 420px;
+  }
 }

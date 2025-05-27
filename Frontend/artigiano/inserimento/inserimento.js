@@ -1,25 +1,3 @@
-// Funzione per caricare i prodotti
-// Imposta gli event listener per aprire e chiudere l'overlay Artigiano
-function gestisciOverlayArtigiano() {
-  const btnApriOverlay = document.getElementById("btn-toggle-overlay");
-  const btnChiudiOverlay = document.getElementById("btn-close-overlay");
-  const overlayArtigiano = document.getElementById("admin-overlay");
-  const btnUserInfo = document.getElementById("btn-toggle-overlay2"); // ← FIX ID
-
-  btnApriOverlay.addEventListener("click", function() {
-    overlayArtigiano.classList.add("aperto");
-  });
-
-  btnChiudiOverlay.addEventListener("click", function() {
-    overlayArtigiano.classList.remove("aperto");
-  });
-
-  btnUserInfo.addEventListener('click', function () {
-    window.location.href = '../userArea/userArea.html?mode=background&user=artigiano';
-  });
-}
-
-// Codice da eseguire dopo il caricamento totale del DOM
 document.addEventListener("DOMContentLoaded", function() {
   console.log("DOM Caricato");
   gestisciOverlayArtigiano();
