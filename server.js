@@ -103,7 +103,7 @@ async function main() {
 
     /////////////////////////////////////////////////////////////////////////
     //HOMEPAGE
-    app.get("/",(req,res)=>{
+    app.get("/",async (req,res)=>{
         console.log("richiesta homepage");
         console.log(req.headers);
         try {
@@ -126,7 +126,12 @@ async function main() {
                             res.sendFile(path.join(__dirname,"Frontend","/clienti/clienti.html"))
                             break;
                         case 2:
-                            res.sendFile(path.join(__dirname,"Frontend","/artigiano/artigiano.html"))
+                            const response = await pool.query(`SELECT * FROM attivita WHERE actid=$1`, [user.uid])
+                            if (response.rows.length===0) {
+                                res.sendFile(path.join(__dirname,"Frontend", "/registrazione/regact.html"))
+                            }else{
+                                res.sendFile(path.join(__dirname,"Frontend","/artigiano/artigiano.html"))
+                            }
                             break;
                         case 0:
                             res.sendFile(path.join(__dirname,"Frontend","/admin/admin.html"))
@@ -135,8 +140,7 @@ async function main() {
                             res.sendFile(path.join(__dirname,"Frontend","/unlogged/unlogged.html"))
                             break;
                     }
-                }
-                
+                }    
             }
         } catch (error) {
             console.log(error);
@@ -454,6 +458,15 @@ async function main() {
     })
      
     
+    app.delete("/product", async(req,res)=>{
+        const user = checkToken(req,res)
+        if(user===-1){
+            return
+        }
+        
+    })
+
+
     app.post("/addCart", async (req,res) => {
         
         const {id} = req.body
@@ -659,6 +672,23 @@ async function main() {
         }
     })
 
+
+    app.get("/userArea", async (req,res)=>{
+        const user = checkToken(req,res, false)
+        if (user===-1) {
+            return
+        }
+        if (user.usertype = 2) {
+            const response = await pool.query(`SELECT * FROM attivita WHERE actid=$1`, [user.uid])
+            if (response.rows.length===0) {
+                console.log("no activity");
+                res.sendFile(path.join(__dirname,"Frontend", "/registrazione/regact.html"))
+                return
+            }
+        }
+        res.sendFile(path.join(__dirname,"Frontend/userArea/userArea.html"))
+        
+    })
     app.post("/userArea", async(req,res)=>{        
         const user = checkToken(req,res)
         if (user.usertype===2) {
@@ -887,9 +917,7 @@ async function main() {
     })
 
 //FUNZIONI DI TEST TEMPORANEE
-    app.get("/userArea", (req,res)=>{
-        res.sendFile(path.join(__dirname,"Frontend/userArea/userArea.html"))
-    })
+    
     app.get("/test",(req,res)=>{
         
         res.sendFile(path.join(__dirname,"/prova.html"))

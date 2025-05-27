@@ -175,7 +175,7 @@ async function creaProdotti() {
 }
 async function creaCarrello() {
     try {
-        await pool.query("CREATE TABLE Carrello(uid INT NOT NULL, productid INT NOT NULL, quantita INT NOT NULL, PRIMARY KEY (uid, productid),FOREIGN KEY (uid) REFERENCES utenti(uid), FOREIGN KEY (productid) REFERENCES prodotti(id))")
+        await pool.query("CREATE TABLE Carrello(uid INT NOT NULL, productid INT NOT NULL, quantita INT NOT NULL, PRIMARY KEY (uid, productid),FOREIGN KEY (uid) REFERENCES utenti(uid), FOREIGN KEY (productid) REFERENCES prodotti(id) ON DELETE CASCADE)")
         return true
     } catch (error) {
         console.log(error);
@@ -185,7 +185,7 @@ async function creaCarrello() {
 
 async function creaReport() {
     try {
-        await pool.query("CREATE TABLE report(id SERIAL PRIMARY KEY, uid INT NOT NULL, prodid INT NOT NULL, type VARCHAR NOT NULL, descr VARCHAR NOT NULL, solved BOOLEAN,FOREIGN KEY(uid) REFERENCES utenti(uid), FOREIGN KEY(prodid) REFERENCES prodotti(id))")
+        await pool.query("CREATE TABLE report(id SERIAL PRIMARY KEY, uid INT NOT NULL, prodid INT NOT NULL, type VARCHAR NOT NULL, descr VARCHAR NOT NULL, solved BOOLEAN,FOREIGN KEY(uid) REFERENCES utenti(uid), FOREIGN KEY(prodid) REFERENCES prodotti(id) ON DELETE CASCADE)")
         return true
     } catch (error) {
         console.log(error);

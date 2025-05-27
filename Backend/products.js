@@ -16,7 +16,13 @@ async function addProduct(req, uid, pool) {
     }
     
 }
-
+async function removeProduct(pool, productid) {
+    try {
+        const result = pool.query(``)//query di eliminazione prodotto
+    } catch (error) {
+        
+    }
+}
 async function getProducts(pool, filters=null, id=null){
         
     var res=null
