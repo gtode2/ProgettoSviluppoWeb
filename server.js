@@ -16,6 +16,7 @@ const { checkdb } = require("./Backend/dbmanager.js");
 const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
 const {addProduct, getProducts, addCart, getCart, emptyCart} = require("./Backend/products.js");
 const {addReport, getReports, removeReport, removeReportedProduct, banArtigiano} = require("./Backend/reports.js");
+const { emitWarning } = require("process");
 
 
 
@@ -39,6 +40,7 @@ async function main() {
     app.use(express.static(path.join(__dirname, "Frontend/artigiano")));
     app.use(express.static(path.join(__dirname, "Frontend/clienti")));
     app.use(express.static(path.join(__dirname, "Frontend/tokencheck")));
+    app.use(express.static(path.join(__dirname, "Frontend/admin/report")));
     app.use(express.static(path.join(__dirname, "Frontend")));
 
 
@@ -53,7 +55,7 @@ async function main() {
     // Connessione PostgreSQL
     async function initDb() {
         var cdb = await checkdb()
-        if (cdb==0) {
+        if (cdb===0) {
             console.log("Creazione pool");
 
             const pool = new Pool({
@@ -79,7 +81,7 @@ async function main() {
             const pending = await pool.query("SELECT id, expires_at, products FROM ordini WHERE expires_at<NOW()")            
             for(const el of pending.rows){
                 //rimuovo da db
-                await pool.query("DELETE FROM ordini WHERE id=$1",[el.id])
+                await pool.query("DELETE FROM ordini WHERE id=$1",[el.uid])
                 console.log("ordine rimosso");
                 //aggiungo elementi a prodotti
                 const prodotti = el.products
@@ -107,31 +109,35 @@ async function main() {
         try {
             const token = req.cookies.accessToken;
             if (!token) {
-            console.log("no token");
-            res.sendFile(path.join(__dirname,"Frontend/unlogged","unlogged.html"))
-        }else{
-            console.log(token);
-            
-            const user = checkToken(req,res,token)
-            if (user!==-1) {
-                switch (user.role) {
-                    case 1:
-                        
-                        res.sendFile(path.join(__dirname,"Frontend","/clienti/clienti.html"))
-                        break;
-                    case 2:
-                        res.sendFile(path.join(__dirname,"Frontend","/artigiano/artigiano.html"))
-                        break;
-                    case 0:
-                        res.sendFile(path.join(__dirname,"Frontend","/admin/admin.html"))
-                        break;
-                    default:
-                        res.sendFile(path.join(__dirname,"Frontend","/unlogged/unlogged.html"))
-                        break;
+                if (!req.cookies.refreshToken) {
+                    console.log("no token");
+                    res.sendFile(path.join(__dirname,"Frontend/unlogged","unlogged.html"))                
+                }else{
+                    res.status(401).json({err:"refresh token expired"})
                 }
-            }
+                
+            }else{
+                console.log(token);
             
-        }
+                const user = checkToken(req,res,token)
+                if (user!==-1) {
+                    switch (user.usertype) {
+                        case 1:
+                            res.sendFile(path.join(__dirname,"Frontend","/clienti/clienti.html"))
+                            break;
+                        case 2:
+                            res.sendFile(path.join(__dirname,"Frontend","/artigiano/artigiano.html"))
+                            break;
+                        case 0:
+                            res.sendFile(path.join(__dirname,"Frontend","/admin/admin.html"))
+                            break;
+                        default:
+                            res.sendFile(path.join(__dirname,"Frontend","/unlogged/unlogged.html"))
+                            break;
+                    }
+                }
+                
+            }
         } catch (error) {
             console.log(error);
             res.status(500)
@@ -151,21 +157,13 @@ async function main() {
     app.post("/registrazione", async (req, res) => {
         const { name, surname, username, email, phone, password, user_type } = req.body;
 
-        // Validazione lato server
-        /*
-        teoricamente inutile -> dati verificati lato client        
-        if (!name || !surname || !username || !email || !phone || !password || !user_type) {
-            return res.status(400).send("Tutti i campi sono obbligatori.");
-        }
-
-        */ 
         try {
             // Controlla se l'email è già registrata
             const checkQuery = "SELECT uid FROM utenti WHERE email = $1";
             const existing = await pool.query(checkQuery, [email]);
 
             if (existing.rows.length > 0) {
-                return res.status(409).json({error:"Email già registrata."});
+                return res.status(409).json({err:"Email già registrata."});
             }
 
             // Hash della password
@@ -176,7 +174,7 @@ async function main() {
                 VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *
             `;
             const type=()=>{
-                if (user_type=="artigiano") {
+                if (user_type==="artigiano") {
                     return 2
                 }else{
                     return 1
@@ -189,11 +187,7 @@ async function main() {
             
             
             const tokens = await registerToken(user, pool)
-            
-            console.log(tokens["access"]);
-            console.log("altro token")
-            console.log(tokens["refresh"]);
-            if (user_type=="artigiano") {
+            if (user_type==="artigiano") {
                 res.status(200)
                 .cookie('accessToken', tokens["access"],{
                     httpOnly:true,
@@ -227,7 +221,7 @@ async function main() {
             }
         } catch (err) {
             console.error("Errore durante la registrazione:", err);
-            res.status(500).json({error:"Errore interno al server"});
+            res.status(500).json({err:"Errore interno al server"});
         }
     });
     app.get("/RegAct",async(req,res)=>{
@@ -235,7 +229,7 @@ async function main() {
     })
     app.post("/RegAct",async(req,res)=>{
         const user =checkToken(req,res) 
-        if (user==-1) {
+        if (user===-1) {
             console.log("utente non valido");
             return
         }
@@ -244,9 +238,9 @@ async function main() {
             SELECT * FROM ATTIVITA
             WHERE actid = $1`
         
-        var result = await pool.query(query,[user.id])
+        var result = await pool.query(query,[user.uid])
         if (result.rows.length>0) {
-            res.status(409).json({error:"utente ha già attività"})
+            res.status(409).json({err:"utente ha già attività"})
             return
         }
         //aggiungo a DB
@@ -255,7 +249,7 @@ async function main() {
             VALUES ($1,$2,$3,$4,$5,$6)
         `
         const {name, email, phone, address, desc} = req.body
-        const values = [user.id, name, address, email, phone, desc]
+        const values = [user.uid, name, address, email, phone, desc]
         try {
             result = await pool.query(query,values)
             console.log("Aggiunta attività completata");
@@ -285,7 +279,7 @@ async function main() {
             
             const isCorrect = await bcrypt.compare(pw, user.rows[0].password)
             if (!isCorrect) {
-                    res.status(401).json({error:"Credenziali non valide"})
+                    res.status(401).json({err:"Credenziali non valide"})
                     console.log("password errata");
                     return
             }
@@ -319,10 +313,10 @@ async function main() {
                     secure:true,
                     sameSite:'Strict',
                     maxAge:7 * 24 * 60 * 60 * 1000 //7 giorni
-                }).json({usertype:user.role})
+                }).json({usertype:user.usertype})
             
         }else{
-            res.status(401).json({error:"Credenziali non valide"})
+            res.status(401).json({err:"Credenziali non valide"})
             console.log("no rows");
             
         } 
@@ -333,11 +327,18 @@ async function main() {
 
 
     app.post("/renewToken", async (req,res)=>{
-        const token = renewToken(req.body["token"], pool)
-        if (token==-1) {
-            res.status(401)
-        }else{
-            res.status(200).json({token:token})
+        const token = await renewToken(req, res, pool)
+        if (token!==-1) {
+            console.log("token generato correttamente");
+            
+            res.status(200)
+            .cookie('accessToken', token,{
+                httpOnly:true,
+                secure:true, 
+                sameSite:'Strict',
+                maxAge: 50 * 60 * 1000 //50 minuti
+            })
+            .json({})
         }
     })
     app.post('/logout', async (req, res) => {
@@ -377,13 +378,13 @@ async function main() {
         if (user===-1) {
             return
         }
-        if (user.role!=2) {
+        if (user.usertype!=2) {
             console.log("tipo utente errato");
-            res.status(401).json({error:"unauthorized"})
+            res.status(401).json({})
         }else{
             console.log(req.body);
             
-            const result = await addProduct(req, user.id,pool)
+            const result = await addProduct(req, user.uid,pool)
             if (result===0) {
                 res.status(200).json({})
             }else{
@@ -402,11 +403,11 @@ async function main() {
 
         if (!id) {
             console.log("richiesta prodotti");
-            if (user!==-1 && user.role===2) {
+            if (user!==-1 && user.usertype===2) {
                 if (!filters) {
                     var filters = {}
                 }
-                filters.produttore = user.id
+                filters.produttore = user.uid
             }
             if (!filters) {
                 var result = await getProducts(pool)    
@@ -420,9 +421,10 @@ async function main() {
                 console.log("nessun risultato trovato");
                 res.status(200).json({prodotti:0})
             }else{
-                console.log(result);
+                console.log(user.usertype);
+                
                 if (user!==-1) {
-                    res.status(200).json({prodotti:result, usertype:user.role})
+                    res.status(200).json({prodotti:result, usertype:user.usertype})
                 }else{
                     res.status(200).json({prodotti:result, usertype:3})
                 }
@@ -432,7 +434,7 @@ async function main() {
             //richiesta prodotto specifico
             var result  = await getProducts(pool, null, id)
             if (user!==-1) {
-               res.status(200).json({prodotti:result, usertype:user.role})
+               res.status(200).json({prodotti:result, usertype:user.usertype})
             }else{
                 res.status(200).json({prodotti:result, usertype:3})
             }
@@ -450,8 +452,7 @@ async function main() {
         
         */
     })
-    
-    
+     
     
     app.post("/addCart", async (req,res) => {
         
@@ -459,16 +460,16 @@ async function main() {
         if (!id) {
             console.log("missing product");
                         
-            res.status(401).json({error:"missing product"})
+            res.status(401).json({err:"missing product"})
             return
         }
         const user = checkToken(req,res)
         if (user!== -1) {
-            if (user.role!==1) {
-                res.status(401).json({error:"unauthorized"})
+            if (user.usertype!==1) {
+                res.status(401).json({err:"unauthorized"})
                 return
             }   
-            const status = await addCart(pool, id, user.id)
+            const status = await addCart(pool, id, user.uid)
             if (status===-1) {
                 res.status(500).json({})
             } else if (status === 0) {
@@ -485,11 +486,11 @@ async function main() {
         
         const user = checkToken(req,res)
         if (user!==-1) {
-              if (user.role!==1) {
-                res.status(401).json({error:"unauthorized"})
+              if (user.usertype!==1) {
+                res.status(401).json({})
                 return
             }
-            const response = await getCart(pool, user.id)
+            const response = await getCart(pool, user.uid)
             if (response!==-1) {
                 res.status(200).json({carrello:response})
                 console.log("AAA");
@@ -507,11 +508,11 @@ async function main() {
         
         const user = checkToken(req,res)
         if (user!==-1) {
-              if (user.role!==1) {
-                res.status(401).json({error:"unauthorized"})
+              if (user.usertype!==1) {
+                res.status(401).json({})
                 return
             }
-            const response = await emptyCart(pool, user.id)
+            const response = await emptyCart(pool, user.uid)
             if (response===0) {
                 res.status(200).json({})
                 console.log("AAA");
@@ -538,7 +539,7 @@ async function main() {
             res.status(400).json({})
             return
         }
-        const response = await addReport(pool,user.id, productid, dove, desc)
+        const response = await addReport(pool,user.uid, productid, dove, desc)
         console.log(response);
         if (response===0) {
             res.status(200).json({})
@@ -551,8 +552,8 @@ async function main() {
         //verifica token
         const user = checkToken(req,res)
         if (user!==-1) {
-              if (user.role!==0) {
-                res.status(401).json({error:"unauthorized"})
+              if (user.usertype!==0) {
+                res.status(401).json({})
                 return
             }
             const response = await getReports(pool)
@@ -574,9 +575,9 @@ async function main() {
             console.log("wrong token");
             return
         }
-        if (user.role!==0) {
+        if (user.usertype!==0) {
             console.log("wrong usertype");
-            res.status(401).json({error:"unauthorized"})
+            res.status(401).json({})
             return
         }
         const {id}=req.body
@@ -604,9 +605,9 @@ async function main() {
             console.log("wrong token");
             return
         }
-        if (user.role!==0) {
+        if (user.usertype!==0) {
             console.log("wrong usertype");
-            res.status(401).json({error:"unauthorized"})
+            res.status(401).json({})
             return
         }
         const {id, type}=req.body
@@ -642,7 +643,7 @@ async function main() {
         console.log("richiesta artigiani");
         
         user = checkToken(req,res,false)
-        if (user!==-1 && user.role===2) {
+        if (user!==-1 && user.usertype===2) {
             res.status(200).send({art:0})
             console.log("utente artigiano");
             
@@ -660,7 +661,7 @@ async function main() {
 
     app.post("/userArea", async(req,res)=>{        
         const user = checkToken(req,res)
-        if (user.role===2) {
+        if (user.usertype===2) {
             console.log("artigiano");
             try {
                 const response = await pool.query(`SELECT utenti.nome AS unome, utenti.cognome AS ucognome, utenti.username, utenti.email AS umail, utenti.ntel AS untel, attivita.nome AS anome, attivita.indirizzo, attivita.email AS amail, attivita.ntel AS antel, attivita.descr  FROM utenti JOIN attivita ON utenti.uid=attivita.actid WHERE uid = $1`, [user.uid])
@@ -674,9 +675,9 @@ async function main() {
         }else{
             console.log("cliente");
             try {                
-                console.log("ID = "+user.id);
+                console.log("ID = "+user.uid);
                 
-                const response = await pool.query(`SELECT nome, cognome, username, email, ntel FROM utenti WHERE uid = $1`, [user.id])
+                const response = await pool.query(`SELECT nome, cognome, username, email, ntel FROM utenti WHERE uid = $1`, [user.uid])
                 //gestire richiesta acquisti
                 res.status(200).json({user:response.rows[0]})
                 console.log(response);
@@ -737,7 +738,7 @@ async function main() {
         }
 
         query = query + ` WHERE uid = $`+(values.length+1)
-        values.push(user.id)
+        values.push(user.uid)
         try {
             if (values.length<2) {
                 res.status(400).json({})
@@ -764,7 +765,7 @@ async function main() {
         if (user===-1) {
             return
         }
-        if (user.role !== 1) {
+        if (user.usertype !== 1) {
             res.status(400).json({})
             return
         }
@@ -773,7 +774,7 @@ async function main() {
             await pool.query(`BEGIN`)
 
             //verifica quantità prodotti richiesti    
-            const products = await pool.query(`SELECT * FROM carrello WHERE uid=$1`, [user.id])
+            const products = await pool.query(`SELECT * FROM carrello WHERE uid=$1`, [user.uid])
             console.log(products.rows);
             var ord = {}
         
@@ -808,8 +809,8 @@ async function main() {
             console.log(ord);
             //aggiungi ordine
             const exp = new Date(Date.now()+15*60*1000)
-            await pool.query(`INSERT INTO ordini(uid, products, created, expires_at) VALUES ($1,$2,NOW(), $3)`, [user.id, ord, exp])
-            await pool.query(`DELETE FROM carrello WHERE uid=$1`, [user.id])
+            await pool.query(`INSERT INTO ordini(uid, products, created, expires_at) VALUES ($1,$2,NOW(), $3)`, [user.uid, ord, exp])
+            await pool.query(`DELETE FROM carrello WHERE uid=$1`, [user.uid])
             //invia pagina
             res.status(200).json({})
             await pool.query(`COMMIT`)
@@ -836,7 +837,7 @@ async function main() {
             return
         }
         //prendo informazioni ordine
-        var elementi = await pool.query(`SELECT products FROM ordini WHERE uid=$1 AND expires_at IS NOT NULL`, [user.id])
+        var elementi = await pool.query(`SELECT products FROM ordini WHERE uid=$1 AND expires_at IS NOT NULL`, [user.uid])
         //creo array con elementi
         var li = []
         if (elementi.rows.length===0) {
@@ -870,7 +871,7 @@ async function main() {
                 success_url:`http://localhost:3000/success`,
                 cancel_url:`http://localhost:3000/cancelTransaction`
             })
-            res.json({id:session.id})
+            res.json({id:session.uid})
         } catch (error) {
             console.log(error);
             
@@ -890,7 +891,8 @@ async function main() {
         res.sendFile(path.join(__dirname,"Frontend/userArea/userArea.html"))
     })
     app.get("/test",(req,res)=>{
-        res.sendFile(path.join(__dirname,"prova.html"))
+        
+        res.sendFile(path.join(__dirname,"/prova.html"))
     })
 
 

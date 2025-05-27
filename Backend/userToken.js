@@ -11,12 +11,14 @@ app.use(bodyParser.json());
 
 // Funzione per creare un access token
 function createAccessToken(user) {
-    return jwt.sign({ id: user.uid, nome: user.name, mail: user.email, role: user.usertype}, SECRET_KEY, { expiresIn: '1h' });    
+    return jwt.sign({ uid: user.uid, usertype: user.usertype}, SECRET_KEY, { expiresIn: '1h' });    
 }
 
 // Funzione per creare un refresh token
 function createRefreshToken(user) {
-    return jwt.sign({ id: user.uid, nome: user.nome, mail: user.email }, REFRESH_SECRET_KEY, { expiresIn: '7d' });
+    console.log("usertype ="+user.usertype);
+    
+    return jwt.sign({ uid: user.uid, usertype: user.usertype}, REFRESH_SECRET_KEY, { expiresIn: '7d' });
 }
 
 function checkToken(req, res, send=true){
@@ -24,7 +26,7 @@ function checkToken(req, res, send=true){
     if (!token) {      
         console.log("no token");
         if (send) {
-            res.status(401).json({error:"missing token"})    
+            res.status(401).json({err:"missing token"})    
         }    
         return -1
     }else{
@@ -34,7 +36,7 @@ function checkToken(req, res, send=true){
         if (user==-1) {
             console.log("token non valido");
             if (send) {
-                res.status(401).json({error:"invalid token"})
+                res.status(401).json({err:"invalid token"})
             }
             return -1
         }
@@ -53,45 +55,51 @@ function verify(token) {
     }
 }
 
-async function renewToken(token, pool){
+async function renewToken(req, res, pool){
+    const token = req.cookies.refreshToken;
     //verifico esistenza token
-    const query = `SELECT * FROM reftok WHERE token=$1`
-    token = token["token"]
-    const values = [token]
+    if (!token) {
+        res.status(401).json({err:"missing token"})
+        console.log("missing token");
+        
+        return -1
+    }
+    const query = `SELECT * FROM reftok WHERE token=$1 AND revoked = false`
     console.log(token);
-    var res = null
+    var response 
     try {
         console.log("verifica esistenza token");
         
-        res = await pool.query(query,values)
+        response = await pool.query(query,[token])
         console.log("verifica a db eseguita");
 
         
-        if (res.rows.length===0) {
+        if (response.rows.length===0) {
             console.log("Token not found");
+            res.status(401).json({err:"token not found"})
             return -1
         }
     } catch (error) {
         console.log(error);
+        res.status(500).json({})
         return -1
         
     }
     console.log("token trovato");
     
-    //verifico validità (revoked)
-    if (res.rows[0].revoked) {
-        console.log("Token revoked");
-        return -1
-    }
     console.log("token ancora valido");
     
     //verifico correttezza (jwt.verify)
 
     try {
         user = jwt.verify(token,REFRESH_SECRET_KEY)
+        console.log("verifica eseguita");
+        console.log("usertype = "+user.usertype);
+        
     } catch (error) {
-        console.log("verify failed");    
+        console.log("Verification  failed");    
         console.log(error);
+        res.status(401).json({err:"Verification  failed"})
         return -1        
     }
     console.log("creazione nuovo token");    
@@ -104,6 +112,8 @@ async function renewToken(token, pool){
 
 async function registerToken(user, pool) {
 
+    console.log(user.rows[0].usertype);
+    
     const accessToken = createAccessToken(user.rows[0])
     const refreshToken = createRefreshToken(user.rows[0])
     console.log("creati token");
