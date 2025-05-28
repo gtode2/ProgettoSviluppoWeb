@@ -113,13 +113,13 @@ async function main() {
                     console.log("no token");
                     res.sendFile(path.join(__dirname,"Frontend/unlogged","unlogged.html"))                
                 }else{
-                    res.status(401).json({err:"refresh token expired"})
+                    res.redirect("/renewToken?from=/")
                 }
                 
             }else{
                 console.log(token);
             
-                const user = checkToken(req,res,token)
+                const user = checkToken(req,res,false)
                 if (user!==-1) {
                     switch (user.usertype) {
                         case 1:
@@ -310,7 +310,7 @@ async function main() {
                     httpOnly:true,
                     secure:true, 
                     sameSite:'Strict',
-                    maxAge: 50 * 60 * 1000 //50 minuti
+                    maxAge: 1 * 60 * 1000 
                 })
                 .cookie('refreshToken', tokens["refresh"],{
                     httpOnly:true,
@@ -330,6 +330,9 @@ async function main() {
     })
 
 
+    app.get("/renewToken", (req,res)=>{
+        res.sendFile(path.join(__dirname,"Frontend","renewToken/renewToken.html"))
+    })
     app.post("/renewToken", async (req,res)=>{
         const token = await renewToken(req, res, pool)
         if (token!==-1) {
