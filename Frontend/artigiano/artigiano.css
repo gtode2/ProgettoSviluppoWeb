@@ -4,125 +4,191 @@
   margin: 0;
   padding: 0;
 }
+
 html, body {
   height: 100%;
   font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
   overflow: hidden;
-  line-height: 1.6;
 }
 
-/* ✅ LAYOUT PRINCIPALE */
+/* ✅ LAYOUT */
 .layout-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
-/* ✅ AREA PRODOTTI PUBBLICI (main view) */
-.view-prodotti {
-  flex: 1;
-  position: relative;
-  height: 100%;
+@media (min-width: 768px) {
+  .layout-container {
+    flex-direction: row;
+  }
 }
+
+/* ✅ VIEW PRODOTTI */
+.view-prodotti {
+  flex: 2;
+  height: 100vh;
+}
+
 .view-prodotti iframe {
   width: 100%;
   height: 100%;
   border: none;
-  display: block;
 }
 
-/* ✅ OVERLAY ADMIN (a scomparsa da destra) */
+/* ✅ OVERLAY ADMIN */
 .admin-overlay {
   position: fixed;
   top: 0;
   right: 0;
   width: 100%;
-  max-width: 420px;
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.97);
-  backdrop-filter: blur(6px);
-  padding: 2rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.95);
+  /* Non applichiamo il blur qui, lo useremo solo nella carrello-area */
+  backdrop-filter: none;
+  padding: 2rem;
   overflow-y: auto;
   z-index: 1000;
   transform: translateX(100%);
   transition: transform 0.3s ease-in-out;
 }
-.admin-overlay.aperto {
+
+.admin-overlay.visible {
   transform: translateX(0);
 }
 
-/* ✅ BOTTONE APERTURA MOBILE */
-.btn-toggle-overlay {
-  position: fixed;
-  bottom: 1rem;
-  left: 0.5rem;
-  z-index: 1001;
-  padding: 0.8rem 1rem;
-  font-size: 1rem;
-  background: #333;
-  color: white;
-  border: none;
-  border-radius: 0 6px 6px 0;
-  cursor: pointer;
+@media (min-width: 768px) {
+  .admin-overlay {
+    position: static;
+    transform: none !important;
+    width: 350px;
+    height: auto;
+    background: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-toggle-overlay,
+  .btn-close-overlay {
+    display: none;
+  }
 }
 
-/* ✅ BOTTONE CHIUSURA OVERLAY */
+/* ✅ BOTTONE TOGGLE MOBILE */
+/* Mostra il bottone solo su dispositivi mobili */
+@media (max-width: 767px) {
+  .btn-toggle-overlay {
+    display: block;
+    position: fixed;
+    bottom: 1rem;
+    left: 0.5rem;
+    z-index: 1001;
+    /*
+      Impostiamo dimensioni fisse per mostrare solo l'icona, 
+      ad esempio 48x48px. Regola in base alle tue necessità.
+    */
+    width: 48px;
+    height: 48px;
+    border: none;
+    /* Inserisci qui il percorso reale dell'immagine del carrello */
+    background-size: 24px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    /* Nascondiamo eventuale testo all'interno */
+    text-indent: -9999px;
+  }
+}
+
+/* Nascondi il bottone su dispositivi desktop */
+@media (min-width: 768px) {
+  .btn-toggle-overlay {
+    display: none;
+  }
+}
+
+/* ✅ BOTTONE CHIUSURA */
 .btn-close-overlay {
   position: absolute;
   top: 1rem;
-  right: 1rem;
+  left: 1rem;  /* Posizionato a sinistra per non sovrapporsi al pulsante User Info */
   font-size: 1.2rem;
   background: transparent;
   border: none;
   cursor: pointer;
 }
 
-/* ✅ HEADER E CONTROLLI */
+/* ✅ HEADER E SEZIONI */
 .admin-header {
   margin-bottom: 1rem;
 }
+
 .admin-controls {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 1rem;
+  padding-right: 1rem;
 }
 
-/* ✅ SEZIONI INTERNE */
-.prodotti-artigiano,
-.inserimento-prodotto {
-  margin-top: 1.5rem;
-}
-
-/* ✅ LISTA PRODOTTI */
-.lista-prodotti .prodotto {
-  border: 1px solid #ddd;
-  background-color: #f9f9f9;
+/* ✅ AREA CARRELLO CON EFFETTO GLASS */
+.inserimento-area {
+  margin-top: 2rem;
+  /* Effetto glass: sfondo trasparente e blurrato */
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
   padding: 1rem;
-  border-radius: 6px;
-  margin-bottom: 1rem;
-}
-.lista-prodotti .prodotto h3 {
-  margin-bottom: 0.5rem;
-}
-.lista-prodotti .azioni button {
-  margin-right: 0.5rem;
 }
 
-/* ✅ FORM STILE */
-.form-prodotto input,
-.form-prodotto button {
+.inserimento-area iframe {
   display: block;
   width: 100%;
-  margin: 0.5rem 0 1rem 0;
-  padding: 0.5rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  min-height: 300px;
+  border: none;
+  margin-top: 1rem;
+  box-sizing: border-box;
 }
 
-/* ✅ RIMUOVI OVERRIDE DESKTOP */
+/* ✅ CARD PRODOTTI */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 @media (min-width: 768px) {
-  /* Manteniamo l’overlay sempre fixed anche su desktop */
+  /* Sidebar in modalità desktop */
   .admin-overlay {
-    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 2rem;
+  }
+
+  .admin-header {
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+  }
+
+  /* La sezione carrello si espande per occupare lo spazio rimanente */
+  .inserimento-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    /* Manteniamo l'effetto glass */
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .inserimento-area iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    margin-top: 1rem;
+  }
+
+  .inserimento-area .d-grid {
+    flex-shrink: 0;
   }
 }
