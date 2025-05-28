@@ -12,24 +12,20 @@ function getProductIdFromUrl() {
 // Mostra prodotto
 function mostraDettaglioProdotto(p) {
   const container = document.getElementById("dettaglio-prodotto");
-  const utente = document.body.dataset.utente;
-
-  /*if (!prodotto) {
-    container.innerHTML = `<div class="card-body text-center"><p class="text-danger">Prodotto non trovato.</p></div>`;
-    return;
-  }*/
 
   container.innerHTML = `
-    <img src="${"immagine"}" class="card-img-top" alt="${p.name}">
-    <div class="card-body">
-      <h5 class="card-title">${p.name}</h5>
-      <p class="card-text">${p.descr}</p>
-      <p class="card-text"><strong>Prezzo:</strong> €${p.costo}</p>
-      <p class="card-text"><small class="text-muted">Categoria: ${"categoria prodotto"}</small></p>
-      
+    <div class="card">
+      <img src="${p.immagine}" class="card-img-top" alt="${p.name}">
+      <div class="card-body">
+        <h5 class="card-title">${p.name}</h5>
+        <p class="card-text">${p.descr}</p>
+        <p class="card-text"><strong>Prezzo:</strong> €${p.costo}</p>
+        <p class="card-text"><small class="text-muted">Categoria: ${p.categoria || 'non specificata'}</small></p>
+      </div>
     </div>
   `;
 }
+
 
 // Init
 document.addEventListener("DOMContentLoaded", async() => {
@@ -55,7 +51,16 @@ document.addEventListener("DOMContentLoaded", async() => {
 });
 
 
+// Funzione per chiudere il dettaglio del prodotto
 function closeProduct() {
-  console.log("close"); 
-  window.parent.closeProduct()
+  if (window.parent && window.parent.document) {
+    const overlay = window.parent.document.getElementById("dettagli-overlay");
+    const frame = window.parent.document.getElementById("dettagli-frame");
+    if (overlay && frame) {
+      frame.src = "";
+      overlay.classList.add("d-none");
+    }
+  } else {
+    window.location.href = "../prodotti/prodotti.html";
+  }
 }

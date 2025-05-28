@@ -1,0 +1,36 @@
+.dettagli-e-immagine {
+        display: flex;
+        height: 100vh; /* Occupiamo l'intera viewport */
+      }
+      .dettagli {
+        width: 75%;
+        position: relative; /* Per posizionare il pulsante in maniera assoluta */
+        overflow-y: auto; /* In caso di contenuti lunghi */
+        padding: 2rem;
+      }
+      .immagine {
+        width: 25%;
+        overflow: hidden;
+      }
+      .immagine img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      @media (max-width: 768px) {
+        .dettagli-e-immagine {
+          flex-direction: column;
+        }
+        .immagine,
+        .dettagli {
+          width: 100%;
+          height: auto;
+        }
+      }
+      /* Stili per il pulsante di chiusura */
+      .close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2;
+      }
