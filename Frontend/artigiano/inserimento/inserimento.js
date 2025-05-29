@@ -49,11 +49,11 @@ document.addEventListener("DOMContentLoaded", function() {
           )
         */
           console.log("svuotamento inserimento prodotti");
-          
           document.getElementById("nome").value = ""
           document.getElementById("descrizione").value = ""
           document.getElementById("prezzo").value = ""
           document.getElementById("quantita").value = ""
+          alert("Prodotto inserito correttamente")
         /*
         } else {
           console.error("Funzione addProduct non trovata nell'iframe!");

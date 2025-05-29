@@ -1,6 +1,9 @@
-.card-body{
+/* prodotti.css */
+
+.card-body {
   cursor: pointer;
 }
+
 /* Sfondo iframe */
 .background-frame {
   position: fixed;
@@ -10,7 +13,8 @@
   height: 100vh;
   border: none;
   z-index: -1;
-  filter: blur(4px);
+  filter: blur(2.5px) brightness(1.02) saturate(1.1);
+  opacity: 0.92;
 }
 
 /* Prezzo */
@@ -41,6 +45,15 @@
 /* === Modalità Card === */
 .row.justify-content-center .card {
   height: 100%;
+  background-color: rgba(255, 248, 240, 0.85);
+  border: 1px solid #e6d3b3;
+  border-radius: 16px;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(2px);
+  transition: transform 0.2s ease;
+}
+.row.justify-content-center .card:hover {
+  transform: scale(1.02);
 }
 
 /* === Modalità Lista === */
@@ -49,7 +62,12 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  background-color: rgba(255, 248, 240, 0.85);
+  border: 1px solid #e6d3b3;
+  border-radius: 16px;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.08);
 }
+
 .col-12 .card img {
   width: 120px;
   height: auto;
@@ -71,9 +89,45 @@
   align-items: center;
   scroll-snap-align: start;
   padding: 2rem;
+  background-color: rgba(255, 248, 240, 0.85);
+  border: 1px solid #e6d3b3;
+  border-radius: 16px;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.08);
 }
 .flex-shrink-0 .card img {
   max-height: 50vh;
   object-fit: contain;
   margin-bottom: 1rem;
+}
+
+/* Navbar rustica */
+.navbar {
+  background-color: #fff8f0 !important;
+  border-bottom: 1px solid #e6d3b3;
+}
+
+/* Pulsanti coerenti */
+.btn-outline-success {
+  color: #6d4c41;
+  border-color: #bfa68a;
+}
+
+.btn-outline-success:hover {
+  background-color: #bfa68a;
+  color: white;
+  border-color: #a0805d;
+}
+
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-dark {
+  border-color: #a0805d;
+  color: #6d4c41;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-dark:hover {
+  background-color: #a0805d;
+  color: white;
 }

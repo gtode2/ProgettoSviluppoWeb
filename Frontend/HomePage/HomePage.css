@@ -1,3 +1,5 @@
+/* HomePage.css */
+
 * {
   margin: 0;
   padding: 0;
@@ -5,27 +7,69 @@
 }
 
 body {
-  background: linear-gradient(135deg, #f9f3e9, #edddb7);
-  background-size: cover;
   min-height: 100vh;
-  
   font-family: 'Georgia', serif;
   color: #4e342e;
+
+  background: linear-gradient(145deg, #fce3b3, #fffdf7);
 }
+
+
+
 
 .container {
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 2rem;
 }
 
-h1, h2, h3 {
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2.5rem;
   color: #3e2723;
-  margin-bottom: 0.5rem;
+  text-shadow: 1px 1px 0 #e0d2b8;
 }
 
 p {
-  line-height: 1.6;
-  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #5d4037;
+  margin-top: 0.5rem;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.card {
+  background-color: #fffdf7;
+  border: 1px solid #f2d8b6;
+  border-radius: 12px;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+  box-shadow: 4px 8px 16px rgba(0, 0, 0, 0.06);
+}
+
+.card button {
+  background-color: #e3a672;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+}
+
+.card button:hover {
+  background-color: #c78856;
 }
