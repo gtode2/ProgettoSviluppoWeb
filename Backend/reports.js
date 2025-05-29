@@ -1,9 +1,6 @@
 async function addReport(pool, uid, pid, type, desc) {
-    const query = 'INSERT INTO report(uid, prodid, type, descr, solved) VALUES ($1,$2,$3,$4,$5)'
-    const values = [uid,pid,type,desc,false]
-
     try {
-        await pool.query(query,values)
+        await pool.query('INSERT INTO report(uid, prodid, type, descr, solved) VALUES ($1,$2,$3,$4,$5)',[uid,pid,type,desc,false])
         console.log("report aggiunto correttamente");
         return 0
     } catch (error) {

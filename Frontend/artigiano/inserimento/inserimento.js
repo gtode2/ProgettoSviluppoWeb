@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
-  console.log("DOM Caricato");
-  gestisciOverlayArtigiano();
+  console.log("Inserimento caricato");
+  //gestisciOverlayArtigiano();
   
   const send = document.getElementById("sendProduct");
-  send.addEventListener("click", async (event) => {
+})
+
+async function sendData(){
     console.log("Invio prodotto");
-    
-    event.preventDefault();  // Potrai rimuovere questo parametro al cambio della gestione del form
+
     const msg = {
       name: document.getElementById("nome").value,
       descr: document.getElementById("descrizione").value,
@@ -14,8 +15,6 @@ document.addEventListener("DOMContentLoaded", function() {
       amm: document.getElementById("quantita").value
       // img può essere aggiunta se necessario
     };
-
-
 
 
     try {
@@ -29,15 +28,23 @@ document.addEventListener("DOMContentLoaded", function() {
       console.log("Risposta ricevuta")
 
       if (!response.ok) {
-          // Inserisci qui la gestione degli errori (es. res.status per errori specifici)
-          console.log("ERRORE");
-          
+        // Inserisci qui la gestione degli errori (es. res.status per errori specifici)
+        if (response.status===401) {
+          if (data.err==="missing token") {
+              const res =await renewToken()
+              if (res===0) {
+                  await sendData()
+              }else{
+                  window.parent.location.href = "/"
+              }
+          }
+        }
       }else{
         console.log("prodotto inserito correttamente \n tentativo modifica prodotti");
         
-        const iframe = document.getElementById("prodotti-iframe");
-        const iframeWin = iframe.contentWindow;
-        const id = data.id;
+        //const iframe = document.getElementById("prodotti-iframe");
+        //const iframeWin = iframe.contentWindow;
+        //const id = data.id;
         /*
         if (iframeWin && typeof iframeWin.addProduct === "function") {
           iframeWin.addProduct(
@@ -64,5 +71,23 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log(err);
         alert("Errore di rete.");
     }
-  })
-})
+}
+
+
+
+async function renewToken() {
+    try {
+        const response = await fetch("/renewToken", {
+            method:"POST",
+            headers: { "Content-Type": "application/json" }, 
+        })
+        if (response.ok) {
+            return 0
+        }else{
+            return -1
+        }
+    } catch (error) {
+        console.log(error);
+        
+    }
+}

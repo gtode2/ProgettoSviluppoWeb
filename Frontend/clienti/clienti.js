@@ -1,11 +1,13 @@
 function report(id) {
   console.log("AAAAAA");
-  document.getElementById('carrello-iframe').src = './clienti/report/report.html?id=' + encodeURIComponent(id);
+  document.getElementById('lat-iframe').src = './clienti/report/report.html?id=' + encodeURIComponent(id);
 }
 
+
 function loadCart() {
-  document.getElementById('carrello-iframe').src = '../carrello/carrello.html';
+  document.getElementById('lat-iframe').src = '../carrello/carrello.html';
 }
+
 
 document.addEventListener('DOMContentLoaded', function () {
   const btnToggle   = document.getElementById('btn-toggle-overlay');
@@ -35,4 +37,15 @@ function openProduct(id){
 
 function closeProduct() {
     window.parent.document.getElementById("lat-iframe").src="/clienti/carrello/carrello.html"
+}
+
+async function addToCart(id, name, price){
+  const frame = document.getElementById("lat-iframe")
+  if (!frame.src.includes("carrello.html")) {
+    frame.src = "/carrello/carrello.html"
+    await new Promise(resolve => frame.onload = () => resolve());
+  }
+
+  console.log("load cart");
+  frame.contentWindow.addToCart(id,name,price)
 }

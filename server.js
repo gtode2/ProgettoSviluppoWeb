@@ -13,10 +13,10 @@ const https = require('https');
 
 
 const { checkdb } = require("./Backend/dbmanager.js");
-const {createAccessToken, createRefreshToken, checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
-const {addProduct, getProducts, addCart, getCart, emptyCart} = require("./Backend/products.js");
+const {checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
+const {addProduct, removeProduct, getProducts, addCart, getCart, emptyCart} = require("./Backend/products.js");
 const {addReport, getReports, removeReport, removeReportedProduct, banArtigiano} = require("./Backend/reports.js");
-const { emitWarning } = require("process");
+
 
 
 
@@ -76,6 +76,10 @@ async function main() {
         }
     }
     cron.schedule('* * * * *', async() => {
+
+        //DEVE VERIFICARE ANCHE PRESENZA DI PRODOTTI BANNATI NEL CARRELLO
+        //RIMUOVERE REPORT SU PRODOTTI / UTENTI BANNATI
+
         try {
             await pool.query("BEGIN")
             const pending = await pool.query("SELECT id, expires_at, products FROM ordini WHERE expires_at<NOW()")            
@@ -113,13 +117,13 @@ async function main() {
                     console.log("no token");
                     res.sendFile(path.join(__dirname,"Frontend/unlogged","unlogged.html"))                
                 }else{
-                    res.status(401).json({err:"refresh token expired"})
+                    res.redirect("/renewToken?from=/")
                 }
                 
             }else{
                 console.log(token);
             
-                const user = checkToken(req,res,token)
+                const user = checkToken(req,res,false)
                 if (user!==-1) {
                     switch (user.usertype) {
                         case 1:
@@ -330,6 +334,9 @@ async function main() {
     })
 
 
+    app.get("/renewToken", (req,res)=>{
+        res.sendFile(path.join(__dirname,"Frontend","renewToken/renewToken.html"))
+    })
     app.post("/renewToken", async (req,res)=>{
         const token = await renewToken(req, res, pool)
         if (token!==-1) {
@@ -444,25 +451,35 @@ async function main() {
             }
         
         }
-        /*
-        
-        else{
-            console.log("richiesta prodotto specifico");
-            //richiesta prodotto specifico
-            prod = await getProducts(pool, null, id)
-        }
-        console.log(user);
-        
-        
-        */
     })
      
     
     app.delete("/product", async(req,res)=>{
+        console.log("eliminazione prodotto");
+        const {pid} = req.body
+        console.log("estratto product id ");
+        
+        if (!pid) {
+            console.log("prodotto mancante");
+            res.status(400).json({err:"no product"})
+        }
         const user = checkToken(req,res)
         if(user===-1){
             return
         }
+        const result = await removeProduct(pool, pid, user.uid)
+        console.log("result = "+result);
+        
+        if (result === 0) {
+            console.log("prodotto rimosso");
+            res.status(200).json({})
+        }else if (result===-1) {
+            res.status(500).json({})
+        }
+        else if(result===-2){
+            res.status(401).json({})
+        }
+        
         
     })
 
@@ -471,8 +488,7 @@ async function main() {
         
         const {id} = req.body
         if (!id) {
-            console.log("missing product");
-                        
+            console.log("missing product");    
             res.status(401).json({err:"missing product"})
             return
         }
@@ -487,7 +503,9 @@ async function main() {
                 res.status(500).json({})
             } else if (status === 0) {
                 res.status(200).json({res:"added"})
-            } else {        
+            } else if (status===-2){
+                res.status(404).json({err:"product removed"})   
+            }else {        
                 res.status(200).json({res:status})
             }
         }
@@ -531,9 +549,7 @@ async function main() {
                 console.log("AAA");
                 
             }else{
-                res.status(500).json({})
-                console.log("BBB");
-                
+                res.status(500).json({})                
             }
         }
     })
@@ -556,13 +572,14 @@ async function main() {
         console.log(response);
         if (response===0) {
             res.status(200).json({})
+        }else if (response===-2) {
+            res.status(404).json({})
         }else{
             res.status(500).json({})
         }
         
     })
     app.post("/getReports", async(req,res)=>{
-        //verifica token
         const user = checkToken(req,res)
         if (user!==-1) {
               if (user.usertype!==0) {
@@ -572,15 +589,10 @@ async function main() {
             const response = await getReports(pool)
             if (response!==-1) {
                 res.status(200).json({reports:response})
-                console.log("AAA");
-                
             }else{
                 res.status(500).json({})
-                console.log("BBB");
-                
             }
         }
-        //chiamata funzione reporst/getReports        
     })
     app.post("/closeReport", async (req,res) => {
         const user = checkToken(req,res)
@@ -597,7 +609,6 @@ async function main() {
         if (!id) {
             res.status(400).json({})
             console.log("missing id");
-            
             return
         }
 
@@ -642,7 +653,7 @@ async function main() {
             const result = await banArtigiano(pool,id)    
             if (result===0) {
                 res.status(200).json({})
-                console.log("prodotto rimosso correttamente");
+                console.log("artigiano rimosso correttamente");
             }else{
                 res.status(500).json({})
             }
@@ -659,10 +670,10 @@ async function main() {
         if (user!==-1 && user.usertype===2) {
             res.status(200).send({art:0})
             console.log("utente artigiano");
-            
+            return
         }
         try {
-            response = await pool.query("SELECT actid, nome FROM attivita")
+            response = await pool.query("SELECT actid, attivita.nome FROM attivita JOIN utenti ON actid = uid WHERE banned=FALSE")
             res.status(200).json({art:response.rows})
             console.log(response.rows);
             
@@ -675,10 +686,11 @@ async function main() {
 
     app.get("/userArea", async (req,res)=>{
         const user = checkToken(req,res, false)
+        
         if (user===-1) {
             return
         }
-        if (user.usertype = 2) {
+        if (user.usertype === 2) {
             const response = await pool.query(`SELECT * FROM attivita WHERE actid=$1`, [user.uid])
             if (response.rows.length===0) {
                 console.log("no activity");
@@ -804,17 +816,17 @@ async function main() {
             await pool.query(`BEGIN`)
 
             //verifica quantità prodotti richiesti    
-            const products = await pool.query(`SELECT * FROM carrello WHERE uid=$1`, [user.uid])
+            const products = await pool.query(`SELECT * FROM carrello WHERE uid=$1 AND banned=FALSE`, [user.uid])
             console.log(products.rows);
             var ord = {}
         
             if (products.rowCount===0) {
                 res.status(401).json({})
             }
+            //per ogni prodotto
             for (const el of products.rows) {
                 var qt = await pool.query(`SELECT amm, costo, name FROM prodotti WHERE id=$1`, [el.productid])
                 console.log("\nprodotto: "+el.productid);
-                
                 console.log("disponibile = "+qt.rows[0].amm);
                 console.log("richiesta = "+el.quantita);
                 
@@ -857,7 +869,7 @@ async function main() {
     app.get("/checkout", (req,res)=>{
         res.sendFile(path.join(__dirname,"Frontend","/checkout/checkout.html"))
     })
-
+    //restituire errore nel caso di prodotti banned
     app.post("/confirmCheckout", async (req,res)=>{
         //verifica id utente
         const user = checkToken(req,res)
@@ -907,8 +919,6 @@ async function main() {
             
         }
     })
-
-
 
 
 

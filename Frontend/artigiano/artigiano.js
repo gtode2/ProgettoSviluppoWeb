@@ -25,9 +25,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// Codice da eseguire dopo il caricamento totale del DOM
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM Caricato");
+  gestisciOverlayArtigiano();
 
   // Gestione del form che si trova nell'iframe "inserimento.html"
   const iframeInserimento = document.getElementById("iframe-inserimento");

@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
 const express = require("express");
-const { Pool } = require("pg");
 
 const SECRET_KEY="chiaveesempio"
 const REFRESH_SECRET_KEY="chiaveesempiomapiubrutta"
