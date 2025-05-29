@@ -3,9 +3,9 @@ document.addEventListener("DOMContentLoaded", function() {
   //gestisciOverlayArtigiano();
   
   const send = document.getElementById("sendProduct");
-  console.log("bottone = "+send);
-  
-  send.addEventListener("click", async () => {
+})
+
+async function sendData(){
     console.log("Invio prodotto");
 
     const msg = {
@@ -28,9 +28,17 @@ document.addEventListener("DOMContentLoaded", function() {
       console.log("Risposta ricevuta")
 
       if (!response.ok) {
-          // Inserisci qui la gestione degli errori (es. res.status per errori specifici)
-          console.log("ERRORE");
-          
+        // Inserisci qui la gestione degli errori (es. res.status per errori specifici)
+        if (response.status===401) {
+          if (data.err==="missing token") {
+              const res =await renewToken()
+              if (res===0) {
+                  await sendData()
+              }else{
+                  window.parent.location.href = "/"
+              }
+          }
+        }
       }else{
         console.log("prodotto inserito correttamente \n tentativo modifica prodotti");
         
@@ -63,5 +71,23 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log(err);
         alert("Errore di rete.");
     }
-  })
-})
+}
+
+
+
+async function renewToken() {
+    try {
+        const response = await fetch("/renewToken", {
+            method:"POST",
+            headers: { "Content-Type": "application/json" }, 
+        })
+        if (response.ok) {
+            return 0
+        }else{
+            return -1
+        }
+    } catch (error) {
+        console.log(error);
+        
+    }
+}

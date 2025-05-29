@@ -2,10 +2,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
   const isBackground = params.get("mode") === "background";
   const userType = params.get("user") || "cliente";
-
-  const logout = document.getElementById("logout");
-  const annulla = document.getElementById("annulla");
-  const salva = document.getElementById("salva");
   const bgIframe = document.getElementById("user-bg-iframe");
 
   // 🔁 Caricamento dinamico dello sfondo
@@ -49,47 +45,52 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(err);
     alert("Errore di rete.");
   }
+});
 
-  // ❌ Pulsante Annulla
-  annulla.addEventListener("click", () => {
-    ["nome", "cognome", "username", "email", "telefono"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = "";
-    });
+async function cancel() {
+  ["nome", "cognome", "username", "email", "telefono"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
   });
+}
 
-  // 💾 Pulsante Salva
-  salva.addEventListener("click", async () => {
-    console.log("Salvataggio in corso...");
-
-    const values = {};
-    ["nome", "cognome", "username", "email", "telefono"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el && el.value) {
-        values[id === "telefono" ? "ntel" : id] = el.value;
-      }
-    });
-
-    try {
-      const response = await fetch("/updateUser", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-
-      if (response.ok) {
-        window.location.href = "/userArea";
-      } else {
-        console.log("Errore durante l'update", response.status);
-      }
-    } catch (error) {
-      window.location.href = "/";
+async function save() {
+  const values = {};
+  ["nome", "cognome", "username", "email", "telefono"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.value) {
+      values[id === "telefono" ? "ntel" : id] = el.value;
     }
   });
+  try {
+    const response = await fetch("/updateUser", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
+    const data = await response.json()
+    if (response.ok) {
+      window.location.href = "/userArea";
+    } else {
+      //gestione errori
+      if (response.status===401) {      
+        if (data.err==="missing token") {
+          const res = await renewToken()
+          if (res===0) {            
+            await save()
+          }else{
+            window.location.href="/"
+          }
+        }
+      }
+    }
+  } catch (error) {
+    window.location.href = "/";
+  }
+}
 
-  // 🚪 Logout
-  logout.addEventListener("click", async () => {
-    try {
+async function logout() {
+  try {
       await fetch("/logout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -99,5 +100,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     } finally {
       window.location.href = "/";
     }
-  });
-});
+}
+
+
+
+async function renewToken() {
+    try {
+        const response = await fetch("/renewToken", {
+            method:"POST",
+            headers: { "Content-Type": "application/json" }, 
+        })
+        if (response.ok) {
+            return 0
+        }else{
+            return -1
+        }
+    } catch (error) {
+        console.log(error);
+        
+    }
+}

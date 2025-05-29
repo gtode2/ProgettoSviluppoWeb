@@ -580,7 +580,6 @@ async function main() {
         
     })
     app.post("/getReports", async(req,res)=>{
-        //verifica token
         const user = checkToken(req,res)
         if (user!==-1) {
               if (user.usertype!==0) {
@@ -594,7 +593,6 @@ async function main() {
                 res.status(500).json({})
             }
         }
-        //chiamata funzione reporst/getReports        
     })
     app.post("/closeReport", async (req,res) => {
         const user = checkToken(req,res)
@@ -688,10 +686,11 @@ async function main() {
 
     app.get("/userArea", async (req,res)=>{
         const user = checkToken(req,res, false)
+        
         if (user===-1) {
             return
         }
-        if (user.usertype = 2) {
+        if (user.usertype === 2) {
             const response = await pool.query(`SELECT * FROM attivita WHERE actid=$1`, [user.uid])
             if (response.rows.length===0) {
                 console.log("no activity");
@@ -802,7 +801,6 @@ async function main() {
 
     })
     
-    //SISTEMARE CON NUOVA GESTIONE BAN
     app.post("/checkout", async(req,res)=>{
         //verifica utente
         user = checkToken(req,res)
@@ -818,17 +816,17 @@ async function main() {
             await pool.query(`BEGIN`)
 
             //verifica quantità prodotti richiesti    
-            const products = await pool.query(`SELECT * FROM carrello WHERE uid=$1`, [user.uid])
+            const products = await pool.query(`SELECT * FROM carrello WHERE uid=$1 AND banned=FALSE`, [user.uid])
             console.log(products.rows);
             var ord = {}
         
             if (products.rowCount===0) {
                 res.status(401).json({})
             }
+            //per ogni prodotto
             for (const el of products.rows) {
                 var qt = await pool.query(`SELECT amm, costo, name FROM prodotti WHERE id=$1`, [el.productid])
                 console.log("\nprodotto: "+el.productid);
-                
                 console.log("disponibile = "+qt.rows[0].amm);
                 console.log("richiesta = "+el.quantita);
                 
@@ -871,7 +869,7 @@ async function main() {
     app.get("/checkout", (req,res)=>{
         res.sendFile(path.join(__dirname,"Frontend","/checkout/checkout.html"))
     })
-    //SISTEMARE CON NUOVA GESTIONE BAN
+    //restituire errore nel caso di prodotti banned
     app.post("/confirmCheckout", async (req,res)=>{
         //verifica id utente
         const user = checkToken(req,res)
@@ -921,8 +919,6 @@ async function main() {
             
         }
     })
-
-
 
 
 

@@ -1,41 +1,23 @@
-/*
-class Carrello {
-  constructor() {
-    this.prodotti = JSON.parse(localStorage.getItem("carrello")) || [];
+document.addEventListener("DOMContentLoaded", async() => {
+  try {
+    const response = await fetch("/getCart", {
+      method:"POST",
+      headers: { "Content-Type": "application/json"},
+    })
+    const data = await response.json()
+    if (response.ok) {
+      console.log(data);
+      data.carrello.forEach(el => {
+      add(el.productid, el.name, el.costo)        
+      })
+    }else{
+      //gestione errori
+    }
+  } catch (error) {
+    console.log(err);
+    alert("Errore di rete.");
   }
-
-  aggiungi(prodotto) {
-    this.prodotti.push(prodotto);
-    this.salva();
-  }
-
-  rimuovi(index) {
-    this.prodotti.splice(index, 1);
-    this.salva();
-  }
-
-  svuota() {
-    this.prodotti = [];
-    this.salva();
-  }
-
-  salva() {
-    localStorage.setItem("carrello", JSON.stringify(this.prodotti));
-  }
-
-  getTotale() {
-    return this.prodotti.reduce((tot, p) => tot + p.prezzo, 0);
-  }
-
-  getLista() {
-    return this.prodotti;
-  }
-
-  stampa() {
-    console.table(this.prodotti);
-  }
-}
-*/
+});
 
 async function addToCart(id, name, price) {
   console.log(name);
@@ -62,6 +44,16 @@ async function addToCart(id, name, price) {
       if (data.res==="product removed") {
         alert("il prodotto è stato rimosso dall'artigiano")
         parent.location.reload()
+      }
+      if (response.status===401) {
+        if (data.err==="missing token") {
+            const res = await renewToken()
+            if (res===0) {
+              addToCart(id,name,price)
+            }else{
+              window.parent.location.href="/"
+            }
+        }
       }
     }
   } catch (error) {
@@ -98,6 +90,7 @@ async function remove(){
       method:"POST",
       headers: { "Content-Type": "application/json"},
     })
+    const data = await response.json()
     if (response.ok) {
       console.log("response ok");
       
@@ -107,9 +100,21 @@ async function remove(){
       totale.innerText = "€0"      
     }else{
       //gestione errori
+      if (response.status===401) {
+        if (data.err==="missing token") {
+          const res = await renewToken()
+          if (res===0) {
+            console.log("tentativo rimozione");
+            
+            remove()
+          }else{
+            window.parent.location.href = "/"
+          }
+        }
+      }
     }
   } catch (error) {
-    console.log(err);
+    console.log(error);
     alert("Errore di rete.");
   }
 
@@ -119,70 +124,9 @@ async function remove(){
   
 
 }
-function increase(){}
-function decrease(){}
+async function increase(){}
+async function decrease(){}
 
-// DOM: genera riepilogo dinamico
-document.addEventListener("DOMContentLoaded", async() => {
-  try {
-    const response = await fetch("/getCart", {
-      method:"POST",
-      headers: { "Content-Type": "application/json"},
-    })
-    const data = await response.json()
-    if (response.ok) {
-      console.log(data);
-      data.carrello.forEach(el => {
-      add(el.productid, el.name, el.costo)        
-      });
-      
-    }else{
-      //gestione errori
-    }
-  } catch (error) {
-    console.log(err);
-    alert("Errore di rete.");
-  }
-  
-  
-  //const totale = document.getElementById("totale");
-  
-  /*
-  const carrello = new Carrello();
-  const lista = carrello.getLista();
-  
-  if (lista.length === 0) {
-    riepilogo.innerHTML = `<div class="alert alert-info">Il carrello è vuoto.</div>`;
-    totale.textContent = "€0";
-    return;
-  }
-
-  lista.forEach((p, i) => {
-    const riga = document.createElement("div");
-    riga.className = "d-flex justify-content-between align-items-center border-bottom py-2";
-    riga.innerHTML = `
-      <div><strong>${p.nome}</strong></div>
-      <div>€${p.prezzo.toFixed(2)}</div>
-    `;
-    riepilogo.appendChild(riga);
-  });
-
-  totale.textContent = `€${carrello.getTotale().toFixed(2)}`;
-
-  document.getElementById("proseguiPagamento").addEventListener("click", () => {
-    alert("Pagamento simulato! Grazie per l'acquisto.");
-    carrello.svuota();
-    location.reload();
-  });
-
-  document.getElementById("svuotaCarrello").addEventListener("click", () => {
-    if (confirm("Sei sicuro di voler svuotare il carrello?")) {
-      carrello.svuota();
-      location.reload();
-    }
-  });
-  */
-});
 
 async function checkout(){
   console.log("checkout");
@@ -197,9 +141,36 @@ async function checkout(){
       parent.window.location.href = "/checkout";
     }else{
       //gestione errori
+      if (data.err==="missing token") {
+        const res = await renewToken()
+        if (res===0) {
+          checkout()
+        }else{
+          window.parent.location.href = "/"
+        }
+      }
     }
   } catch (error) {
     console.log(error);
     alert("Errore di rete.");
   }
+}
+
+
+
+async function renewToken() {
+    try {
+        const response = await fetch("/renewToken", {
+            method:"POST",
+            headers: { "Content-Type": "application/json" }, 
+        })
+        if (response.ok) {
+            return 0
+        }else{
+            return -1
+        }
+    } catch (error) {
+        console.log(error);
+        
+    }
 }

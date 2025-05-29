@@ -1,4 +1,3 @@
-
 async function send(){
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');  
@@ -18,11 +17,18 @@ async function send(){
     })
     const data = await response.json()
     if (response.ok) {
-      
-
       exit()
     }else{
-      //gestione errori
+      if (response.status===401) {
+        if (data.err==="missing token") {
+          const res = await renewToken()
+          if (res===0) {
+            send()
+          }else{
+            window.parent.location.href="/"
+          }
+        }
+      }
     }
   } catch (error) {
     console.log(error);
@@ -47,3 +53,22 @@ document.addEventListener("DOMContentLoaded", async() => {
     invia.disabled = !conf.checked;
   });
 });
+
+
+
+async function renewToken() {
+    try {
+        const response = await fetch("/renewToken", {
+            method:"POST",
+            headers: { "Content-Type": "application/json" }, 
+        })
+        if (response.ok) {
+            return 0
+        }else{
+            return -1
+        }
+    } catch (error) {
+        console.log(error);
+        
+    }
+}

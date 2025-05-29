@@ -121,7 +121,7 @@ function load(data) {
 
 
 
-//aggiornare add product a nuovo sistema di rappresentazione prodotti
+/*
 function addProduct(name, immagine, descr, costo, id) {
       var container = document.querySelector(".row");
       var col = document.createElement("div");
@@ -148,12 +148,17 @@ function addProduct(name, immagine, descr, costo, id) {
     `;
     container.prepend(col);
 }
+*/
 function addToCart(id, name, price){
   window.parent.addToCart(id, name, price)  
 }
 function report(id){
   window.parent.report(id);
 }
+
+
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
   loadFromServer()
@@ -260,8 +265,6 @@ function cerca() {
   renderProducts(filtered);
 }
 */
-
-
 function renderProducts(data) {
   const container = document.getElementById("lista-prodotti");
   container.innerHTML = "";

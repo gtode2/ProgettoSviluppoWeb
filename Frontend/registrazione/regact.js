@@ -2,9 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const form = document.querySelector("form");
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    form.addEventListener("submit")
+});
 
+async function send(){
         // Controlla che il nome ci sia
         const checkName = () => {
             const name = document.getElementById("name").value.trim();
@@ -49,28 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
             desc: document.getElementById("descr").value
         };
 
-        // Invia i dati al backend
-        /*
-        try {
-            
-            });
-            if (response.ok) {
-                window.location.href = response.url
-            } 
-            else{
-                
-            }
-
-            const text = await response.json();
-            alert(text);
-        } catch (error) {
-            alert("Errore di rete.");
-            console.error(error);
-        }
-
-        */
-
-
         try {
             const response = await fetch("/RegAct", {
             method: "POST",
@@ -83,13 +62,15 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!response.ok) {
                 
                 if (response.status===401) {
-                    if (data.error==="missing token") {
-                        alert("token mancante")
-                        window.location.href = "http://localhost:3000/login"                        
+                    if (data.err==="missing token") {
+                        const res = renewToken()
+                        if (res===0) {
+                            await send()
+                        }else{
+                            window.location.href="/login"
+                        }
                     }
-                    else if (data.error==="invalid token") {
-                        //rimanda a refresh
-                    }
+                    
                 }else if (response.status===409) {
                     alert("hai già un attività")
                     window.location.href = "/"
@@ -107,5 +88,23 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log(err);
             alert("Errore di rete.");
         }
-    });
-});
+    };
+
+
+
+async function renewToken() {
+    try {
+        const response = await fetch("/renewToken", {
+            method:"POST",
+            headers: { "Content-Type": "application/json" }, 
+        })
+        if (response.ok) {
+            return 0
+        }else{
+            return -1
+        }
+    } catch (error) {
+        console.log(error);
+        
+    }
+}

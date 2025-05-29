@@ -1,7 +1,3 @@
-//IMPLEMENTARE DISATTIVAZIONE PRODUTTORE PER ARTIGIANO
-//CARICAMENTO ARTIGIANI DISPONIBILI
-
-
 let applica = false
 document.addEventListener("DOMContentLoaded", async() => {
   const modalEl = document.getElementById('modalFiltri');

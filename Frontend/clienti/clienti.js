@@ -3,12 +3,11 @@ function report(id) {
   document.getElementById('lat-iframe').src = './clienti/report/report.html?id=' + encodeURIComponent(id);
 }
 
-/*  
-TEORICAMENTE NON PIÙ UTILE - LASCIARE PER TEST
+
 function loadCart() {
   document.getElementById('lat-iframe').src = '../carrello/carrello.html';
 }
-*/
+
 
 document.addEventListener('DOMContentLoaded', function () {
   const btnToggle   = document.getElementById('btn-toggle-overlay');
