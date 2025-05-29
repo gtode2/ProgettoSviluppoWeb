@@ -59,7 +59,10 @@ async function addToCart(id, name, price) {
         
       }
     }else{
-      //gestione errori
+      if (data.res==="product removed") {
+        alert("il prodotto è stato rimosso dall'artigiano")
+        parent.location.reload()
+      }
     }
   } catch (error) {
     console.log(err);

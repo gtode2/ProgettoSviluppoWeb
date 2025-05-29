@@ -1,4 +1,3 @@
-
 async function addProduct(req, uid, pool) {   
     const query = `
         INSERT INTO prodotti(actid, name, descr, costo, amm)
@@ -16,11 +15,20 @@ async function addProduct(req, uid, pool) {
     }
     
 }
-async function removeProduct(pool, productid) {
+async function removeProduct(pool, productid, uid) {
     try {
-        const result = pool.query(``)//query di eliminazione prodotto
+        //verifica che prodotto sia dell'utente selezionato
+        var result =  await pool.query(`SELECT * FROM prodotti WHERE id = $1 AND actid=$2`, [productid, uid])
+        if (result.rows.length===0) {
+            console.log("artigiano non possiede prodotto");
+            return -2
+        }
+        result = await pool.query(`UPDATE prodotti SET banned=TRUE WHERE id=$1`,[productid])
+        return 0 
     } catch (error) {
+        console.log(error);
         
+        return -1
     }
 }
 async function getProducts(pool, filters=null, id=null){
@@ -95,14 +103,12 @@ async function getProducts(pool, filters=null, id=null){
 async function addCart(pool, prodid, uid){
     
     try {
-        var query = `
-            SELECT COUNT(*) 
-            FROM carrello
-            WHERE uid = $1
-            AND productid = $2
-        `
-        var values = [uid, prodid]
-        var result = await pool.query(query,values)
+        var result = await pool.query(`SELECT * FROM prodotti WHERE id=$1 AND banned=FALSE`, [prodid])
+        if (result.rows.length===0) {
+            console.log("prodotto rimosso");
+            return -2
+        } 
+        result = await pool.query(`SELECT COUNT(*) FROM carrello WHERE uid = $1 AND productid = $2`,[uid, prodid])
         console.log(result.rows[0].count);
         
         if (result.rows[0].count!=="0") {
@@ -110,7 +116,6 @@ async function addCart(pool, prodid, uid){
             result = increment(pool,prodid,uid)
             return result
         }
-
         query = `
             INSERT INTO carrello(uid, productid, quantita)
             VALUES ($1, $2, $3)
@@ -142,7 +147,7 @@ async function increment(pool, prodid, uid) {
 }
 async function getCart(pool, uid){
     try {
-        const res = await pool.query(`SELECT * FROM carrello JOIN prodotti ON carrello.productid = prodotti.id WHERE uid = $1 `, [uid])
+        const res = await pool.query(`SELECT * FROM carrello JOIN prodotti ON carrello.productid = prodotti.id WHERE uid = $1 AND banned=FALSE`, [uid])
         console.log(res.rows);
         return res.rows
     } catch (error) {
@@ -160,4 +165,4 @@ async function emptyCart(pool, uid){
     }
 }
 
-module.exports = {addProduct, getProducts, addCart, getCart, emptyCart} 
+module.exports = {addProduct, removeProduct, getProducts, addCart, getCart, emptyCart} 

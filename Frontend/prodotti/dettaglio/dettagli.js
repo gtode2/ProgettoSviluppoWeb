@@ -53,14 +53,6 @@ document.addEventListener("DOMContentLoaded", async() => {
 
 // Funzione per chiudere il dettaglio del prodotto
 function closeProduct() {
-  if (window.parent && window.parent.document) {
-    const overlay = window.parent.document.getElementById("dettagli-overlay");
-    const frame = window.parent.document.getElementById("dettagli-frame");
-    if (overlay && frame) {
-      frame.src = "";
-      overlay.classList.add("d-none");
-    }
-  } else {
-    window.location.href = "../prodotti/prodotti.html";
-  }
+  console.log("close"); 
+  window.parent.closeProduct()
 }

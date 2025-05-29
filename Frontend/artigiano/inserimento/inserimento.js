@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
-  console.log("DOM Caricato");
-  gestisciOverlayArtigiano();
+  console.log("Inserimento caricato");
+  //gestisciOverlayArtigiano();
   
   const send = document.getElementById("sendProduct");
-  send.addEventListener("click", async (event) => {
+  console.log("bottone = "+send);
+  
+  send.addEventListener("click", async () => {
     console.log("Invio prodotto");
-    
-    event.preventDefault();  // Potrai rimuovere questo parametro al cambio della gestione del form
+
     const msg = {
       name: document.getElementById("nome").value,
       descr: document.getElementById("descrizione").value,
@@ -14,8 +15,6 @@ document.addEventListener("DOMContentLoaded", function() {
       amm: document.getElementById("quantita").value
       // img può essere aggiunta se necessario
     };
-
-
 
 
     try {
@@ -35,9 +34,9 @@ document.addEventListener("DOMContentLoaded", function() {
       }else{
         console.log("prodotto inserito correttamente \n tentativo modifica prodotti");
         
-        const iframe = document.getElementById("prodotti-iframe");
-        const iframeWin = iframe.contentWindow;
-        const id = data.id;
+        //const iframe = document.getElementById("prodotti-iframe");
+        //const iframeWin = iframe.contentWindow;
+        //const id = data.id;
         /*
         if (iframeWin && typeof iframeWin.addProduct === "function") {
           iframeWin.addProduct(

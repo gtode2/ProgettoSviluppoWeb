@@ -58,40 +58,61 @@ function load(data) {
       col.className = "col-md-4 mb-5 mt-5";
       //PT per gestire responsive
       
-      col.innerHTML = `
-      <div class="card text-center shadow-sm">
+  
+      
+    if (usertype === 1) {
+    col.innerHTML= `
+    <div class="card text-center shadow-sm" id="productcard${el.id}">
+      <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
+      <div class="card-body" onclick="openProduct(${el.id})">
+        <h5 class="card-title">${el.name}</h5>
+        <p class="card-text">${el.descr}</p>
+        <p class="price text-success fw-bold">€${el.costo}</p>
+        <div class="d-flex justify-content-center gap-2 product-actions cliente" style="padding-bottom:50px">
+          <button class="btn btn-primary aggiungi-carrello" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
+          <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>
+        </div>
+      </div>
+    </div>
+    `;
+    } else if (usertype === 2) {
+    col.innerHTML = `
+    <div class="card text-center shadow-sm" id="productcard${el.id}">
+      <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
+      <div class="card-body" onclick="openProduct(${el.id})">
+        <h5 class="card-title">${el.name}</h5>
+        <p class="card-text">${el.descr}</p>
+        <p class="price text-success fw-bold">€${el.costo}</p>
+        <div class="d-flex justify-content-center gap-2 product-actions artigiano">
+          <button class="btn btn-warning">Modifica</button>
+          <button class="btn btn-danger" onclick="removeProduct(${el.id})">Elimina</button>
+        </div>
+      </div>
+    </div>
+    `;
+    }else if(usertype===0){
+    console.log("admin");
+    col.innerHTML = `
+      <div class="card text-center shadow-sm" id="productcard${el.id}">
         <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
         <div class="card-body" onclick="openProduct(${el.id})">
           <h5 class="card-title">${el.name}</h5>
           <p class="card-text">${el.descr}</p>
-          <p class="price text-success fw-bold">€${el.costo}</p>`;
-    if (usertype === 1) {
-  col.innerHTML = col.innerHTML + `
-    <div class="d-flex justify-content-center gap-2 product-actions cliente" style="padding-bottom:50px">
-      <button class="btn btn-primary aggiungi-carrello" onclick="addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
-      <button class="btn btn-outline-primary" onclick="report(${el.id})">Segnala</button>
-    </div>
-    </div>
-  </div>
-</div>
-  `;
-}
-else if(usertype===2){
-      col.innerHTML=col.innerHTML+`
-      <div class="d-flex justify-content-center gap-2 product-actions artigiano">
-            <button class="btn btn-warning">Modifica</button>
-            <button class="btn btn-danger">Elimina</button>
-          </div>
+          <p class="price text-success fw-bold">€${el.costo}</p>
         </div>
-      </div>
-      `
-    }else if(usertype===0){
-      console.log("admin");
-      
-      //admin
+      </div>`
+        //admin
     }else{
+      col.innerHTML = `
+        <div class="card text-center shadow-sm" id="productcard${el.id}">
+          <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
+          <div class="card-body" onclick="openProduct(${el.id})">
+            <h5 class="card-title">${el.name}</h5>
+            <p class="card-text">${el.descr}</p>
+            <p class="price text-success fw-bold">€${el.costo}</p>
+          </div>
+        </div>`
       console.log("unlogged");
-      
       //unlogged
     }
     container.appendChild(col);
@@ -128,8 +149,7 @@ function addProduct(name, immagine, descr, costo, id) {
     container.prepend(col);
 }
 function addToCart(id, name, price){
-  const iframeWin = window.parent.document.getElementById("lat-iframe").contentWindow;
-  iframeWin.addToCart(id, name, price);
+  window.parent.addToCart(id, name, price)  
 }
 function report(id){
   window.parent.report(id);
@@ -206,11 +226,6 @@ document.addEventListener("DOMContentLoaded", () => {
       aggiungiAlCarrello(titolo, prezzo);
     }
   });
-
-
-
-
-
 
 
 
@@ -309,4 +324,24 @@ function renderProducts(data) {
 function openProduct(id) {
   console.log(id);
   window.parent.openProduct(id)  
+}
+
+async function removeProduct(id) {
+  try {
+    const response = await fetch("/product", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },   
+      body: JSON.stringify({pid:id})
+    })
+    if (!response.ok) {
+      if (response.status!==404) {
+        //gestione errori 
+      }
+    }  
+    const element = document.getElementById("productcard"+id)
+    element.remove()
+  } catch (err) {
+    console.log(err);
+    alert("Errore di rete.");
+  }
 }
