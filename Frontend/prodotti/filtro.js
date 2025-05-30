@@ -70,7 +70,7 @@ function getfilters(){
     console.log("produttori");
   }
   if (document.getElementById("ordine").value.trim()!=="default") {
-    filters.produttore= document.getElementById("ordine").value
+    filters.order= document.getElementById("ordine").value
     console.log("ordine");
   }
   return filters

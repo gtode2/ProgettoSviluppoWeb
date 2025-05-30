@@ -31,6 +31,7 @@ CREATE TABLE Prodotti(
     costo FLOAT NOT NULL, 
     amm INT NOT NULL, 
     banned BOOLEAN NOT NULL DEFAULT FALSE,
+    cat VARCHAR NOT NULL DEFAULT 'altro',
     FOREIGN KEY (actid) REFERENCES attivita(actid));
 CREATE TABLE Carrello(
     uid INT NOT NULL,

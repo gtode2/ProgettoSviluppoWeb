@@ -85,14 +85,21 @@ async function getProducts(pool, filters=null, id=null){
         //ordine
         if (!filters.order) {
             //order id desc default 
+            console.log("NO ORDINE");
+            
             query = query + " ORDER BY id DESC"
-        }else{
-            //gestione ordine
+        }else if (filters.order==="pa") {
+            query = query + " ORDER BY costo DESC"
+        }else if (filters.order==="pb") {
+            query = query + " ORDER BY costo ASC"
+        }else if (filters.order==="aa"){
+            query = query + " ORDER BY name ASC"
+        }else if (filters.order==="ac"){
+            query = query + " ORDER BY name DESC"
         }
         console.log(query);
         console.log(values)
         res = await pool.query(query, values)
-        console.log(res);
         
     }else{
         res = await pool.query(`SELECT * FROM prodotti WHERE banned = FALSE ORDER BY id DESC`)    
