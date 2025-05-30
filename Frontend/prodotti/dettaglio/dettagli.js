@@ -11,6 +11,8 @@ function getProductIdFromUrl() {
 
 // Mostra prodotto
 function mostraDettaglioProdotto(p) {
+  console.log("nome="+p.name);
+  
   const container = document.getElementById("dettaglio-prodotto");
 
   container.innerHTML = `
@@ -40,8 +42,12 @@ document.addEventListener("DOMContentLoaded", async() => {
     const data = await response.json()    
 
     if (!response.ok) {
+      console.log(response.status + "\n"+ response.err);
+      
       //gestione errore
-    }else{      
+    }else{  
+      console.log("AEAEAEAEA");
+          
       mostraDettaglioProdotto(data.prodotti[0]);
     }
   } catch (err) {

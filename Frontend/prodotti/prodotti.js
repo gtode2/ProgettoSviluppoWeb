@@ -102,7 +102,7 @@ function renderProducts(data) {
         <p class="card-text">${el.descr}</p>
         <p class="price text-success fw-bold">€${el.costo}</p>
         <div class="d-flex justify-content-center gap-2 product-actions artigiano">
-          <button class="btn btn-warning">Modifica</button>
+          <button class="btn btn-warning" onclick="event.stopPropagation(); edit(${el.id})">Modifica</button>
           <button class="btn btn-danger" onclick="removeProduct(${el.id})">Elimina</button>
         </div>
       </div>
@@ -124,7 +124,7 @@ function renderProducts(data) {
       col.innerHTML = `
         <div class="card text-center shadow-sm" id="productcard${el.id}">
           <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
-          <div class="card-body" onclick="openProduct(${el.id})">
+          <div class="card-body>
             <h5 class="card-title">${el.name}</h5>
             <p class="card-text">${el.descr}</p>
             <p class="price text-success fw-bold">€${el.costo}</p>
@@ -198,6 +198,10 @@ async function removeProduct(id) {
 
 function report(id) {
   window.parent.report(id);
+}
+
+function edit(id){
+  window.parent.edit(id)
 }
 
 // --- Assegnazione dei listener una volta che il DOM è pronto ---

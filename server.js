@@ -972,6 +972,11 @@ async function main() {
     })
 
 
+
+    app.get("/changePassword", async(req,res)=>{
+        res.sendFile(path.join(__dirname,"/Frontend/cambiopassword/password.html"))
+    })
+
     app.get("/ban", (req,res)=>{
         res.sendFile(path.join(__dirname,"Frontend/login/accountbannato/ban.html"))
     })
