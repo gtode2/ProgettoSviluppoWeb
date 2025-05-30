@@ -11,7 +11,6 @@ const fs = require('fs');
 const https = require('https');
 
 
-
 const { checkdb } = require("./Backend/dbmanager.js");
 const {checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
 const {addProduct, removeProduct, getProducts, addCart, getCart, emptyCart} = require("./Backend/products.js");
@@ -104,6 +103,8 @@ async function main() {
     });
 
     const stripe = require('stripe')(process.env.STRIPE_SECRET);
+    const endpointSecret = "whsec_7a1e711d036e2611d7c4a3c44f46781dce517ce0364509d60986104464e6e4b6"; 
+
 
     /////////////////////////////////////////////////////////////////////////
     //HOMEPAGE
@@ -816,7 +817,7 @@ async function main() {
             await pool.query(`BEGIN`)
 
             //verifica quantità prodotti richiesti    
-            const products = await pool.query(`SELECT * FROM carrello WHERE uid=$1 AND banned=FALSE`, [user.uid])
+            const products = await pool.query(`SELECT * FROM carrello JOIN prodotti ON productid = id WHERE uid=$1 AND banned=FALSE`, [user.uid])
             console.log(products.rows);
             var ord = {}
         
@@ -880,6 +881,7 @@ async function main() {
         }
         //prendo informazioni ordine
         var elementi = await pool.query(`SELECT products FROM ordini WHERE uid=$1 AND expires_at IS NOT NULL`, [user.uid])
+        //eseguire verifica e rimozione di elementi bannati
         //creo array con elementi
         var li = []
         if (elementi.rows.length===0) {
@@ -911,7 +913,10 @@ async function main() {
                 mode:'payment',
                 line_items:li,
                 success_url:`http://localhost:3000/success`,
-                cancel_url:`http://localhost:3000/cancelTransaction`
+                cancel_url:`http://localhost:3000/cancelTransaction`,
+                metadata:{
+                    userId:user.uid.toString()
+                }
             })
             res.json({id:session.uid})
         } catch (error) {
@@ -919,6 +924,29 @@ async function main() {
             
         }
     })
+    
+
+    app.post("/stripe/webhook", express.raw({ type: 'application/json' }), async (req, res) => {
+        const sig = req.headers["stripe-signature"];
+        let event;
+
+        try {
+            event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        } catch (err) {
+            console.log("impossibile verificare Webhook signature");
+            
+            return res.status(400).json({});
+        }
+
+        if (event.type === "checkout.session.completed") {
+            const session = event.data.object;
+            const userId = session.metadata.userId;
+            await pool.query("ALTER TABLE ordini SET expires_at=NULL WHERE uid = $1",[userId])
+            console.log("Pagamento confermato per session ID:", session.id);
+        }
+
+        res.status(200).end();
+    });
 
 
 

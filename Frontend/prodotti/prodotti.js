@@ -70,6 +70,7 @@ function renderProducts(data) {
     container.className = "row justify-content-center";
     container.removeAttribute("style");
   }
+
   
   data.forEach(el => {
     const col = document.createElement("div");
@@ -77,6 +78,49 @@ function renderProducts(data) {
     if (currentView === "card" || currentView === "fullscreen") {
       // Template originale in modalità "card" (o "fullscreen")
       col.className = "col-md-4 mb-5 mt-5";
+      if (lastUserType === 1) {
+    col.innerHTML= `
+    <div class="card text-center shadow-sm" id="productcard${el.id}">
+      <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
+      <div class="card-body" onclick="openProduct(${el.id})">
+        <h5 class="card-title">${el.name}</h5>
+        <p class="card-text">${el.descr}</p>
+        <p class="price text-success fw-bold">€${el.costo}</p>
+        <div class="d-flex justify-content-center gap-2 product-actions cliente" style="padding-bottom:50px">
+          <button class="btn btn-primary aggiungi-carrello" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
+          <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>
+        </div>
+      </div>
+    </div>
+    `;
+    } else if (lastUserType === 2) {
+    col.innerHTML = `
+    <div class="card text-center shadow-sm" id="productcard${el.id}">
+      <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
+      <div class="card-body" onclick="openProduct(${el.id})">
+        <h5 class="card-title">${el.name}</h5>
+        <p class="card-text">${el.descr}</p>
+        <p class="price text-success fw-bold">€${el.costo}</p>
+        <div class="d-flex justify-content-center gap-2 product-actions artigiano">
+          <button class="btn btn-warning">Modifica</button>
+          <button class="btn btn-danger" onclick="removeProduct(${el.id})">Elimina</button>
+        </div>
+      </div>
+    </div>
+    `;
+    }else if(lastUserType===0){
+    console.log("admin");
+    col.innerHTML = `
+      <div class="card text-center shadow-sm" id="productcard${el.id}">
+        <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
+        <div class="card-body" onclick="openProduct(${el.id})">
+          <h5 class="card-title">${el.name}</h5>
+          <p class="card-text">${el.descr}</p>
+          <p class="price text-success fw-bold">€${el.costo}</p>
+        </div>
+      </div>`
+        //admin
+    }else{
       col.innerHTML = `
         <div class="card text-center shadow-sm" id="productcard${el.id}">
           <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
@@ -84,13 +128,11 @@ function renderProducts(data) {
             <h5 class="card-title">${el.name}</h5>
             <p class="card-text">${el.descr}</p>
             <p class="price text-success fw-bold">€${el.costo}</p>
-            <div class="d-flex justify-content-center gap-2 product-actions cliente" style="padding-bottom:50px">
-              <button class="btn btn-primary aggiungi-carrello" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
-              <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>
-            </div>
           </div>
-        </div>
-      `;
+        </div>`
+      console.log("unlogged");
+      //unlogged
+    }
     } else if (currentView === "list") {
       // Template per la modalità lista:
       // Dispone l'immagine a sinistra e le info sulla destra, in una card più "lineare"
