@@ -18,3 +18,11 @@
   filter: blur(4px);
   z-index: -1;
 }
+.login-container {
+  z-index: 1;
+}
+
+.login-card {
+  max-width: 400px;
+  width: 100%;
+}

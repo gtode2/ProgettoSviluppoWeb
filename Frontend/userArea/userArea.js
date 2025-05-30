@@ -120,3 +120,8 @@ async function renewToken() {
         
     }
 }
+function closeUserArea() {
+      window.history.back();
+      // In alternativa, se preferisci reindirizzare a una pagina specifica:
+      // window.location.href = '../clienti/clienti.html';
+    }

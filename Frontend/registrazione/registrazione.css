@@ -19,3 +19,14 @@
   filter: blur(4px);
   z-index: -1;
 }
+.registrazione-container {
+  z-index: 1;
+}
+
+.registrazione-card {
+  max-width: 500px;
+  width: 100%;
+}
+.description-textarea {
+  height: 200px;  /* Puoi definire qui altezza, larghezza e altri parametri */
+}

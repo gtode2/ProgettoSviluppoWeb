@@ -96,3 +96,8 @@
   width: 100%;
   margin-top: 0.3rem;
 }
+
+.report-iframe {
+    width: 100%;
+    height: calc(95.8vh - 2rem);
+}

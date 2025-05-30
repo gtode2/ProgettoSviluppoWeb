@@ -131,3 +131,6 @@
   background-color: #a0805d;
   color: white;
 }
+.prodotti-container {
+  z-index: 1;
+}
