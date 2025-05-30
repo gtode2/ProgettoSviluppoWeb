@@ -45,10 +45,16 @@ async function main() {
 
     app.use(cookieParser());
     app.use(cors({
-        origin:'http://localhost:3000',
+        origin:'https://localhost:3005',
         credentials:true
     }));
-    app.use(bodyParser.json());
+    app.use((req, res, next) => {
+        if (req.originalUrl === '/stripe/webhook') {
+        next(); // salta express.json() per questa rotta
+      } else {
+        express.json()(req, res, next);
+      }
+    });
     const pool = await initDb()
 
     // Connessione PostgreSQL
@@ -842,7 +848,7 @@ async function main() {
                     console.log(`qtità corretta \n ${qt.rows[0].amm-el.quantita} rimanente`);
                     const prodData = {}
                     prodData["prezzo"] = qt.rows[0].costo
-                    prodData["quantita"] = qt.rows[0].amm
+                    prodData["quantita"] = el.quantita
                     prodData["nome"] = qt.rows[0].name
                     ord[el.productid]= prodData
                 }
@@ -912,13 +918,15 @@ async function main() {
                 payment_method_types:['card'],
                 mode:'payment',
                 line_items:li,
-                success_url:`http://localhost:3000/success`,
-                cancel_url:`http://localhost:3000/cancelTransaction`,
+                success_url:`https://localhost:3000/success`,
+                cancel_url:`https://localhost:3000/cancelTransaction`,
                 metadata:{
                     userId:user.uid.toString()
                 }
             })
-            res.json({id:session.uid})
+            console.log(session.id);
+            
+            res.json({id:session.id})
         } catch (error) {
             console.log(error);
             
@@ -930,24 +938,38 @@ async function main() {
         const sig = req.headers["stripe-signature"];
         let event;
 
+        console.log("req.body = "+req.body);
+        
         try {
             event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
         } catch (err) {
             console.log("impossibile verificare Webhook signature");
+            console.log(err.message)
             
             return res.status(400).json({});
         }
 
         if (event.type === "checkout.session.completed") {
-            const session = event.data.object;
-            const userId = session.metadata.userId;
-            await pool.query("ALTER TABLE ordini SET expires_at=NULL WHERE uid = $1",[userId])
-            console.log("Pagamento confermato per session ID:", session.id);
+            try {
+                const session = event.data.object;
+                const userId = session.metadata.userId;
+                await pool.query("UPDATE ordini SET expires_at=NULL WHERE uid = $1",[userId])
+                console.log("Pagamento confermato per session ID:", session.id);
+            } catch (error) {
+                console.log(error);
+                    
+            }
         }
 
         res.status(200).end();
     });
 
+    app.get("/success",(req,res)=>{
+        res.sendFile(path.join(__dirname,"/Frontend/checkout/success.html"))
+    })
+    app.get("/cancel",(req,res)=>{
+        res.sendFile(path.join(__dirname,"/Frontend/checkout/cancel.html"))
+    })
 
 
     app.get("/ban", (req,res)=>{
@@ -957,16 +979,23 @@ async function main() {
 //FUNZIONI DI TEST TEMPORANEE
     
     app.get("/test",(req,res)=>{
-        
         res.sendFile(path.join(__dirname,"/prova.html"))
     })
 
 
 
 
-    https.createServer(options, app).listen(port, () => {
+    //HTTP SOLO PER TESTARE STRIPE CON CERTIFICATO SELF-SIGNED
+    app.listen(3001, () => {
         console.log(`Server attivo su http://localhost:${port}`);
     });
+    https.createServer(options, app).listen(port, () => {
+        console.log(`Server attivo su https://localhost:${port}`);
+    });
+
+    
+    
+    
 
 }
 

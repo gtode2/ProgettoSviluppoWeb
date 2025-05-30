@@ -13,6 +13,8 @@ async function checkout() {
     if (!response.ok) {
 
     }else{
+      console.log(data.id);
+      
       const result = await stripe.redirectToCheckout({sessionId:data.id})
       if (result.error) {
           alert("Errore nel reindirizzamento: " + result.error.message);
