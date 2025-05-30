@@ -72,8 +72,11 @@ function add(id, name, price) {
   const riga = document.createElement("div");
   riga.className = "d-flex justify-content-between align-items-center border-bottom py-2";
   riga.innerHTML = `
-    <div><strong>${name}</strong></div>
+    <div><strong>${name}</strong></div> 
     <div>€${price}</div>
+    <div>${quantita}</div>
+    <div class="button">+</div>
+    <div class="button">-</div>
   `;
   riepilogo.appendChild(riga);
   
