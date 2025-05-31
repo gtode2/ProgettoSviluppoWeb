@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (response.ok) {
       console.log(data);
       data.carrello.forEach(el => {
-        add(el.productid, el.name, el.costo);
+        add(el.productid, el.name, el.costo, el.quantita);
       });
     } else {
       // Gestione errori in caso di risposta non ok
@@ -34,10 +34,10 @@ async function addToCart(id, name, price) {
     
     if (response.ok) {
       if (data.res === "added") {
-        add(id, name, price);
+        add(id, name, price, quantita);
         console.log("Prodotto aggiunto");
       } else {
-        await increase();  // considerare di implementare la logica in increase()
+        //await increase();  considerare di implementare la logica in increase()
         console.log("Prodotto duplicato:", data.res);
       }
     } else {
@@ -49,7 +49,7 @@ async function addToCart(id, name, price) {
         if (data.err === "missing token") {
           const res = await renewToken();
           if (res === 0) {
-            addToCart(id, name, price);
+            addToCart(id, name, price, quantita);
           } else {
             window.parent.location.href = "/";
           }
@@ -63,7 +63,7 @@ async function addToCart(id, name, price) {
 }
 
 // Funzione per aggiungere il prodotto alla parte visuale del carrello
-function add(id, name, price) {
+function add(id, name, price, quantita) {
   console.log("Aggiungo prodotto:", name);
   
   const riepilogo = document.getElementById("riepilogo");
@@ -74,14 +74,14 @@ function add(id, name, price) {
   riga.innerHTML = `
     <div><strong>${name}</strong></div> 
     <div>€${price}</div>
-    <div>${quantita}</div>
-    <div class="button">+</div>
-    <div class="button">-</div>
+    <div id="qtt${id}">${quantita}</div>
+    <div class="button" onclick="increase(${id}, ${price})">+</div>
+    <div class="button" onclick="decrease(${id}, ${price})">-</div>
   `;
   riepilogo.appendChild(riga);
   
   let tot = totale.innerText.replace("€", "").trim();
-  let prezzo = parseFloat(tot) + price;
+  let prezzo = parseFloat(tot) + price*quantita;
   totale.innerText = "€" + prezzo.toFixed(2);
 }
 
@@ -117,12 +117,53 @@ async function remove() {
 }
 
 // Funzioni placeholder per future implementazioni
-async function increase() {
-  // Logica per aumentare la quantità nel carrello se già presente
+async function increase(id, price) {
+  try {
+    const response = await fetch("/addCart", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: id })
+    });
+    const data = await response.json();
+    
+    if (response.ok) {
+
+
+
+      let qtt = document.getElementById(`qtt${id}`).textContent = Number(document.getElementById(`qtt${id}`).innerText)+1
+      const totale = document.getElementById("totale");
+      let tot = totale.innerText.replace("€", "").trim();
+      console.log(data);
+      
+      let prezzo = parseFloat(tot) + price;
+      totale.innerText = "€" + prezzo.toFixed(2);
+
+    } else {
+      if (data.res === "product removed") {
+        alert("Il prodotto è stato rimosso dall'artigiano");
+        parent.location.reload();
+      }
+      if (response.status === 401) {
+        if (data.err === "missing token") {
+          const res = await renewToken();
+          if (res === 0) {
+            increase(id)
+          } else {
+            window.parent.location.href = "/";
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Errore di rete.");
+  }
+  
 }
 
-async function decrease() {
-  // Logica per diminuire la quantità nel carrello
+async function decrease(id, price) {
+  console.log("dec "+id);
+  
 }
 
 // Funzione per procedere al checkout

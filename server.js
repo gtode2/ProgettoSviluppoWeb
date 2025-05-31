@@ -13,7 +13,7 @@ const https = require('https');
 
 const { checkdb } = require("./Backend/dbmanager.js");
 const {checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
-const {addProduct, removeProduct, getProducts, addCart, getCart, emptyCart} = require("./Backend/products.js");
+const {addProduct, removeProduct, getProducts, addCart, removeCart, getCart, emptyCart} = require("./Backend/products.js");
 const {addReport, getReports, removeReport, removeReportedProduct, banArtigiano} = require("./Backend/reports.js");
 
 
@@ -543,18 +543,21 @@ async function main() {
 
     app.post("/addCart", async (req,res) => {
         
-        const {id} = req.body
+        const {id, dec} = req.body
         if (!id) {
             console.log("missing product");    
             res.status(401).json({err:"missing product"})
             return
         }
         const user = checkToken(req,res)
-        if (user!== -1) {
+        if (user=== -1) {
             if (user.usertype!==1) {
                 res.status(401).json({err:"unauthorized"})
-                return
-            }   
+            }
+            return
+        }
+        if (!dec) {
+            //aggiungi o incrementa
             const status = await addCart(pool, id, user.uid)
             if (status===-1) {
                 res.status(500).json({})
@@ -565,6 +568,10 @@ async function main() {
             }else {        
                 res.status(200).json({res:status})
             }
+        }else{
+            //decrementa
+            const status = await removeCart(pool, id, user.id)
+            
         }
         
         
@@ -590,7 +597,7 @@ async function main() {
             }
         }
     })
-
+    
     app.post("/emptyCart", async (req,res) => {
         console.log("emptyCart");
         

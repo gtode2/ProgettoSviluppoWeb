@@ -152,6 +152,12 @@ async function increment(pool, prodid, uid) {
         
     }
 }
+
+async function removeCart(pool, prodid, uid) {
+    
+}
+
+
 async function getCart(pool, uid){
     try {
         const res = await pool.query(`SELECT * FROM carrello JOIN prodotti ON carrello.productid = prodotti.id WHERE uid = $1 AND banned=FALSE`, [uid])
@@ -162,6 +168,8 @@ async function getCart(pool, uid){
         return -1    
     }
 }
+
+
 async function emptyCart(pool, uid){
     try {
         await pool.query(`DELETE FROM carrello WHERE uid = $1`, [uid])
