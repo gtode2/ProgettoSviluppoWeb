@@ -283,10 +283,8 @@ async function main() {
     app.post("/login", async(req,res)=>{  
         console.log("iniziata sequenza login");
         const {cred, pw} = req.body
-        const query = "SELECT * FROM utenti WHERE username = $1"
         const hashedpw = await bcrypt.hash(pw,10);
-        const values = [cred]
-        const user = await pool.query(query,values)
+        const user = await pool.query("SELECT * FROM utenti WHERE username = $1",[cred])
         //console.log(hashedpw)
         
         
@@ -457,6 +455,58 @@ async function main() {
                 res.status(200).json({prodotti:result, usertype:3})
             }
         
+        }
+    })
+
+    app.post("/editProducts", async (req,res) => {
+        console.log("AAAA");
+        
+        const {id, nome, descr, costo, qt, cat} = req.body
+        if (!id) {
+            res.status(400).json({err:"no id"})
+            console.log("no id prodotto");
+            
+            return
+        }
+        const user = checkToken(req,res)
+        if (user===-1) {
+            return
+        }
+        try {
+            const result = await pool.query(`SELECT * FROM prodotti WHERE id=$1 AND actid=$2`,[id, user.uid])
+            if (result.rows.length===0) {
+                console.log("no prod");
+                res.status(401).json({err:"no product"})
+                return
+            }
+            console.log("prodotto trovato");
+            if (nome) {
+                await pool.query(`UPDATE prodotti SET name=$1 WHERE id=$2`,[nome, id])
+                console.log("nome modificato");
+            }
+            if (descr) {
+                await pool.query(`UPDATE prodotti SET descr=$1 WHERE id=$2`,[descr, id])
+                console.log("descr modificata");
+            }
+            if (costo) {
+                await pool.query(`UPDATE prodotti SET costo=$1 WHERE id=$2`,[costo, id])
+                console.log("costo mod");
+                
+            }
+            if (qt) {
+                await pool.query(`UPDATE prodotti SET amm=$1 WHERE id=$2`,[qt, id])
+                console.log("qt mod");
+                
+            }
+            if (cat) {
+                await pool.query(`UPDATE prodotti SET cat=$1 WHERE id=$2`,[cat, id])
+                console.log("cat mod");   
+            }            
+            res.status(200).json({})
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({})
+            
         }
     })
      
@@ -976,6 +1026,36 @@ async function main() {
     app.get("/changePassword", async(req,res)=>{
         res.sendFile(path.join(__dirname,"/Frontend/cambiopassword/password.html"))
     })
+    app.post("/changePassword", async (req,res) => {
+        const {vecchia, nuova} = req.body
+        if (!vecchia || !nuova) {
+            res.status(400).json({err:"missing data"})
+            return
+        }
+        const user = checkToken(req,res)
+        if (user===-1) {
+            return
+        }
+
+        //verifica password vecchia
+        try {
+            const pw = await pool.query(`SELECT password FROM utenti WHERE uid=$1`, [user.uid])
+            const isCorrect = await bcrypt.compare(vecchia, pw.rows[0].password)
+            if (!isCorrect) {
+                res.status(401).json({err:"wrong password"})
+                return
+            }
+            //carica password nuova
+            const hashedPassword = await bcrypt.hash(nuova, 10);
+            await pool.query(`UPDATE utenti SET password=$1 WHERE uid=$2`, [hashedPassword, user.uid])
+            res.status(200).json({})
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({})                
+        }
+        
+    })
+
 
     app.get("/ban", (req,res)=>{
         res.sendFile(path.join(__dirname,"Frontend/login/accountbannato/ban.html"))

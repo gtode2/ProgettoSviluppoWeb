@@ -1,80 +1,101 @@
-document.addEventListener("DOMContentLoaded", ()=>{
-    document.getElementById("send").addEventListener("click", async ()=>{
-        
-        const cred = document.getElementById("username")
-        const pw = document.getElementById("password")
+function cancel() {
+  window.location.href="/userarea"
+}
 
-        
-        const checkCred=()=>{
-            return cred.value.length >0
-        }
-        const checkPassword =()=>{
-            return pw.value.length >0
-        }
-        
-        if (!checkCred()||!checkPassword()) {
-            alert("Compila tutti i campi correttamente.")
-            return
-        }
-        const formData = {
-            cred: cred.value,
-            pw: pw.value
-        }
-        
-        try {
-            const response = await fetch("/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData)
-            
-            })
-            const data = await response.json()
-            console.log("AAAAA");
-            
-            if (!response.ok) {
-              if (response.status===403) {
-                window.location.href = "/ban"
-              }
-              else{
-                alert("Credenziali errate")
-              }
+function notEmpty() {
+  let c = true
+  const vecchia = document.getElementById("vecchia")
+  const nuova = document.getElementById("nuova")
+  const conferma = document.getElementById("conferma")
+
+  //inserire verifica password del login
+
+  if (!vecchia.value.trim()) {
+    vecchia.setCustomValidity("Inserisci un valore");
+    vecchia.reportValidity();
+    c = false
+  }
+  if (!nuova.value.trim()) {
+    nuova.setCustomValidity("Inserisci un valore");
+    nuova.reportValidity();
+    c = false
+  }
+  if (!conferma.value.trim()) {
+    conferma.setCustomValidity("Inserisci un valore");
+    conferma.reportValidity();
+    c = false
+  }
+  return c
+}
+
+async function send() {
+  const vecchia = document.getElementById("vecchia")
+  const nuova = document.getElementById("nuova")
+  const conferma = document.getElementById("conferma")
+
+  if (notEmpty) {
+    if (nuova.value.trim()!==conferma.value.trim()) {
+      conferma.setCustomValidity("le password non coincidono");
+      conferma.reportValidity();
+      return
+    }
+    let data = {}
+    data.nuova = nuova.value.trim()
+    data.vecchia = vecchia.value.trim()
+  
+    try {
+      const response = await fetch("/changePassword", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      data = await response.json()    
+      if (!response.ok) {  
+        if (response.status===401) {
+          if (data.err==="missing token") {
+            const result = await renewToken()
+            if (result ===1) {
+              send()
             }else{
-                console.log("tentativo di href");
-                
-                window.location.href = "/"
-                //redirect a homepage
+              window.parent.location.href="/"
             }
-        } catch (err) {
-            console.log(err);
-            alert("Errore di rete.");
+          }else if(data.err==="wrong password"){
+            vecchia.setCustomValidity("Password errata");
+            vecchia.reportValidity();
+          }
         }
-    })
-})
+        console.log(response.status);
+          
+        //gestione errore
+      }else{
+        alert("password modificata correttamente")
+        window.location.href="/"
+      }
+    } catch (error) {
+      console.log(error);
+    }     
+  }
+  
+}
 
 
+
+
+
+
+async function renewToken() {
+    try {
+        const response = await fetch("/renewToken", {
+            method:"POST",
+            headers: { "Content-Type": "application/json" }, 
+        })
+        if (response.ok) {
+            return 0
+        }else{
+            return -1
+        }
+    } catch (error) {
+        console.log(error);
         
-/*
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("send");
-
-  btn.addEventListener("click", () => {
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    if (!username || !password) {
-      alert("⚠️ Inserisci entrambi i campi.");
-      return;
     }
-
-    // Simulazione accesso
-    if (username === "admin" && password === "admin123") {
-      alert("Accesso Admin effettuato!");
-      // window.location.href = "admin.html";
-    } else {
-      alert(`✅ Bentornato, ${username}`);
-      // window.location.href = "cliente.html" o "artigiano.html";
-    }
-  });
-});
-
-*/
+}
