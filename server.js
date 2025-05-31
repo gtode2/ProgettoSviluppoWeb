@@ -570,8 +570,16 @@ async function main() {
             }
         }else{
             //decrementa
-            const status = await removeCart(pool, id, user.id)
-            
+            const status = await removeCart(pool, id, user.uid)
+            if (status===-1) {
+                res.status(500).json({})
+            } else if (status === 0) {
+                res.status(200).json({res:"removed"})
+            } else if (status===-2){
+                res.status(404).json({err:"product removed"})   
+            }else {        
+                res.status(200).json({res:status})
+            }
         }
         
         

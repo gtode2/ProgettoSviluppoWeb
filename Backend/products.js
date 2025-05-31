@@ -108,7 +108,6 @@ async function getProducts(pool, filters=null, id=null){
     
 }
 async function addCart(pool, prodid, uid){
-    
     try {
         var result = await pool.query(`SELECT * FROM prodotti WHERE id=$1 AND banned=FALSE`, [prodid])
         if (result.rows.length===0) {
@@ -135,6 +134,32 @@ async function addCart(pool, prodid, uid){
         return -1
     }
 }
+async function removeCart(pool, prodid, uid) {
+    try {
+        var result = await pool.query(`SELECT * FROM prodotti WHERE id=$1 AND banned=FALSE`, [prodid])
+        if (result.rows.length===0) {
+            console.log("prodotto rimosso");
+            return -2
+        } 
+
+        result = await pool.query(`SELECT COUNT(*) FROM carrello WHERE uid = $1 AND productid = $2`,[uid, prodid])
+        console.log(result.rows[0].count);
+        console.log(uid);
+        console.log(prodid);
+        
+          
+        if (result.rows[0].count==="0") {
+            console.log("prodotto non nel carrello");
+            return 1
+        }
+        await decrement(pool,prodid,uid)
+        return 0
+    } catch (error) {
+        console.log(error);
+        return -1
+    }
+}
+
 async function increment(pool, prodid, uid) {
     try {
         const query = `
@@ -153,10 +178,23 @@ async function increment(pool, prodid, uid) {
     }
 }
 
-async function removeCart(pool, prodid, uid) {
-    
+async function decrement(pool, prodid, uid) {
+    try {
+        const query = `
+        UPDATE carrello
+        SET quantita = quantita - 1
+        WHERE uid = $1
+        AND productid = $2
+        RETURNING quantita`
+        const values = [uid, prodid]
+        const res = await pool.query(query,values)
+        return res.rows[0].quantita
+    } catch (error) {
+        console.log(error);
+        return -1
+        
+    }
 }
-
 
 async function getCart(pool, uid){
     try {
@@ -180,4 +218,4 @@ async function emptyCart(pool, uid){
     }
 }
 
-module.exports = {addProduct, removeProduct, getProducts, addCart, getCart, emptyCart} 
+module.exports = {addProduct, removeProduct, getProducts, addCart, removeCart, getCart, emptyCart} 

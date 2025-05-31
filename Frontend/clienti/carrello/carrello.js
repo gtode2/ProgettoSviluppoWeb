@@ -160,6 +160,52 @@ async function increase(id, price) {
 
 async function decrease(id, price) {
   console.log("dec "+id);
+
+  if (document.getElementById(`qtt${id}`).textContent===1 ) {
+    //funzione per rimuovere
+  }else{
+    //funzione per scalare
+    try {
+      const response = await fetch("/addCart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: id, dec:true})
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        document.getElementById(`qtt${id}`).textContent = Number(document.getElementById(`qtt${id}`).innerText)-1
+        const totale = document.getElementById("totale");
+        let tot = totale.innerText.replace("€", "").trim();
+        console.log(data);
+
+        let prezzo = parseFloat(tot) - price;
+        totale.innerText = "€" + prezzo.toFixed(2);
+
+      } else {
+        if (data.res === "product removed") {
+          alert("Il prodotto è stato rimosso dall'artigiano");
+          parent.location.reload();
+        }
+        if (response.status === 401) {
+          if (data.err === "missing token") {
+            const res = await renewToken();
+            if (res === 0) {
+              increase(id)
+            } else {
+              window.parent.location.href = "/";
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Errore di rete.");
+    }
+  }
+
+
+  
   
 }
 
