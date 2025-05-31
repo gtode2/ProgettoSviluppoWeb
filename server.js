@@ -13,7 +13,7 @@ const https = require('https');
 
 const { checkdb } = require("./Backend/dbmanager.js");
 const {checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
-const {addProduct, removeProduct, getProducts, addCart, removeCart, getCart, emptyCart} = require("./Backend/products.js");
+const {addProduct, removeProduct, getProducts, addCart, removeCart, decrCart, getCart, emptyCart} = require("./Backend/products.js");
 const {addReport, getReports, removeReport, removeReportedProduct, banArtigiano} = require("./Backend/reports.js");
 
 
@@ -570,7 +570,15 @@ async function main() {
             }
         }else{
             //decrementa
-            const status = await removeCart(pool, id, user.uid)
+            let status = null
+            if (dec==="d") {
+                status = await decrCart(pool, id, user.uid)
+            }else if (dec==="r") {
+                status = await removeCart(pool, id, user.uid)
+            }else{
+                res.status(400).json({})
+                return
+            }
             if (status===-1) {
                 res.status(500).json({})
             } else if (status === 0) {
@@ -584,6 +592,8 @@ async function main() {
         
         
     })
+
+
     app.post("/getCart", async (req,res) => {
         console.log("getCart");
         

@@ -134,7 +134,7 @@ async function addCart(pool, prodid, uid){
         return -1
     }
 }
-async function removeCart(pool, prodid, uid) {
+async function decrCart(pool, prodid, uid) {
     try {
         var result = await pool.query(`SELECT * FROM prodotti WHERE id=$1 AND banned=FALSE`, [prodid])
         if (result.rows.length===0) {
@@ -153,6 +153,15 @@ async function removeCart(pool, prodid, uid) {
             return 1
         }
         await decrement(pool,prodid,uid)
+        return 0
+    } catch (error) {
+        console.log(error);
+        return -1
+    }
+}
+async function removeCart(pool, prodid, uid) {
+    try {
+        await pool.query(`DELETE FROM carrello WHERE uid = $1 AND productid = $2`,[uid, prodid])
         return 0
     } catch (error) {
         console.log(error);
@@ -218,4 +227,4 @@ async function emptyCart(pool, uid){
     }
 }
 
-module.exports = {addProduct, removeProduct, getProducts, addCart, removeCart, getCart, emptyCart} 
+module.exports = {addProduct, removeProduct, getProducts, addCart, removeCart, decrCart, getCart, emptyCart} 

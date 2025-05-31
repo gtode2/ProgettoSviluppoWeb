@@ -37,7 +37,7 @@ async function addToCart(id, name, price, quantita=1) {
         add(id, name, price, quantita);
         console.log("Prodotto aggiunto");
       } else {
-        //await increase();  considerare di implementare la logica in increase()
+        await increase(id, price);
         console.log("Prodotto duplicato:", data.res);
       }
     } else {
@@ -71,6 +71,7 @@ function add(id, name, price, quantita) {
   
   const riga = document.createElement("div");
   riga.className = "d-flex justify-content-between align-items-center border-bottom py-2";
+  riga.id = `element${id}`
   riga.innerHTML = `
     <div><strong>${name}</strong></div> 
     <div>€${price}</div>
@@ -144,7 +145,7 @@ async function increase(id, price) {
         if (data.err === "missing token") {
           const res = await renewToken();
           if (res === 0) {
-            increase(id)
+            increase(id, price)
           } else {
             window.parent.location.href = "/";
           }
@@ -161,15 +162,48 @@ async function increase(id, price) {
 async function decrease(id, price) {
   console.log("dec "+id);
 
-  if (document.getElementById(`qtt${id}`).textContent===1 ) {
+  if (document.getElementById(`qtt${id}`).textContent==="1") {
     //funzione per rimuovere
+    try {
+      const response = await fetch("/addCart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: id, dec:"r"})
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        document.getElementById(`element${id}`).remove()
+        const totale = document.getElementById("totale");
+        let tot = totale.innerText.replace("€", "").trim();
+
+        let prezzo = parseFloat(tot) - price;
+        totale.innerText = "€" + prezzo.toFixed(2);
+
+      } else {
+        if (response.status === 401) {
+          if (data.err === "missing token") {
+            const res = await renewToken();
+            if (res === 0) {
+              decrease(id, price)
+            } else {
+              window.parent.location.href = "/";
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Errore di rete.");
+    }
+    
   }else{
     //funzione per scalare
     try {
       const response = await fetch("/addCart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: id, dec:true})
+        body: JSON.stringify({ id: id, dec:"d"})
       });
       const data = await response.json();
 
@@ -191,7 +225,7 @@ async function decrease(id, price) {
           if (data.err === "missing token") {
             const res = await renewToken();
             if (res === 0) {
-              increase(id)
+              decrease(id, price)
             } else {
               window.parent.location.href = "/";
             }
