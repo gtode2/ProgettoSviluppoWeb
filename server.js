@@ -1081,6 +1081,19 @@ async function main() {
         
     })
 
+    app.post("/getOrders", async (req,res) => {
+        const user = checkToken(req,res)
+        if (user===-1) {
+            return
+        }
+        if (user.usertype===1) {
+            //gestione utente
+        }else if(user.usertype===2){
+            //gestione artigiano
+        }else{
+            res.status(401).json({})
+        }
+    })
 
     app.get("/ban", (req,res)=>{
         res.sendFile(path.join(__dirname,"Frontend/login/accountbannato/ban.html"))

@@ -70,37 +70,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Invia i dati al backend
         
-        const response = await fetch("/registrazione", {
+
+        try {
+            const response = await fetch("/registrazione", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData)
-        })
-        .then(async res=>{
-            const data = await res.json()
-            if (!res.ok) {
-                if (res.status===409) {
-                    alert("utente già registrato")
-                }else{
-                    alert("errore sconosciuto")
-                }
+            
+            })
+            const data = await response.json()
+            console.log("AAAAA");
+            
+            if (!response.ok) {
+              if (response.status===409) {
+                alert("utente già registrato")
+              }
+              else{
+                alert("errore sconosciuto")
+              }
             }else{
-                console.log(data.access);
                 if (data.redirect) {
                     window.location.href = data.redirect
                 }else{
                     window.location.href = "/"
                     //redirect a homepage
                 }
-            }   
-        })  
-        .catch(err=>{
+            }
+        } catch (err) {
             console.log(err);
             alert("Errore di rete.");
-        })
-            
-
-            //const text = await response.text();
-            //alert(text);
-    
+        }
     });
 });

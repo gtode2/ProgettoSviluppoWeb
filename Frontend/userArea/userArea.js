@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 👤 Richiesta dati utente
   let data;
+  getOrders()
   try {
     const response = await fetch("/userArea", {
       method: "POST",
@@ -102,7 +103,34 @@ async function logout() {
     }
 }
 
-
+async function getOrders() {
+  try {
+    const response = await fetch("/getOrders", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      if (response.status===401) {
+        if (data.err === "missing token") {
+          const result = await renewToken()
+          if (result===1) {
+            getOrders()
+          }else{
+            window.location.href="/"
+          }
+        }
+      }
+    }else{
+        console.log("tentativo di href");
+        window.location.href = "/"
+        //redirect a homepage
+    }
+  } catch (err) {
+      console.log(err);
+      alert("Errore di rete.");
+  }  
+}
 
 async function renewToken() {
     try {
