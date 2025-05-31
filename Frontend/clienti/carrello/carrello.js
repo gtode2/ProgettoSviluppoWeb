@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // Funzione per aggiungere un prodotto al carrello sia sul server che in pagina
-async function addToCart(id, name, price) {
+async function addToCart(id, name, price, quantita=1) {
   console.log("Nome prodotto:", name);
   try {
     const response = await fetch("/addCart", {
@@ -127,10 +127,7 @@ async function increase(id, price) {
     const data = await response.json();
     
     if (response.ok) {
-
-
-
-      let qtt = document.getElementById(`qtt${id}`).textContent = Number(document.getElementById(`qtt${id}`).innerText)+1
+      document.getElementById(`qtt${id}`).textContent = Number(document.getElementById(`qtt${id}`).innerText)+1
       const totale = document.getElementById("totale");
       let tot = totale.innerText.replace("€", "").trim();
       console.log(data);
