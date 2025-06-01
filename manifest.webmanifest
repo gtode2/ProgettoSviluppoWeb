@@ -1,0 +1,20 @@
+{
+  "name":"Progetto Sviluppo Web",
+  "short_name": "App",
+  "start_url": "/Frontend/unlogged/unlogged.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007bff",
+  "icons": [
+    {
+      "src": "/download.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/download.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
