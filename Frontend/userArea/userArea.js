@@ -122,15 +122,34 @@ async function getOrders() {
         }
       }
     }else{
-        console.log("tentativo di href");
-        window.location.href = "/"
-        //redirect a homepage
+        console.log("risultato valido");
+        console.log(data.ord);
+        let contanier = document.getElementById("orderscontainer")
+        data.ord.forEach(el => {
+          let qtt = Object.keys(el.products).length
+          let prodotti = qtt===1 ? "prodotto" : "prodotti"
+          let status = el.sent ? "in elaborazione" : "inviato"
+          let element = `
+            <div class="border-bottom" onclick="openOrder(${el.id})" id="orderelement">
+              <p class="mt-3">${new Date(el.created).toISOString().split("T")[0]}</p>
+              <p>${qtt+" "+prodotti}</p>
+              <p>${status}</p>
+            </div>
+          
+          `
+          contanier.innerHTML+=element
+        });
     }
   } catch (err) {
       console.log(err);
       alert("Errore di rete.");
   }  
 }
+
+function openOrder(id) {
+  window.location.href="/product?id="+id
+}
+
 
 async function renewToken() {
     try {
@@ -149,7 +168,5 @@ async function renewToken() {
     }
 }
 function closeUserArea() {
-      window.history.back();
-      // In alternativa, se preferisci reindirizzare a una pagina specifica:
-      // window.location.href = '../clienti/clienti.html';
+      window.location.href="/"
     }

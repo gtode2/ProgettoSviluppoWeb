@@ -32,15 +32,8 @@ async function main() {
     }
 
 
-    app.use(express.static(path.join(__dirname, "homepage")));
-    app.use(express.static(path.join(__dirname, "Frontend/unlogged")));
-    app.use(express.static(path.join(__dirname, "Frontend/registrazione")));
-    app.use(express.static(path.join(__dirname, "Frontend/admin")));
-    app.use(express.static(path.join(__dirname, "Frontend/artigiano")));
-    app.use(express.static(path.join(__dirname, "Frontend/clienti")));
-    app.use(express.static(path.join(__dirname, "Frontend/tokencheck")));
-    app.use(express.static(path.join(__dirname, "Frontend/admin/report")));
     app.use(express.static(path.join(__dirname, "Frontend")));
+    app.use(express.static(__dirname));
 
 
     app.use(cookieParser());
@@ -1087,7 +1080,15 @@ async function main() {
             return
         }
         if (user.usertype===1) {
-            //gestione utente
+            try {
+                const ord = await pool.query('SELECT * FROM ordini WHERE uid =$1 AND expires_at IS NULL ORDER BY created DESC', [user.uid])
+                console.log(ord.rows);
+                
+                res.status(200).json({ord:ord.rows})
+            } catch (error) {
+                console.log(error);
+                res.status(500).json()
+            }
         }else if(user.usertype===2){
             //gestione artigiano
         }else{
