@@ -21,11 +21,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const toggleOverlayButton = document.getElementById('btn-toggle-overlay');
     const closeOverlayButton = document.getElementById('btn-close-overlay');
     const adminOverlay = document.getElementById('admin-overlay'); // ✅ MANCAVA
+
     if (toggleOverlayButton) {
-    toggleOverlayButton.addEventListener('click', function() {
-      adminOverlay.classList.add('aperto'); // Aggiunge la classe per mostrare l'overlay
-    });
-  }
+        toggleOverlayButton.addEventListener('click', function () {
+            adminOverlay.classList.add('aperto'); // ✅ Overlay visibile
+        });
+    }
 
     if (closeOverlayButton) {
         closeOverlayButton.addEventListener('click', function () {

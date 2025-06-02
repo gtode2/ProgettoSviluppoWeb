@@ -3,63 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Area Artigiana</title>
-    <!-- Bootstrap CSS -->
+    <title>Area Admin - Carrello</title>
+    <link rel="stylesheet" href="/style.css" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <!-- CSS custom -->
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#007bff">
   </head>
   <body>
-    <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    
     <div class="layout-container">
-      <!-- 📦 Area prodotti pubblici (iframe) -->
+      <!-- Sfondo: l'iframe dei prodotti -->
       <div class="view-prodotti">
-        <iframe
-          src="/prodotti/prodotti.html"
-          title="Catalogo prodotti"
-          id="prodotti-iframe"
-        ></iframe>
+        <iframe src="/prodotti/prodotti.html" title="Catalogo prodotti" id="prodotti-iframe"></iframe>
       </div>
-
-      <!-- 🔘 Bottone mobile per aprire overlay -->
+      
+      <!-- Pulsante mobile per aprire l'overlay (carrello) -->
       <button id="btn-toggle-overlay" class="btn-toggle-overlay">
         Apri Area Artigiano
       </button>
-
-      <!-- 🛠️ Area amministrativa (overlay) -->
+      
+      <!-- Overlay contenente il carrello -->
       <div id="admin-overlay" class="admin-overlay">
-        <!-- ❌ Bottone chiusura (solo mobile) -->
-        <button id="btn-close-overlay" class="btn-close-overlay">X</button>
-
-        <!-- 📌 Pulsante user info allineato a destra -->
-        <div class="admin-controls text-end mb-3">
-          <button id="btn-toggle-overlay2" class="btn btn-outline-secondary">
-            User information
-          </button>
-        </div>
-
-        <!-- ✅ Header -->
-        <header class="admin-header">
-          <h1>Benvenuto, Artigiano</h1>
-        </header>
-
-        <section class="inserimento-area mt-4">
-          <!-- 🛒 Lista prodotti nel carrello/inserimento -->
-          <iframe
-            src="/artigiano/inserimento/inserimento.html"
-            title="Inserimento prodotti"
-            id="iframe-inserimento"
-          ></iframe>
-        </section>
+        <!--Bottone chiusura mobile -->
+        <button id="btn-close-overlay" class="btn-close-overlay">✖</button>
+        <!--Area utente-->
+        <button id="adminOverlay" class="adminOverlay">Apri area privata</button>
+        <!-- Sezione dedicata al carrello -->
+          <div id="lista-report" class="lista-report">
+            <iframe
+              src="/artigiano/inserimento/inserimento.html"
+              frameborder="0"
+              class="report-iframe"
+              id="lat-iframe"
+            ></iframe>
+          </div>
       </div>
     </div>
-
+    
     <!-- Script custom -->
-    <script src="artigiano.js"></script>
+    <script src="/artigiano/artigiano.js"></script>
   </body>
 </html>

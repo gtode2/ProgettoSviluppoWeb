@@ -131,29 +131,34 @@ body {
 
 /* DESKTOP STILE: pannello laterale 25% */
 @media (min-width: 768px) {
+  /* Riassegna la larghezza e aggiungi il margine destro all'area prodotti */
   .view-prodotti,
   .user-background {
-    width: 75%;
+    width: calc(100% - 350px);  /* Oppure, se preferisci, potresti usare '75%' se il layout è sempre 75%-25% */
+    /* In alternativa se il 25% corrisponde a 350px, meglio usare il calcolo in pixel */
+    margin-right: 350px;        /* Questo spinge la fine dei prodotti fino all'inizio dell'overlay */
   }
 
+  /* Imposta l'overlay con larghezza fissa */
   .admin-overlay,
   .user-content {
     position: fixed;
     top: 0;
     right: 0;
-    width: 25%;
-    max-width: 350px;
+    width: 350px;
     height: 100vh;
     background: white;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
     transform: none !important;
   }
 
+  /* Nascondi i pulsanti mobile in desktop */
   .btn-toggle-overlay,
   .btn-close-overlay {
     display: none;
   }
 }
+
 /* Gli iframe interni (nella lista-report o simili) riempiono tutto lo spazio */
 .lista-report,
 .report-iframe {
@@ -166,3 +171,20 @@ body {
   display: flex;
   flex-direction: column;
 }
+/* Sfondo full-screen: l'iframe occupa l'intera viewport */
+.iframe-sfondo {
+        position: fixed;      /* Fissa lo sfondo nella viewport */
+        top: 0;               /* Allinea in alto */
+        left: 0;              /* Allinea a sinistra */
+        width: 100%;          /* Copre il 100% della larghezza */
+        height: 100vh;        /* Copre il 100% dell'altezza della viewport */
+        z-index: -1;          /* Assicura che l'iframe sia dietro gli altri elementi */
+        overflow: hidden;     /* Nasconde eventuali scrollbar indesiderate */
+      }
+      
+      .iframe-sfondo iframe {
+        width: 100%;
+        height: 100%;
+        border: none;         /* Rimuove eventuali bordi */
+        display: block;
+      }
