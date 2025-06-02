@@ -767,9 +767,14 @@ async function main() {
         }
         if (user.usertype === 2) {
             const response = await pool.query(`SELECT * FROM attivita WHERE actid=$1`, [user.uid])
+            console.log("test artigiano");
             if (response.rows.length===0) {
                 console.log("no activity");
                 res.sendFile(path.join(__dirname,"Frontend", "/registrazione/regact.html"))
+                return
+            }else{
+                console.log("invio pagina specifica");
+                res.sendFile(path.join(__dirname,"Frontend/userArea/userAreaArtigiano.html"))
                 return
             }
         }
@@ -778,13 +783,12 @@ async function main() {
     })
     app.post("/userArea", async(req,res)=>{        
         const user = checkToken(req,res)
-        if (user.usertype===2) {
+        const {act} = req.body
+        if (user.usertype===2 && act) {
             console.log("artigiano");
             try {
-                const response = await pool.query(`SELECT utenti.nome AS unome, utenti.cognome AS ucognome, utenti.username, utenti.email AS umail, utenti.ntel AS untel, attivita.nome AS anome, attivita.indirizzo, attivita.email AS amail, attivita.ntel AS antel, attivita.descr  FROM utenti JOIN attivita ON utenti.uid=attivita.actid WHERE uid = $1`, [user.uid])
-                //gestire richiesta acquisti
-                
-                res.status(200).json({user:response.rows[0]})
+                const response = await pool.query(`SELECT * FROM attivita WHERE actid = $1`, [user.uid])
+                res.status(200).json({act:response.rows[0]})
             } catch (error) {
                 console.log(error);
                 res.status(500).json({})
@@ -803,6 +807,73 @@ async function main() {
                 console.log(error);
                 res.status(500).json({})
             }
+        }
+        
+    })
+    app.get("/editAct", async (req,res) => {
+        const user = checkToken(req,res, false)
+        if (user===-1 || user.usertype!==2) {
+            res.redirect("/userArea")
+        }
+        res.sendFile(path.join(__dirname,"Frontend/artigiano/modificaAttivita/modificaatt.html"))
+    })
+
+    app.post("/updateAct", async (req,res) => {
+        const {nome, email, ntel, descr} = req.body
+        const user = checkToken(req,res)
+        if (user===-1) {
+            return
+        }
+        var query = `UPDATE attivita  SET `
+        var values = []
+
+        if(nome){
+            query += ` nome = $`+(values.length+1)
+            values.push(nome)
+        }
+        if (email) {
+            if (values.length!==0) {
+                query += ' , '
+            }
+            query += ` email = $`+(values.length+1)
+            values.push(email)
+        }
+        if (ntel) {
+            if (values.length!==0) {
+                query += ' , '
+            }
+            query += ` ntel = $`+(values.length+1)
+            values.push(ntel)
+        }
+        if (descr) {
+            if (values.length!==0) {
+                query += ' , '
+            }
+            query += ` descr = $`+(values.length+1)
+            values.push(descr)
+        }
+
+        console.log(query);
+        console.log(values);
+        
+        
+        query = query + ` WHERE actid = $`+(values.length+1)
+        values.push(user.uid)
+        try {
+            if (values.length<2) {
+                res.status(400).json({})
+                console.log("nessun valore inserito");
+                
+                return
+            }
+            console.log(query);
+            console.log(values);
+            
+            const result = await pool.query(query, values)
+            res.status(200).json({})
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({})
         }
         
     })
@@ -870,10 +941,6 @@ async function main() {
             console.log(error);
             res.status(500).json({})
         }
-        
-        
-
-
     })
     
     app.post("/checkout", async(req,res)=>{

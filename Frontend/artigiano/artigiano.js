@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if(adminOverlay){
       adminOverlay.addEventListener('click', function(){
-        window.location.href = "/userArea/userArea.html"
+        window.location.href = "/userArea"
       })
     }
 });
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
   gestisciOverlayArtigiano();
 
   // Gestione del form che si trova nell'iframe "inserimento.html"
-  const iframeInserimento = document.getElementById("iframe-inserimento");
+  const iframeInserimento = document.getElementById("lat-iframe");
 
   // Quando l'iframe ha finito di caricare il suo contenuto...
   iframeInserimento.addEventListener("load", function () {
