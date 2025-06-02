@@ -127,21 +127,21 @@ async function main() {
                 if (user!==-1) {
                     switch (user.usertype) {
                         case 1:
-                            res.sendFile(path.join(__dirname,"Frontend","/clienti/clienti.html"))
+                            res.sendFile(path.join(__dirname,"Frontend","clienti/clienti.html"))
                             break;
                         case 2:
                             const response = await pool.query(`SELECT * FROM attivita WHERE actid=$1`, [user.uid])
                             if (response.rows.length===0) {
-                                res.sendFile(path.join(__dirname,"Frontend", "/registrazione/regact.html"))
+                                res.sendFile(path.join(__dirname,"Frontend", "registrazione/regact.html"))
                             }else{
-                                res.sendFile(path.join(__dirname,"Frontend","/artigiano/artigiano.html"))
+                                res.sendFile(path.join(__dirname,"Frontend","artigiano/artigiano.html"))
                             }
                             break;
                         case 0:
-                            res.sendFile(path.join(__dirname,"Frontend","/admin/admin.html"))
+                            res.sendFile(path.join(__dirname,"Frontend","admin/admin.html"))
                             break;
                         default:
-                            res.sendFile(path.join(__dirname,"Frontend","/unlogged/unlogged.html"))
+                            res.sendFile(path.join(__dirname,"Frontend","unlogged/unlogged.html"))
                             break;
                     }
                 }    

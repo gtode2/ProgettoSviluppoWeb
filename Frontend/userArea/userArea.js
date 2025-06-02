@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 🔁 Caricamento dinamico dello sfondo
   if (isBackground && bgIframe) {
     const src = userType === "artigiano"
-      ? "../artigiano/artigiano.html?mode=background"
-      : "../clienti/clienti.html?mode=background";
+      ? "/artigiano/artigiano.html?mode=background"
+      : "/clienti/clienti.html?mode=background";
     bgIframe.src = src;
   }
 

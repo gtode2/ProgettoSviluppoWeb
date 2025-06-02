@@ -86,6 +86,7 @@ function renderProducts(data) {
         <h5 class="card-title">${el.name}</h5>
         <p class="card-text">${el.descr}</p>
         <p class="price text-success fw-bold">€${el.costo}</p>
+        <p class="nome artigiano"></p>
         <div class="d-flex justify-content-center gap-2 product-actions cliente" style="padding-bottom:50px">
           <button class="btn btn-primary aggiungi-carrello" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
           <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>

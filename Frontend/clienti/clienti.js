@@ -9,35 +9,36 @@ function loadCart() {
 }
 
 
-document.addEventListener('DOMContentLoaded', function () {
-  const btnToggle   = document.getElementById('btn-toggle-overlay');
-  const btnClose    = document.getElementById('btn-close-overlay');
-  const overlay     = document.getElementById('admin-overlay');
-  const btnUserInfo = document.getElementById('btn-toggle-overlay2');
-
-  // Apertura overlay: su mobile il pulsante apre l'overlay a full screen
-  btnToggle.addEventListener('click', function () {
-    overlay.classList.add('visible');
-    btnToggle.classList.add('d-none'); // Nasconde il pulsante di apertura
-  });
-
-  // Chiusura overlay: il bottone chiude l'overlay e ripristina il pulsante mobile
-  btnClose.addEventListener('click', function () {
-    overlay.classList.remove('visible');
-    btnToggle.classList.remove('d-none');
-  });
-
-  btnUserInfo.addEventListener('click', function () {
-    window.location.href = '../userArea/userArea.html';
-  });
-});
-function openProduct(id){
-    window.parent.document.getElementById("lat-iframe").src="/prodotti/dettaglio/dettagli.html?id="+id
-}
-
 function closeProduct() {
-    window.parent.document.getElementById("lat-iframe").src="/clienti/carrello/carrello.html"
+    window.parent.document.getElementById("lat-iframe").src = "/admin/report/report.html";
 }
+
+function openProduct(id) {
+    window.parent.document.getElementById("lat-iframe").src = "/prodotti/dettaglio/dettagli.html?id=" + id;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleOverlayButton = document.getElementById('btn-toggle-overlay');
+    const closeOverlayButton = document.getElementById('btn-close-overlay');
+    const adminOverlay = document.getElementById('admin-overlay'); // ✅ MANCAVA
+    if (toggleOverlayButton) {
+    toggleOverlayButton.addEventListener('click', function() {
+      adminOverlay.classList.add('aperto'); // Aggiunge la classe per mostrare l'overlay
+    });
+  }
+
+    if (closeOverlayButton) {
+        closeOverlayButton.addEventListener('click', function () {
+            adminOverlay.classList.remove('aperto'); // ✅ Overlay nascosto
+        });
+    }
+    if(adminOverlay){
+      adminOverlay.addEventListener('click', function(){
+        window.location.href = "/userArea/userArea.html"
+      })
+    }
+});
+
 
 async function addToCart(id, name, price){
   const frame = document.getElementById("lat-iframe")

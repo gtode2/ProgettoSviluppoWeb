@@ -3,50 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Area Acquisti</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- CSS custom -->
-    <link rel="stylesheet" href="clienti.css" />
+    <title>Area Admin</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#007bff">
   </head>
   <body>
-    <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <div class="layout-container">
-      <!-- 📦 Area prodotti pubblici (iframe) -->
-      <div class="view-prodotti">
-        <iframe src="../prodotti/prodotti.html" title="Catalogo prodotti" id="prodotti-iframe"></iframe>
+    <div class="user-area">
+      <!-- Sfondo (iframe dei prodotti) -->
+      <div class="user-background">
+        <iframe src="/prodotti/prodotti.html" title="Catalogo prodotti" id="prodotti-iframe"></iframe>
       </div>
 
-      <!-- 🔘 Bottone mobile per aprire overlay -->
-      <button id="btn-toggle-overlay" class="btn-toggle-overlay">Apri Area Cliente</button>
+      <!-- Pulsante mobile per aprire il pannello -->
+      <button id="btn-toggle-overlay" class="btn-toggle-overlay">
+        Apri Area Artigiano
+      </button>
 
-      <!-- 🛠️ Area amministrativa (overlay) -->
-      <div id="admin-overlay" class="admin-overlay">
-        <!-- ❌ Bottone chiusura (solo mobile) -->
-        <button id="btn-close-overlay" class="btn-close-overlay">X</button>
+      <!-- Pannello contenente i contenuti -->
+      <div id="user-content" class="user-content">
+        <!-- Pulsante di chiusura (solo mobile) -->
+        <button id="btn-close-overlay" class="btn-close-overlay">✖</button>
 
-        <!-- 📌 Pulsante user info allineato a destra -->
-        <div class="admin-controls text-end mb-3">
-          <button id="btn-toggle-overlay2" class="btn btn-outline-secondary">
-            User information
-          </button>
-        </div>
-
-        <!-- ✅ Header -->
-        <header class="admin-header">
-          <h1>Benvenuto, Cliente</h1>
-        </header>
-
-        <section class="carrello-area mt-4">
-          <!-- 🛒 Lista prodotti nel carrello -->
-          <iframe src="../carrello/carrello.html" title="Carrello acquisti" id="lat-iframe"></iframe>
+        <!-- Sezione dedicata all'inserimento/report (iframe) -->
+        <section class="prodotti-artigiano">
+          <div id="lista-report" class="lista-report">
+            <iframe
+              src="/clienti/carrello/carrello.html"
+              frameborder="0"
+              class="report-iframe"
+              id="lat-iframe"
+            ></iframe>
+          </div>
         </section>
       </div>
     </div>
 
     <!-- Script custom -->
-    <script src="clienti.js"></script>
+    <script src="/clienti/clienti.js"></script>
   </body>
 </html>

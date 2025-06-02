@@ -1,4 +1,4 @@
-/* ✅ RESET & BASE */
+/* RESET BASE */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,31 +9,38 @@ body {
   line-height: 1.6;
 }
 
-/* ✅ LAYOUT PRINCIPALE */
-.layout-container {
+/* LAYOUT CONTAINER: struttura principale */
+.layout-container,
+.user-area {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
+
+/* DESKTOP: struttura orizzontale */
 @media (min-width: 768px) {
-  .layout-container {
+  .layout-container,
+  .user-area {
     flex-direction: row;
   }
 }
 
-/* ✅ AREA PRODOTTI PUBBLICI (iframe) */
-.view-prodotti {
-  flex: 2;
+/* AREA PRODOTTI (75%) */
+.view-prodotti,
+.user-background {
   height: 100vh;
+  width: 100%;
 }
-.view-prodotti iframe {
+.view-prodotti iframe,
+.user-background iframe {
   width: 100%;
   height: 100%;
   border: none;
 }
 
-/* ✅ OVERLAY ADMIN */
-.admin-overlay {
+/* OVERLAY / FORM (25%) */
+.admin-overlay,
+.user-content {
   position: fixed;
   top: 0;
   right: 0;
@@ -47,11 +54,12 @@ body {
   transform: translateX(100%);
   transition: transform 0.3s ease-in-out;
 }
-.admin-overlay.aperto {
+.admin-overlay.aperto,
+.user-content.aperto {
   transform: translateX(0);
 }
 
-/* ✅ BOTTONE APERTURA MOBILE */
+/* MOBILE: pulsanti apertura e chiusura */
 .btn-toggle-overlay {
   display: block;
   position: fixed;
@@ -66,8 +74,6 @@ body {
   border-radius: 0 6px 6px 0;
   cursor: pointer;
 }
-
-/* ✅ BOTTONE CHIUSURA OVERLAY */
 .btn-close-overlay {
   position: absolute;
   top: 1rem;
@@ -78,29 +84,24 @@ body {
   cursor: pointer;
 }
 
-/* ✅ DESKTOP OVERRIDE */
-@media (min-width: 768px) {
-  .admin-overlay {
-    position: static;
-    transform: none !important;
-    width: 350px;
-    height: auto;
-    background: white;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-  }
-
-  .btn-toggle-overlay,
-  .btn-close-overlay {
-    display: none;
-  }
+/* PULSANTE INTERNO */
+.adminOverlay {
+  display: block;
+  margin: 1rem 0;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-/* ✅ SEZIONI INTERNE */
+/* SEZIONI E COMPONENTI */
 .admin-header {
   margin-bottom: 1rem;
 }
-.prodotti-artigiano,
-.inserimento-prodotto {
+.prodotti-artigiano {
   margin-top: 2rem;
 }
 .lista-prodotti .prodotto {
@@ -117,7 +118,7 @@ body {
   margin-right: 0.5rem;
 }
 
-/* ✅ FORM STILE */
+/* FORM */
 .form-prodotto input,
 .form-prodotto button {
   display: block;
@@ -126,4 +127,42 @@ body {
   padding: 0.5rem;
   border-radius: 4px;
   border: 1px solid #ccc;
+}
+
+/* DESKTOP STILE: pannello laterale 25% */
+@media (min-width: 768px) {
+  .view-prodotti,
+  .user-background {
+    width: 75%;
+  }
+
+  .admin-overlay,
+  .user-content {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 25%;
+    max-width: 350px;
+    height: 100vh;
+    background: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    transform: none !important;
+  }
+
+  .btn-toggle-overlay,
+  .btn-close-overlay {
+    display: none;
+  }
+}
+/* Gli iframe interni (nella lista-report o simili) riempiono tutto lo spazio */
+.lista-report,
+.report-iframe {
+  width: 100%;
+  height: 100%;
+}
+
+.lista-report {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
