@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function openProduct(id){
-    window.parent.document.getElementById("lat-iframe").src="/prodotti/dettaglio/dettagli.html"
+    window.parent.document.getElementById("lat-iframe").src="/prodotti/dettaglio/dettagli.html?id="+id
 }
 
 function closeProduct() {
