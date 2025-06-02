@@ -1,53 +1,45 @@
-// service-worker.js
-// Questo è il file del service worker che gestisce la cache e le richieste di rete.
-
-// Nome della cache per questa versione della PWA. Incrementa il numero per forzare un aggiornamento della cache.
+// Nome della cache per questa versione della PWA.
 const CACHE_NAME = 'pwa-cache-v1';
 
-// Elenco degli asset da pre-caching.
-// Assicurati che tutti i percorsi siano assoluti dalla root del tuo server.
+// Elenco degli asset da pre-caching, inclusi tutti i file utili per le transizioni:
 const ASSETS_TO_CACHE = [
-  // La root del tuo sito web. Potrebbe essere la tua homepage principale.
-  // Se la tua homepage è HomePage.html, potresti volerla specificare esplicitamente.
-  '/', 
+  // Pagine di navigazione fondamentali:
+  '/Frontend/unlogged/unlogged.html',
+  '/Frontend/registrazione/registrazione.html',
+  '/Frontend/registrazione/regact.html',
+  '/Frontend/login/login.html',
+  '/Frontend/clienti/clienti.html',
   '/Frontend/admin/admin.html',
+  '/Frontend/artigiano/artigiano.html',
+  '/Frontend/userArea/userArea.html',
+  // Altri asset statici
   '/Frontend/admin/report/report.html',
   '/Frontend/admin/report/banArtigiano.html',
   '/Frontend/admin/report/banProdotto.html',
-  '/Frontend/artigiano/artigiano.html',
   '/Frontend/artigiano/inserimento/inserimento.html',
   '/Frontend/artigiano/modifica/modifica.html',
   '/Frontend/cambiopassword/password.html',
   '/Frontend/checkout/checkout.html',
   '/Frontend/checkout/cancel.html',
   '/Frontend/checkout/success.html',
-  '/Frontend/clienti/clienti.html',
   '/Frontend/clienti/carrello/carrello.html',
   '/Frontend/clienti/report/report.html',
   '/Frontend/HomePage/HomePage.html',
-  '/Frontend/login/login.html',
   '/Frontend/login/accountBannato/ban.html',
   '/Frontend/prodotti/prodotti.html',
   '/Frontend/prodotti/dettaglio/dettagli.html',
-  '/Frontend/registrazione/registrazione.html',
-  '/Frontend/registrazione/regact.html',
   '/Frontend/renewToken/renewToken.html',
-  '/Frontend/unlogged/unlogged.html',
-  '/Frontend/userArea/userArea.html',
-  // Aggiungi anche gli script e il manifest se non sono già inclusi implicitamente
   '/Frontend/sw-register.js',
   '/manifest.webmanifest',
   '/Frontend/icons/icon-192.png',
   '/Frontend/icons/icon-512.png',
-  // Potresti voler includere anche i file CSS e JS specifici per le pagine.
-  // Ad esempio, per unlogged.html:
-  '/Frontend/unlogged/unlogged.css',
+  '/Frontend/style.css',
   '/Frontend/unlogged/unlogged.js'
 ];
 
-// Evento 'install': Viene attivato quando il service worker viene installato.
-// Qui si effettua il pre-caching degli asset.
 self.addEventListener('install', event => {
+  // Forza la nuova versione del service worker ad attivarsi subito.
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -60,38 +52,45 @@ self.addEventListener('install', event => {
   );
 });
 
-// Evento 'fetch': Intercetta le richieste di rete.
-// Tenta di servire i contenuti dalla cache prima di andare in rete.
 self.addEventListener('fetch', event => {
+  // Se la richiesta è di tipo "navigate" (ovvero l'utente sta passando da una pagina all'altra)
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      caches.match(event.request).then(cachedResponse => {
+        console.log('Navigazione verso:', event.request.url);
+        return cachedResponse || fetch(event.request).catch(() => {
+          // In caso di errore (es. offline), fornisci una pagina di fallback.
+          return caches.match('/Frontend/unlogged/unlogged.html');
+        });
+      })
+    );
+    return;
+  }
+  
+  // Per tutte le altre richieste, usa la strategia cache-first.
   event.respondWith(
     caches.match(event.request)
       .then(cachedResponse => {
-        // Se la risorsa è in cache, la restituisce.
-        // Altrimenti, va in rete per recuperarla.
         return cachedResponse || fetch(event.request);
       })
       .catch(error => {
         console.error('Service Worker: Errore durante il fetch:', error);
-        // Puoi aggiungere una pagina offline qui se necessario
-        // return caches.match('/offline.html');
       })
   );
 });
 
-// Evento 'activate': Viene attivato quando il service worker viene attivato.
-// Qui si puliscono le vecchie cache.
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(name => {
-          // Elimina tutte le cache che non corrispondono al CACHE_NAME corrente.
+          // Elimina le cache che non corrispondono alla versione attuale.
           if (name !== CACHE_NAME) {
             console.log('Service Worker: Eliminazione cache vecchia:', name);
             return caches.delete(name);
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });

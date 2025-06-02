@@ -1,10 +1,11 @@
 {
-  "name":"Progetto Sviluppo Web",
+  "name": "Progetto Sviluppo Web",
   "short_name": "App",
   "start_url": "/Frontend/unlogged/unlogged.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#007bff",
+  "scope": "/Frontend/",
   "icons": [
     {
       "src": "/download.png",

@@ -81,7 +81,6 @@ function renderProducts(data) {
       if (lastUserType === 1) {
     col.innerHTML= `
     <div class="card text-center shadow-sm" id="productcard${el.id}">
-      <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
       <div class="card-body" onclick="openProduct(${el.id})">
         <h5 class="card-title">${el.name}</h5>
         <p class="card-text">${el.descr}</p>
@@ -97,7 +96,6 @@ function renderProducts(data) {
     } else if (lastUserType === 2) {
     col.innerHTML = `
     <div class="card text-center shadow-sm" id="productcard${el.id}">
-      <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
       <div class="card-body" onclick="openProduct(${el.id})">
         <h5 class="card-title">${el.name}</h5>
         <p class="card-text">${el.descr}</p>
@@ -113,7 +111,6 @@ function renderProducts(data) {
     console.log("admin");
     col.innerHTML = `
       <div class="card text-center shadow-sm" id="productcard${el.id}">
-        <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
         <div class="card-body" onclick="openProduct(${el.id})">
           <h5 class="card-title">${el.name}</h5>
           <p class="card-text">${el.descr}</p>
@@ -124,7 +121,6 @@ function renderProducts(data) {
     }else{
       col.innerHTML = `
         <div class="card text-center shadow-sm" id="productcard${el.id}">
-          <img src="${el.immagine}" class="card-img-top" alt="${el.name}">
           <div class="card-body>
             <h5 class="card-title">${el.name}</h5>
             <p class="card-text">${el.descr}</p>
@@ -142,7 +138,6 @@ function renderProducts(data) {
         <div class="card shadow-sm" id="productcard${el.id}">
           <div class="row g-0">
             <div class="col-md-2">
-              <img src="${el.immagine}" class="img-fluid rounded-start" alt="${el.name}">
             </div>
             <div class="col-md-10">
               <div class="card-body" onclick="openProduct(${el.id})">
