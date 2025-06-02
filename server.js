@@ -918,8 +918,13 @@ async function main() {
                     prodData["prezzo"] = qt.rows[0].costo
                     prodData["quantita"] = el.quantita
                     prodData["nome"] = qt.rows[0].name
-                    ord[el.productid]= prodData
+                    if (!ord[el.actid]) {
+                        ord[el.actid] = {};
+                    }
+                    ord[el.actid][el.productid]= prodData
                 }
+                console.log(ord);
+                
             }
             
             console.log("prodotti verificati e bloccati");
@@ -954,7 +959,7 @@ async function main() {
             return
         }
         //prendo informazioni ordine
-        var elementi = await pool.query(`SELECT products FROM ordini WHERE uid=$1 AND expires_at IS NOT NULL`, [user.uid])
+        var elementi = await pool.query(`SELECT * FROM ordini WHERE uid=$1 AND expires_at IS NOT NULL`, [user.uid])
         //eseguire verifica e rimozione di elementi bannati
         //creo array con elementi
         var li = []
@@ -962,18 +967,39 @@ async function main() {
             res.status(401).json({err:"no order"})
             return
         }
-        elementi = elementi.rows[0].products
+        elementi = elementi.rows[0]
         console.log(elementi);
-        
-        for(const [id, prod] of Object.entries(elementi)){
-            var p = {}
-            var pricedata = {}
-            pricedata.currency = "eur"
-            pricedata.product_data = {name:prod.nome}
-            pricedata.unit_amount = Math.round(prod.prezzo * 100)
-            p.price_data = pricedata
-            p.quantity = prod.quantita
-            li.push(p)
+        try {
+            await pool.query(`BEGIN`)
+            for(const [id, prodBlock] of Object.entries(elementi.products)){
+                //gestione prodotti produttore id
+                //creo entry in db per ogni produttore
+                console.log("id produttore = "+id);
+                
+                let aprod = {}
+                for(const[prodId, prod] of Object.entries(prodBlock)){
+                    //gestione prodotto specifico
+                    var p = {}
+                    var pricedata = {}
+                    pricedata.currency = "eur"
+                    pricedata.product_data = {name:prod.nome}
+                    pricedata.unit_amount = Math.round(prod.prezzo * 100)
+                    p.price_data = pricedata
+                    p.quantity = prod.quantita
+                    li.push(p)
+                    aprod[prodId] = prod
+                }
+                await pool.query(`INSERT INTO ordini(uid, products, sent, created, expires_at, actid) values($1,$2,$3,$4,$5,$6)`,[user.uid, aprod, false, elementi.created, elementi.expires_at, id])
+                console.log("aprod = "+JSON.stringify(aprod));    
+            }
+            await pool.query(`DELETE FROM ordini WHERE uid=$1 AND expires_at IS NOT NULL AND actid IS NULL`, [user.uid])            
+            await pool.query(`COMMIT`)
+            console.log("completato");
+            
+        } catch (error) {
+            await pool.query(`ROLLBACK`)
+            console.log(error);
+            
         }
 
         console.log("AAAAA");

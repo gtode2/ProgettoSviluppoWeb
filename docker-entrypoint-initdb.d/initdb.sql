@@ -56,4 +56,6 @@ CREATE TABLE ordini (
     sent BOOLEAN DEFAULT FALSE, 
     created TIMESTAMP NOT NULL, 
     expires_at TIMESTAMP, 
-    FOREIGN KEY (uid) REFERENCES utenti(uid));
+    actid INT,
+    FOREIGN KEY (uid) REFERENCES utenti(uid),
+    FOREIGN KEY (actid) REFERENCES attivita (actid));
