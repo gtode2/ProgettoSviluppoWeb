@@ -26,11 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function openProduct(id){
-<<<<<<< HEAD
     window.parent.document.getElementById("lat-iframe").src="/prodotti/dettaglio/dettagli.html?id="+id
-=======
-    window.parent.document.getElementById("lat-iframe").src="/prodotti/dettaglio/dettagli.html"
->>>>>>> 251b1939f7d5a72dfc15abac154042de9773f497
 }
 
 function closeProduct() {
