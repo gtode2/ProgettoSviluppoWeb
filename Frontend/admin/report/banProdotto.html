@@ -10,46 +10,9 @@
 <body>
     <div>
         <h2 id="title">sei sicuro di voler bannare il prodotto?</h2>
-        <button id="annulla">Annulla</button>
-        <button id="conferma">Conferma</button>
+        <button id="annulla" onclick="cancel()">Annulla</button>
+        <button id="conferma" onclick="confirmP()">Conferma</button>
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", ()=>{
-            const annulla = document.getElementById("annulla")
-            const conferma = document.getElementById("conferma")
-            const params = new URLSearchParams(window.location.search);
-            const id = params.get("id");
-            if (!id) {
-                document.getElementById("title").textContent="si è verificato un errore nel caricamento del prodotto"
-                conferma.disabled=true
-            }
-
-            conferma.addEventListener("click",async()=>{
-                try {
-                    const response = await fetch("/ban", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },            
-                    body: JSON.stringify({id:id, type:0})
-                    })
-                    const data = await response.json()
-                    console.log("AAAAA");
-
-                    if (!response.ok) {
-                        //gestione response 
-                    }else{
-                        window.parent.document.getElementById("prodotti-iframe").src="./prodotti/prodotti.html"
-                        window.parent.document.getElementById("lat-iframe").src="./admin/report/report.html"
-                    }
-                } catch (err) {
-                    console.log(err);
-                    alert("Errore di rete.");
-                }
-            })
-            annulla.addEventListener("click",()=>{
-                window.parent.document.getElementById("lat-iframe").src="./admin/report/report.html"
-            })
-        })
-                
-    </script>
+    <script src="/admin/report/ban.js"></script>
 </body>
 </html>

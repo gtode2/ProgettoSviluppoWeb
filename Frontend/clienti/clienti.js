@@ -1,11 +1,11 @@
 function report(id) {
   console.log("AAAAAA");
-  document.getElementById('lat-iframe').src = './clienti/report/report.html?id=' + encodeURIComponent(id);
+  document.getElementById('lat-iframe').src = '/clienti/report/report.html?id=' + encodeURIComponent(id);
 }
 
 
 function loadCart() {
-  document.getElementById('lat-iframe').src = '../carrello/carrello.html';
+  document.getElementById('lat-iframe').src = '/clienti/carrello/carrello.html';
 }
 
 
