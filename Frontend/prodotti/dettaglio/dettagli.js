@@ -9,56 +9,73 @@ function getProductIdFromUrl() {
   return params.get("id");
 }
 
-// Mostra prodotto
+/* 
+  Funzione che popola i campi dell'HTML con i dati del prodotto.
+  Si assume che l'oggetto prodotto (p) contenga almeno le proprietà:
+  - name
+  - descr    (descrizione)
+  - costo
+  - quantita (eventuale quantità)
+  - categoria
+*/
 function mostraDettaglioProdotto(p) {
-  console.log("nome="+p.name);
+  console.log("nome=" + p.name);
   
-  const container = document.getElementById("dettaglio-prodotto");
-
-  container.innerHTML = `
-    <div class="card">
-      <img src="${p.immagine}" class="card-img-top" alt="${p.name}">
-      <div class="card-body">
-        <h5 class="card-title">${p.name}</h5>
-        <p class="card-text">${p.descr}</p>
-        <p class="card-text"><strong>Prezzo:</strong> €${p.costo}</p>
-        <p class="card-text"><small class="text-muted">Categoria: ${p.categoria || 'non specificata'}</small></p>
-      </div>
-    </div>
-  `;
+  document.getElementById("nome").textContent = p.name;
+  document.getElementById("descrizione").textContent = p.descr;
+  document.getElementById("prezzo").textContent = p.costo;
+  document.getElementById("quantita").textContent = p.quantita || "0";
+  document.getElementById("categoria").textContent = p.categoria || "non specificata";
 }
 
+// Funzione per chiudere il dettaglio del prodotto
+function closeProduct() {
+  console.log("close");
+  if (window.parent && typeof window.parent.closeProduct === 'function') {
+    window.parent.closeProduct();
+  } else {
+    window.history.back();
+  }
+}
 
-// Init
-document.addEventListener("DOMContentLoaded", async() => {
+// Alias per l'handler del pulsante "Torna Indietro"
+function goBack() {
+  closeProduct();
+}
+
+// Init: recupera l'ID, chiama l'API e popola la pagina
+document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
-  const id = params.get("id")
+  
+  const id = params.get("id");
+
   try {
     const response = await fetch("/getProducts", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({id:id})
-    })
-    const data = await response.json()    
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: id })
+    });
+    
+    const data = await response.json();
 
     if (!response.ok) {
-      console.log(response.status + "\n"+ response.err);
-      
-      //gestione errore
-    }else{  
-      console.log("AEAEAEAEA");
-          
-      mostraDettaglioProdotto(data.prodotti[0]);
+      console.log(response.status + "\n" + response.err);
+      // Visualizza un messaggio di errore all'interno del paragrafo "descrizione"
+      document.getElementById("descrizione").innerHTML = `
+        <div class="alert alert-danger">Errore nel caricamento del prodotto.</div>
+      `;
+    } else {
+      console.log("Prodotto caricato correttamente");
+      if (data.prodotti && data.prodotti.length > 0) {
+        mostraDettaglioProdotto(data.prodotti[0]);
+      } else {
+        document.getElementById("descrizione").innerHTML = `
+          <div class="alert alert-warning">Prodotto non trovato.</div>
+        `;
+      }
     }
   } catch (err) {
     console.log(err);
     alert("Errore di rete.");
   }
 });
-
-
-// Funzione per chiudere il dettaglio del prodotto
-function closeProduct() {
-  console.log("close"); 
-  window.parent.closeProduct()
-}
