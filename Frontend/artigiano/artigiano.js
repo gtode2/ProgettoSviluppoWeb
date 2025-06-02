@@ -26,15 +26,15 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function openProduct(id){
-    window.parent.document.getElementById("iframe-inserimento").src="/prodotti/dettaglio/dettagli.html?id="+id
+    window.parent.document.getElementById("lat-iframe").src="/prodotti/dettaglio/dettagli.html"
 }
 
 function closeProduct() {
-    window.parent.document.getElementById("iframe-inserimento").src="/artigiano/inserimento/inserimento.html"
+    window.parent.document.getElementById("lat-iframe").src="/artigiano/inserimento/inserimento.html"
 }
 
 function edit(id){
-  window.parent.document.getElementById("iframe-inserimento").src="/artigiano/modifica/modifica.html?id="+id
+  window.parent.document.getElementById("lat-iframe").src="/artigiano/modifica/modifica.html?id="+id
 }
 
 document.addEventListener("DOMContentLoaded", function () {
