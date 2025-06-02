@@ -1,33 +1,54 @@
 let id = null
 let defCat = null
 let c = true
-document.addEventListener("DOMContentLoaded", async () => {
-    const params = new URLSearchParams(window.location.search);
-    id = params.get("id")
-    try {
-        const response = await fetch("/getProducts", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({id:id})
-        })
-        let data = await response.json()    
-        if (!response.ok) {
-          console.log(response.status + "\n"+ response.err);     
-          //gestione errore
-        }else{  
-          console.log(data.prodotti[0]);
-          document.getElementById("nome").placeholder=data.prodotti[0].name
-          document.getElementById("descrizione").placeholder=data.prodotti[0].descr
-          document.getElementById("prezzo").placeholder=data.prodotti[0].costo
-          document.getElementById("quantita").placeholder=data.prodotti[0].amm
-          document.getElementById("categoria").value=data.prodotti[0].cat          
-          defCat = data.prodotti[0].cat
-        }
-    } catch (err) {
-        console.log(err);
-        alert("Errore di rete.");
-     }
-})
+document.addEventListener('DOMContentLoaded', () => {
+  const dettaglioContainer = document.getElementById('dettaglio-prodotto');
+  
+  // Recupera l'ID prodotto dalla query string (esempio: ?id=123)
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get('id');
+
+  if (!productId) {
+    dettaglioContainer.innerHTML = '<div class="alert alert-warning">ID prodotto mancante.</div>';
+    return;
+  }
+  
+  // Richiesta all'API per recuperare i dati del prodotto
+  fetch(`/api/prodotti/${productId}`)
+    .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    })
+    .then(product => {
+      // Costruisce il contenuto della card con i dati del prodotto
+      const productCard = `
+        <div class="card">
+          <img src="${product.imageUrl}" class="card-img-top" alt="${product.nome}">
+          <div class="card-body">
+            <h5 class="card-title">${product.nome}</h5>
+            <p class="card-text">${product.descrizione}</p>
+            <p class="card-text"><strong>Prezzo:</strong> €${product.prezzo}</p>
+            <p class="card-text"><strong>Quantità:</strong> ${product.quantita}</p>
+          </div>
+        </div>
+      `;
+      dettaglioContainer.innerHTML = productCard;
+    })
+    .catch(error => {
+      console.error('Errore durante il recupero dei dati del prodotto:', error);
+      dettaglioContainer.innerHTML = '<div class="alert alert-danger">Errore nel caricamento del prodotto.</div>';
+    });
+  
+  // Funzionalità per il pulsante di chiusura
+  const closeButton = document.getElementById('chiudiArea');
+  if (closeButton) {
+    closeButton.addEventListener('click', () => {
+      // Ad esempio: torna indietro usando la history del browser
+      window.history.back();
+    });
+  }
+});
+
 
 function checkNome(){
   const nome = document.getElementById("nome").value.trim()
@@ -125,8 +146,6 @@ async function send() {
     }   
   }
 }
-
-
 
 async function renewToken() {
     try {

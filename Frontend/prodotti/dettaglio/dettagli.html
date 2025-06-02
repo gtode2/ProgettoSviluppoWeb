@@ -1,37 +1,68 @@
 <!DOCTYPE html>
 <html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dettaglio Prodotto</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dettaglio Prodotto</title>
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- CSS personalizzato -->
-  <link rel="stylesheet" href="/prodotti/dettaglio/dettagli.css" />
-  <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#007bff">
-</head>
-<body data-utente="cliente">
-  <div class="container-fluid">
-    <div class="dettagli-e-immagine">
-      <!-- Dettagli Prodotto -->
-      <div class="dettagli">
-        <button type="button" class="btn-close close-btn" aria-label="Chiudi" onclick="closeProduct()"></button>
-        <div id="dettaglio-prodotto">
-          <!-- Popolato dinamicamente via JS -->
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#007bff" />
+  </head>
+  <body>
+    <div class="container mt-4">
+      <h1 class="mb-4">Dettaglio Prodotto:</h1>
+
+      <div class="row mb-3">
+        <div class="col-12">
+          <label for="nome" class="form-label">Nome prodotto:</label>
+          <p id="nome" class="form-control-plaintext"></p>
         </div>
       </div>
 
-      <!-- Immagine Prodotto (momentaneamente rimossa) -->
-      <!--
-      <div class="immagine">
-        <img src="" alt="Immagine prodotto" id="immagine-prodotto" />
+      <div class="row mb-3">
+        <div class="col-12">
+          <label for="descrizione" class="form-label">Descrizione:</label>
+          <p id="descrizione" class="form-control-plaintext"></p>
+        </div>
       </div>
-      -->
+
+      <div class="row mb-3">
+        <div class="col-6">
+          <label for="prezzo" class="form-label">Prezzo (€):</label>
+          <p id="prezzo" class="form-control-plaintext"></p>
+        </div>
+        <div class="col-6">
+          <label for="quantita" class="form-label">Quantità:</label>
+          <p id="quantita" class="form-control-plaintext"></p>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-12">
+          <label for="categoria" class="form-label">Categoria:</label>
+          <p id="categoria" class="form-control-plaintext"></p>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-12">
+          <button
+            type="button"
+            id="goBack"
+            class="btn btn-secondary w-100"
+            onclick="goBack()"
+          >
+            Torna Indietro
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-  <script src="/prodotti/dettaglio/dettagli.js"></script>
-  <script src="/sw-register.js"></script>
-</body>
+
+    <script src="/prodotti/dettaglio/dettagli.js"></script>
+  </body>
 </html>

@@ -30,13 +30,15 @@
 
       <button id="adminOverlay" class="adminOverlay">Apri area privata</button>
       <!-- 📋 Lista prodotti caricata via DOM -->
-      <section class="prodotti-artigiano">
-        <div id="lista-report" class="lista-report">
+      <div id="lista-report" class="lista-report">
           <!-- Rimosso lo stile inline, aggiunta classe report-iframe -->
-          <iframe src="/admin/report/report.html" frameborder="0" class="report-iframe" id="lat-iframe"></iframe>
+          <iframe src="/admin/report/report.html" 
+          frameborder="0" 
+          class="report-iframe" 
+          id="lat-iframe">
+        </iframe>
         </div>
-      </section>
-    </div>
+      </div>
   </div>
   <script src="/admin/admin.js"></script>
 </body>
