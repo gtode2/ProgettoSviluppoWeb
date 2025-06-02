@@ -26,7 +26,7 @@
           <h1 class="h3">Registrazione attività</h1>
         </header>
         <main>
-          <form action="regact.php" method="POST">
+          <form>
             <div class="mb-3">
               <label for="name" class="form-label">Nome attività</label>
               <input type="text" class="form-control" id="name" name="name" required>
@@ -48,13 +48,13 @@
               <!-- È meglio spostare questi stili inline in una classe CSS (ad es. .description-textarea) -->
               <textarea name="descrizione" id="descr" class="form-control description-textarea" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Registrati</button>
+            <button type="button" class="btn btn-primary w-100" onclick="send()">Registrati</button>
           </form>
         </main>
       </div>
     </div>
     
-    <script src="/regact.js"></script>
+    <script src="/registrazione/regact.js"></script>
     <script src="/sw-register.js"></script>
   </body>
 </html>
