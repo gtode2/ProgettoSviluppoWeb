@@ -35,8 +35,21 @@ async function getProducts(pool, filters=null, id=null){
         
     var res=null
     if (id!==null) {
-        res = await pool.query(`SELECT * FROM prodotti WHERE id = $1`, [id]) 
+        //prodotto specifico
+        res = await pool.query(`SELECT 
+            prodotti.id, 
+            prodotti.name, 
+            prodotti.descr, 
+            prodotti.costo, 
+            prodotti.amm, 
+            prodotti.banned, 
+            prodotti.cat, 
+            attivita.nome AS nome_attivita 
+            FROM prodotti
+            JOIN attivita ON prodotti.actid = attivita.actid 
+            WHERE id = $1`, [id]) 
     }else if (filters!==null) {
+        //caricamento prodotti con filtri
         console.log("FILTRI = "+filters);
         
         var query = `SELECT * FROM prodotti WHERE banned = FALSE `
@@ -102,6 +115,7 @@ async function getProducts(pool, filters=null, id=null){
         res = await pool.query(query, values)
         
     }else{
+        //caricamento prodotti senza filtri
         res = await pool.query(`SELECT * FROM prodotti WHERE banned = FALSE ORDER BY id DESC`)    
     }
     return res.rows
