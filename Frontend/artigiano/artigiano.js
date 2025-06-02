@@ -20,21 +20,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if(adminOverlay){
       adminOverlay.addEventListener('click', function(){
-        window.location.href = "/userArea/userArea.html"
+        window.location.href = "/userArea"
       })
     }
 });
 
 function openProduct(id){
-    window.parent.document.getElementById("iframe-inserimento").src="/prodotti/dettaglio/dettagli.html?id="+id
+    window.parent.document.getElementById("lat-iframe").src="/prodotti/dettaglio/dettagli.html?id="+id
 }
 
 function closeProduct() {
-    window.parent.document.getElementById("iframe-inserimento").src="/artigiano/inserimento/inserimento.html"
+    window.parent.document.getElementById("lat-iframe").src="/artigiano/inserimento/inserimento.html"
 }
 
 function edit(id){
-  window.parent.document.getElementById("iframe-inserimento").src="/artigiano/modifica/modifica.html?id="+id
+  window.parent.document.getElementById("lat-iframe").src="/artigiano/modifica/modifica.html?id="+id
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
   gestisciOverlayArtigiano();
 
   // Gestione del form che si trova nell'iframe "inserimento.html"
-  const iframeInserimento = document.getElementById("iframe-inserimento");
+  const iframeInserimento = document.getElementById("lat-iframe");
 
   // Quando l'iframe ha finito di caricare il suo contenuto...
   iframeInserimento.addEventListener("load", function () {
