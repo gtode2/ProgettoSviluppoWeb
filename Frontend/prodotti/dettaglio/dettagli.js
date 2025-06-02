@@ -12,6 +12,7 @@ function getProductIdFromUrl() {
         document.getElementById("quantita").textContent =
           (p.amm !== undefined && p.amm !== null) ? p.amm : "0";
         document.getElementById("categoria").textContent = p.cat || "non specificata";
+        document.getElementById("artigiano").textContent = p.nome_attivita
       }
 
       // Funzione per chiudere il dettaglio del prodotto
