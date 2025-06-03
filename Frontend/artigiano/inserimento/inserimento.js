@@ -3,9 +3,18 @@ document.addEventListener("DOMContentLoaded", function() {
   //gestisciOverlayArtigiano();
   
   const send = document.getElementById("sendProduct");
+  if(send){
+    send.addEventListener("click", function(event){
+      event.preventDefault();
+      if(validateForm()){
+        sendData();
+      }
+    })
+  }
 })
 
 async function sendData(){
+  if(validateForm()){
     console.log("Invio prodotto");
 
     const msg = {
@@ -71,6 +80,7 @@ async function sendData(){
         console.log(err);
         alert("Errore di rete.");
     }
+  }
 }
 
 
@@ -90,4 +100,66 @@ async function renewToken() {
         console.log(error);
         
     }
+}
+function validateForm(){
+  let formValido = true;
+  
+  // Validazione per il campo 'nome'
+  const nameInput = document.getElementById('nome');
+  if(!nameInput.value.trim()){
+    nameInput.setCustomValidity("Nome mancante");
+    nameInput.reportValidity();
+    formValido = false;
+    return formValido;
+  } else {
+    nameInput.setCustomValidity("");
+  }
+
+  // Validazione per il campo 'descrizione'
+  const descInput = document.getElementById('descrizione');
+  if(!descInput.value.trim()){
+    descInput.setCustomValidity("Descrizione mancante!");
+    descInput.reportValidity();
+    formValido = false;
+    return formValido
+  } else {
+    descInput.setCustomValidity("");
+  }
+
+  // Validazione per il campo 'prezzo'
+  const priceInput = document.getElementById("prezzo");
+  if(!priceInput.value.trim()){
+    priceInput.setCustomValidity("Prezzo mancante");
+    priceInput.reportValidity();
+    formValido = false;
+    return formValido;
+  } else if(parseFloat(priceInput.value) <= 0){
+    priceInput.setCustomValidity("Il prezzo non può essere uguale o inferiore a 0");
+    priceInput.reportValidity();
+    formValido = false;
+    return formValido;
+  } else {
+    priceInput.setCustomValidity("");
+  }
+
+  // Validazione per il campo 'quantita'
+  const quantitaInput = document.getElementById("quantita");
+  if (!quantitaInput.value.trim()) {
+    quantitaInput.setCustomValidity("Il campo quantità non può essere vuoto!");
+    quantitaInput.reportValidity();
+    formValido = false;
+    return formValido
+  } else {
+    const quantitaVal = parseFloat(quantitaInput.value);
+    if (quantitaVal <= 0) {
+      quantitaInput.setCustomValidity("La quantità non può essere inferiore o uguale a 0");
+      quantitaInput.reportValidity();
+      formValido = false;
+      return formValido;
+    } else {
+      quantitaInput.setCustomValidity("");
+    }
+  }
+  
+  return formValido;
 }
