@@ -3,6 +3,25 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 
+//Simulazione del document
+global.document = {
+    createElement: () => ({}),
+    getElementById: () => null,
+    querySelector: () => null,
+    querySelectorAll: () => [],
+    body: {}, // Simula document.body
+    addEventListener: () => {},
+    removeEventListener: () => {}
+};
+
+global.window = {
+    document: global.document,
+    location: { href: "" },
+    addEventListener: () => {},
+    removeEventListener: () => {}
+};
+
+
 /* ======================= METADATA & LOGGING ======================= */
 const startTime = new Date();
 const envInfo = {

@@ -16,6 +16,25 @@ const envInfo = {
   ci: process.env.CI || 'local'
 };
 
+//Simulazione del document
+global.document = {
+    createElement: () => ({}),
+    getElementById: () => null,
+    querySelector: () => null,
+    querySelectorAll: () => [],
+    body: {}, // Simula document.body
+    addEventListener: () => {},
+    removeEventListener: () => {}
+};
+
+global.window = {
+    document: global.document,
+    location: { href: "" },
+    addEventListener: () => {},
+    removeEventListener: () => {}
+};
+
+
 // Array per conservare i log del report
 const report = [];
 
