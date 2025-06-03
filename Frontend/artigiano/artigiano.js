@@ -39,8 +39,6 @@ function edit(id){
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM Caricato");
-  gestisciOverlayArtigiano();
-
   // Gestione del form che si trova nell'iframe "inserimento.html"
   const iframeInserimento = document.getElementById("lat-iframe");
 

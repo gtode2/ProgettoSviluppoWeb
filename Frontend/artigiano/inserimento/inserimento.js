@@ -21,7 +21,8 @@ async function sendData(){
       name: document.getElementById("nome").value,
       descr: document.getElementById("descrizione").value,
       price: document.getElementById("prezzo").value,
-      amm: document.getElementById("quantita").value
+      amm: document.getElementById("quantita").value,
+      cat: document.getElementById("categoria").value
       // img può essere aggiunta se necessario
     };
 
@@ -69,6 +70,7 @@ async function sendData(){
           document.getElementById("descrizione").value = ""
           document.getElementById("prezzo").value = ""
           document.getElementById("quantita").value = ""
+          document.getElementById("categoria").value = ""
           alert("Prodotto inserito correttamente")
         /*
         } else {
@@ -159,6 +161,16 @@ function validateForm(){
     } else {
       quantitaInput.setCustomValidity("");
     }
+  }
+  const categoriaInput = document.getElementById("categoria");
+  if(!categoriaInput.value.trim()){
+    categoriaInput.setCustomValidity("Il campo quantità non può essere vuoto!");
+    categoriaInput.reportValidity();
+    formValido = false;
+    return formValido;
+  }
+  else{
+    quantitaInput.setCustomValidity("");
   }
   
   return formValido;

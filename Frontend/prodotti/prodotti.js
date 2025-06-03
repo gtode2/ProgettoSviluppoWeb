@@ -84,6 +84,7 @@ function renderProducts(data) {
       <div class="card-body" onclick="openProduct(${el.id})">
         <h5 class="card-title">${el.name}</h5>
         <p class="card-text">${el.descr}</p>
+        <p class="card-text">${el.cat}</p>
         <p class="price text-success fw-bold">€${el.costo}</p>
         <p class="nome artigiano"></p>
         <div class="d-flex justify-content-center gap-2 product-actions cliente" style="padding-bottom:50px">
@@ -99,6 +100,7 @@ function renderProducts(data) {
       <div class="card-body" onclick="openProduct(${el.id})">
         <h5 class="card-title">${el.name}</h5>
         <p class="card-text">${el.descr}</p>
+        <p class="card-text">${el.cat}</p>
         <p class="price text-success fw-bold">€${el.costo}</p>
         <div class="d-flex justify-content-center gap-2 product-actions artigiano">
           <button class="btn btn-warning" onclick="event.stopPropagation(); edit(${el.id})">Modifica</button>
@@ -114,6 +116,7 @@ function renderProducts(data) {
         <div class="card-body" onclick="openProduct(${el.id})">
           <h5 class="card-title">${el.name}</h5>
           <p class="card-text">${el.descr}</p>
+          <p class="card-text">${el.cat}</p>
           <p class="price text-success fw-bold">€${el.costo}</p>
         </div>
       </div>`
@@ -124,6 +127,7 @@ function renderProducts(data) {
           <div class="card-body>
             <h5 class="card-title">${el.name}</h5>
             <p class="card-text">${el.descr}</p>
+            <p class="card-text">${el.cat}</p>
             <p class="price text-success fw-bold">€${el.costo}</p>
           </div>
         </div>`
@@ -143,6 +147,7 @@ function renderProducts(data) {
               <div class="card-body" onclick="openProduct(${el.id})">
                 <h5 class="card-title">${el.name}</h5>
                 <p class="card-text">${el.descr}</p>
+                <p class="card-text">${el.cat}</p>
                 <p class="card-text"><small class="text-muted">€${el.costo}</small></p>
                 <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">
                   Aggiungi al carrello
