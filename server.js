@@ -15,6 +15,7 @@ const { checkdb } = require("./Backend/dbmanager.js");
 const {checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
 const {addProduct, removeProduct, getProducts, addCart, removeCart, decrCart, getCart, emptyCart} = require("./Backend/products.js");
 const {addReport, getReports, removeReport, removeReportedProduct, banArtigiano} = require("./Backend/reports.js");
+const e = require("express");
 
 
 
@@ -1167,30 +1168,128 @@ async function main() {
         
     })
 
+
+
     app.post("/getOrders", async (req,res) => {
         const user = checkToken(req,res)
+        console.log("token verificato");
+        
+        const {id} = req.body
+        console.log(id);
+        
+        if (user===-1) {
+            console.log("problema con utente");
+            
+            return
+        }
+        if (!id) {
+            console.log("id non trovato");
+            
+            if (user.usertype===1) {
+                try {
+                    const ord = await pool.query('SELECT * FROM ordini WHERE uid =$1 AND expires_at IS NULL ORDER BY created DESC', [user.uid])
+                    console.log(ord.rows);
+                    res.status(200).json({ord:ord.rows, ut:1})
+                } catch (error) {
+                    console.log(error);
+                    res.status(500).json()
+                }
+            }else if(user.usertype===2){
+                try {
+                    const ord = await pool.query('SELECT * FROM ordini WHERE actid =$1 AND expires_at IS NULL ORDER BY sent DESC, created DESC', [user.uid])
+                    console.log(ord.rows);
+                
+                    res.status(200).json({ord:ord.rows, ut:2})
+                } catch (error) {
+                    console.log(error);
+                    res.status(500).json()
+                }
+            }else{
+                res.status(401).json({})
+            }
+        }else{
+            console.log("id trovato");
+            
+            //seleziono ordine
+            let result
+            if (user.usertype===1) {
+                console.log("query utente");
+                
+                result = await pool.query(`SELECT * FROM ordini WHERE id=$1 AND uid = $2`, [id, user.uid])
+            }else if(user.usertype===2){
+                console.log("query artigiano");
+                
+                result = await pool.query(`SELECT * FROM ordini WHERE id=$1 AND actid = $2`, [id, user.uid])
+            }else{
+                console.log("non va nulla");
+                
+                res.status(401).json({err:"unauthorized"})
+                return
+            }
+            if (result.rowCount===0) {
+                res.status(404).json({err:"not found"})
+                return
+            }
+
+            res.status(200).json({ord:result.rows[0], ut:user.usertype})
+            
+            //restituisco prodotti
+        }
+
+        
+    })
+
+    app.patch("/order", async(req,res)=>{
+        const {id} = req.body
+        const user = checkToken(req,res)
+        if (!id) {
+            res.status(400).json({err:"missing id"})
+        }
         if (user===-1) {
             return
         }
-        if (user.usertype===1) {
-            try {
-                const ord = await pool.query('SELECT * FROM ordini WHERE uid =$1 AND expires_at IS NULL ORDER BY created DESC', [user.uid])
-                console.log(ord.rows);
-                
-                res.status(200).json({ord:ord.rows})
-            } catch (error) {
-                console.log(error);
-                res.status(500).json()
-            }
-        }else if(user.usertype===2){
-            //gestione artigiano
-        }else{
-            res.status(401).json({})
+        try {
+            await pool.query(`UPDATE ordini SET sent = TRUE WHERE id=$1`, [id])    
+            res.status(200).json({})
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({err:error})
         }
     })
 
     app.get("/ban", (req,res)=>{
         res.sendFile(path.join(__dirname,"Frontend/login/accountbannato/ban.html"))
+    })
+
+
+    app.get("/order", async (req,res) => {
+        const user = checkToken(req,res, false)
+        if (user===-1) {
+            res.redirect("/")
+            return
+        }
+        const id = req.query.id
+        if (!id) {
+            console.log("id non trovato");
+            res.redirect("/")
+            return
+        }
+        let result 
+        if (user.usertype === 2) {
+            result = await pool.query(`SELECT * FROM ordini WHERE actid = $1 AND expires_at IS NULL AND id = $2`, [user.uid, id])
+            if (result.rowCount !== 1) {
+                res.status(404).json({err:"product not found"})
+                return
+                
+            }
+        }else if (user.usertype === 1) {
+            result = await pool.query(`SELECT * FROM ordini WHERE uid = $1 AND expires_at IS NULL AND id = $2`, [user.uid, id])
+            if (result.rowCount !== 1) {
+                res.status(404).json({err:"product not found"})
+                return
+            }
+        }
+        res.sendFile(path.join(__dirname,"Frontend",`/ordini/ordine.html`))
     })
 
 //FUNZIONI DI TEST TEMPORANEE

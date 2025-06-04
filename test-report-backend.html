@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Report - Backend</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1, h2 { color: #333; }
+    .summary { margin-bottom: 20px; }
+    pre { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; }
+    #chartContainer { width: 300px; height: 300px; }
+  </style>
+</head>
+<body>
+  <h1>Test Report - Backend</h1>
+  <div class="summary">
+    <h2>Sommario</h2>
+    <ul>
+      <li>Ora di inizio: 2025-06-03T14:25:09.313Z</li>
+      <li>Ora di fine: 2025-06-03T14:25:09.745Z</li>
+      <li>Durata: 0.432 secondi</li>
+      <li>Versione Node: v22.12.0</li>
+      <li>Ambiente: local</li>
+      <li>Totale test superati: 6</li>
+    </ul>
+  </div>
+  <div id="chartContainer">
+    <canvas id="testChart"></canvas>
+  </div>
+  <h2>Dettagli dei test</h2>
+  <pre>=== Avvio test: 2025-06-03T14:25:09.313Z ===
+Informazioni ambiente: Node v22.12.0, Platform: win32, CI: local
+Test per 'toggle' superato.
+Test per 'close' superato.
+Test per il click sull'overlay superato.
+Test per openProduct superato.
+Test per closeProduct superato.
+Test per edit superato.
+
+=== Verifica dei file JS nella directory 'Backend' ===
+File C:\Users\Gabriele\Desktop\ProgettoProgWeb\GithubRepo\ProgettoSviluppoWeb\Backend\dbmanager.js caricato correttamente.
+File C:\Users\Gabriele\Desktop\ProgettoProgWeb\GithubRepo\ProgettoSviluppoWeb\Backend\products.js caricato correttamente.
+File C:\Users\Gabriele\Desktop\ProgettoProgWeb\GithubRepo\ProgettoSviluppoWeb\Backend\reports.js caricato correttamente.
+File C:\Users\Gabriele\Desktop\ProgettoProgWeb\GithubRepo\ProgettoSviluppoWeb\Backend\userToken.js caricato correttamente.
+
+=== Fine test: 2025-06-03T14:25:09.745Z ===
+Durata totale: 0.432 secondi.
+Totale test superati: 6.</pre>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('testChart').getContext('2d');
+    const data = {
+      labels: ['Passati', 'Falliti'],
+      datasets: [{
+        data: [6, 0],
+        backgroundColor: ['#4CAF50', '#F44336']
+      }]
+    };
+    const options = {
+      responsive: false,
+      plugins: {
+        tooltip: { enabled: true },
+        legend: { position: 'bottom' }
+      }
+    };
+    new Chart(ctx, { type: 'pie', data: data, options: options });
+  </script>
+</body>
+</html>
+  
