@@ -4,37 +4,52 @@ const CACHE_NAME = 'pwa-cache-v1';
 // Elenco degli asset da pre-caching, inclusi tutti i file utili per le transizioni:
 const ASSETS_TO_CACHE = [
   // Pagine di navigazione fondamentali:
-  '/Frontend/unlogged/unlogged.html',
-  '/Frontend/registrazione/registrazione.html',
-  '/Frontend/registrazione/regact.html',
-  '/Frontend/login/login.html',
-  '/Frontend/clienti/clienti.html',
   '/Frontend/admin/admin.html',
-  '/Frontend/artigiano/artigiano.html',
-  '/Frontend/userArea/userArea.html',
-  // Altri asset statici
   '/Frontend/admin/report/report.html',
   '/Frontend/admin/report/banArtigiano.html',
   '/Frontend/admin/report/banProdotto.html',
+  '/Frontend/artigiano/artigiano.html',
   '/Frontend/artigiano/inserimento/inserimento.html',
   '/Frontend/artigiano/modifica/modifica.html',
+  '/Frontend/modificaAttivita/modificaatt.html',
   '/Frontend/cambiopassword/password.html',
-  '/Frontend/checkout/checkout.html',
   '/Frontend/checkout/cancel.html',
+  '/Frontend/checkout/checkout.html',
   '/Frontend/checkout/success.html',
+  '/Frontend/clienti/clienti.html',
   '/Frontend/clienti/carrello/carrello.html',
   '/Frontend/clienti/report/report.html',
   '/Frontend/HomePage/HomePage.html',
+  '/Frontend/login/login.html',
   '/Frontend/login/accountBannato/ban.html',
+  '/Frontend/ordini/ordine.html',
   '/Frontend/prodotti/prodotti.html',
   '/Frontend/prodotti/dettaglio/dettagli.html',
+  '/Frontend/registrazione/regact.html',
+  '/Frontend/registrazione/registrazione.html',
   '/Frontend/renewToken/renewToken.html',
-  '/Frontend/sw-register.js',
+  '/Frontend/unlogged/unlogged.html',
+  '/Frontend/userArea/userArea.html',
+  '/Frontend/userArea/userAreaArtigiano.html',
+
+  //Asset statici
+  '/Frontend/admin/report/report.css',
+  '/Frontend/artigiano/inserimento/inserimento.css',
+  '/Frontend/cambiopassword/password.css',
+  '/Frontend/checkout/checkout.css',
+  '/Frontend/clienti/carrello/carrello.css',
+  '/Frontend/clienti/report/report.css',
+  '/Frontend/HomePage/HomePage.css',
+  '/Frontend/login/login.css',
+  '/Frontend/prodotti/dettaglio/dettagli.css',
+  '/Frontend/prodotti/prodotti.css',
+  '/Frontend/registrazione/regact.css',
+  '/Frontend/registrazione/registrazione.css',
+  '/style.css',
+
+  //Manifest & registrazione service worker
   '/manifest.webmanifest',
-  '/Frontend/icons/icon-192.png',
-  '/Frontend/icons/icon-512.png',
-  '/Frontend/style.css',
-  '/Frontend/unlogged/unlogged.js'
+  '/sw-register.js'
 ];
 
 self.addEventListener('install', event => {
