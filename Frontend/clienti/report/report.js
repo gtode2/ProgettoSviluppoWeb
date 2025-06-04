@@ -37,18 +37,7 @@ function exit() {
   window.parent.loadCart();
 }
 
-async function renewToken() {
-  try {
-    const response = await fetch("/renewToken", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" }
-    });
-    return response.ok ? 0 : -1;
-  } catch (error) {
-    console.log(error);
-    return -1;
-  }
-}
+
 
 // Associazione degli event listeners in un unico listener DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {

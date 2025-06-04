@@ -1019,7 +1019,10 @@ async function main() {
     })
     //restituire errore nel caso di prodotti banned
     app.post("/confirmCheckout", async (req,res)=>{
-        //verifica id utente
+        const {addr} = req.body
+        if (!addr) {
+            res.status(400).json({err:"missing addr"})
+        }
         const user = checkToken(req,res)
         if (user===-1) {
             console.log("errore");
@@ -1057,7 +1060,7 @@ async function main() {
                     li.push(p)
                     aprod[prodId] = prod
                 }
-                await pool.query(`INSERT INTO ordini(uid, products, sent, created, expires_at, actid) values($1,$2,$3,$4,$5,$6)`,[user.uid, aprod, false, elementi.created, elementi.expires_at, id])
+                await pool.query(`INSERT INTO ordini(uid, products, sent, created, expires_at, actid, addr) values($1,$2,$3,$4,$5,$6, $7)`,[user.uid, aprod, false, elementi.created, elementi.expires_at, id, addr])
                 console.log("aprod = "+JSON.stringify(aprod));    
             }
             await pool.query(`DELETE FROM ordini WHERE uid=$1 AND expires_at IS NOT NULL AND actid IS NULL`, [user.uid])            
@@ -1187,6 +1190,8 @@ async function main() {
             
             if (user.usertype===1) {
                 try {
+                    console.log("ut1");
+                    
                     const ord = await pool.query('SELECT * FROM ordini WHERE uid =$1 AND expires_at IS NULL ORDER BY created DESC', [user.uid])
                     console.log(ord.rows);
                     res.status(200).json({ord:ord.rows, ut:1})
@@ -1195,6 +1200,8 @@ async function main() {
                     res.status(500).json()
                 }
             }else if(user.usertype===2){
+                console.log("ut2");
+                
                 try {
                     const ord = await pool.query('SELECT * FROM ordini WHERE actid =$1 AND expires_at IS NULL ORDER BY sent DESC, created DESC', [user.uid])
                     console.log(ord.rows);
@@ -1215,7 +1222,7 @@ async function main() {
             if (user.usertype===1) {
                 console.log("query utente");
                 
-                result = await pool.query(`SELECT * FROM ordini WHERE id=$1 AND uid = $2`, [id, user.uid])
+                result = await pool.query(`SELECT * FROM ordini JOIN attivita ON attivita.actid = ordini.actid WHERE id=$1 AND uid = $2`, [id, user.uid])
             }else if(user.usertype===2){
                 console.log("query artigiano");
                 

@@ -271,19 +271,6 @@ async function checkout() {
   }
 }
 
-// Funzione per rinnovare il token
-async function renewToken() {
-  try {
-    const response = await fetch("/renewToken", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
-    return response.ok ? 0 : -1;
-  } catch (error) {
-    console.error(error);
-    return -1;
-  }
-}
 
 // Associa i gestori degli eventi ai pulsanti
 document.addEventListener("DOMContentLoaded", () => {

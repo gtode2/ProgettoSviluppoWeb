@@ -15,14 +15,23 @@
     <div class="iframe-sfondo">
       <iframe src="/HomePage/HomePage.html" title="Sfondo Homepage"></iframe>
     </div>
+    <button type="button" onclick="exit()">X</button>
     <div class="container d-flex justify-content-center  position-relative">
     <div class="p-4">
       <h3 class="text-center mb-4">Prodotti nell'ordine</h3>
       <div class="mb-3" id="elencoprodotti">
         <!--elenco prodotti-->
       </div>
+      <h5 class="text-center mb-4">Informazioni consegna</h5>
+      <div class="mb-3" id="infoconsegna">
+        <div id="nome"></div>
+        <div id="indirizzo"></div>
+        <div id="citta"></div>
+        <div id="regione"></div>
+      </div>      
     </div>
     </div>
+    <script src="/Token.js"></script>
     <script src="/Frontend/ordini/ordini.js"></script>
     <script src="/sw-register.js"></script>
 </body>

@@ -1,10 +1,10 @@
 async function addProduct(req, uid, pool) {   
     const query = `
-        INSERT INTO prodotti(actid, name, descr, costo, amm)
-        VALUES ($1,$2,$3,$4,$5)
+        INSERT INTO prodotti(actid, name, descr, costo, amm, cat)
+        VALUES ($1,$2,$3,$4,$5, $6)
         RETURNING id
         `;
-    const values = [uid, req.body["name"], req.body["descr"], req.body["price"], req.body["amm"]]
+    const values = [uid, req.body["name"], req.body["descr"], req.body["price"], req.body["amm"], req.body["cat"]]
     try {
         const res = await pool.query(query,values)
         console.log("Inserimento prodotto completato");
@@ -23,11 +23,10 @@ async function removeProduct(pool, productid, uid) {
             console.log("artigiano non possiede prodotto");
             return -2
         }
+        
         result = await pool.query(`UPDATE prodotti SET banned=TRUE WHERE id=$1`,[productid])
         return 0 
     } catch (error) {
-        console.log(error);
-        
         return -1
     }
 }

@@ -57,5 +57,6 @@ CREATE TABLE ordini (
     created TIMESTAMP NOT NULL, 
     expires_at TIMESTAMP, 
     actid INT,
+    addr JSONB,
     FOREIGN KEY (uid) REFERENCES utenti(uid),
     FOREIGN KEY (actid) REFERENCES attivita (actid));

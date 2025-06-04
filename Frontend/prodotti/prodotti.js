@@ -183,20 +183,22 @@ async function removeProduct(id) {
   try {
     const response = await fetch("/product", {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pid: id })
-    });
-    if (!response.ok && response.status !== 404) {
-      // Gestisci eventuali errori
+      headers: { "Content-Type": "application/json" },   
+      body: JSON.stringify({pid:id})
+    })
+    if (!response.ok) {
+      if (response.status!==404) {
+        //gestione errori 
+      }
+    }else{
+      const element = document.getElementById("productcard"+id)
+      element.remove()
     }
-    const element = document.getElementById("productcard" + id);
-    if (element) element.remove();
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.log(err);
     alert("Errore di rete.");
   }
 }
-
 function report(id) {
   window.parent.report(id);
 }

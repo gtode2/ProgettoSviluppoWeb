@@ -59,20 +59,27 @@ async function getOrders(id) {
           contanier.innerHTML+=element
         }
       }else{
-        console.log(data.ut);
+        console.log(data.ord);
         
         console.log("utente");
         
         //inserimento contatti 
         element = `
         <div class="mb-3">
+        <h5 class="text-center mb-4">Hai bisogno di aiuto?</h5>
         <p class="text-center">Indirizzo Email:</p>
-        <p class="text-center" id="email">email</p>
+        <p class="text-center" id="email">${data.ord.email}</p>
         <p class="text-center">Numero di telefono:</p>
-        <p class="text-center" id="ntel">ntel</p>
+        <p class="text-center" id="ntel">${data.ord.ntel}</p>
       </div>`
       contanier.innerHTML+=element
       }
+      
+      document.getElementById("nome").innerText=data.ord.addr["nome"]
+      document.getElementById("indirizzo").innerText=data.ord.addr["indirizzo"]
+      document.getElementById("citta").innerText=data.ord.addr["citta"]
+      document.getElementById("regione").innerText=data.ord.addr["regione"]
+
     }
   } catch (err) {
       console.log(err);
@@ -102,19 +109,7 @@ async function complete(id) {
   }
 }
 
-async function renewToken() {
-    try {
-        const response = await fetch("/renewToken", {
-            method:"POST",
-            headers: { "Content-Type": "application/json" }, 
-        })
-        if (response.ok) {
-            return 0
-        }else{
-            return -1
-        }
-    } catch (error) {
-        console.log(error);
-        
-    }
+function exit() {
+  window.location.href="/userArea"
 }
+

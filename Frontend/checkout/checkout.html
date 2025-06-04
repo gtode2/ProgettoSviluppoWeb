@@ -19,25 +19,7 @@
     </div>
 
     <div class="row">
-      <!-- Parte prodotti a sinistra -->
-      <div class="col-md-8 view-prodotti">
-        <iframe src="https://example.com" class="w-100" style="height: 100vh; border: none;"></iframe>
-      </div>
-
-
-
-
-
-
-      <!--BOTTONE DI TEST, DA FAR VOLARE-->
-      <button type="button" onclick="checkout()">Procedi all'acquisto</button>
-
-
-
-
-
-
-
+ 
       <!-- Overlay/Checkout a destra -->
       <!-- In modalità mobile questo elemento è nascosto di default, salvo che venga aggiunta la classe "aperto" -->
       <div class="col-md-4 admin-overlay">
@@ -46,26 +28,44 @@
         <h2>Checkout Pagamento</h2>
         <form id="checkoutForm" class="form-prodotto">
           <div class="mb-3">
-            <label for="nome" class="form-label">Nome</label>
+            <label for="nome" class="form-label">Nome e Cognome</label>
             <input type="text" id="nome" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label for="cognome" class="form-label">Cognome</label>
-            <input type="text" id="cognome" class="form-control" required>
+            <label for="indirizzo" class="form-label">Indirizzo</label>
+            <input type="text" id="indirizzo" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label for="numeroCarta" class="form-label">Numero carta</label>
-            <input type="number" id="numeroCarta" class="form-control" required>
+            <label for="citta" class="form-label">Città</label>
+            <input type="text" id="citta" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label for="cvc" class="form-label">CVC</label>
-            <input type="number" id="cvc" class="form-control" required>
+            <label for="regione" class="form-label" >Regione</label>
+            <select id="regione" class="form-select">
+              <option value="default">Seleziona una regione</option>
+              <option value="Abruzzo">Abruzzo</option>
+              <option value="Basilicata">Basilicata</option>
+              <option value="Calabria">Calabria</option>
+              <option value="Campania">Campania</option>
+              <option value="Emilia-Romagna">Emilia-Romagna</option>
+              <option value="Friuli Venezia Giulia">Friuli Venezia Giulia</option>
+              <option value="Lazio">Lazio</option>
+              <option value="Liguria">Liguria</option>
+              <option value="Lombardia">Lombardia</option>
+              <option value="Marche">Marche</option>
+              <option value="Molise">Molise</option>
+              <option value="Piemonte">Piemonte</option>
+              <option value="Puglia">Puglia</option>
+              <option value="Sardegna">Sardegna</option>
+              <option value="Sicilia">Sicilia</option>
+              <option value="Toscana">Toscana</option>
+              <option value="Trentino-Alto Adige">Trentino-Alto Adige</option>
+              <option value="Umbria">Umbria</option>
+              <option value="Valle d'Aosta">Valle d'Aosta</option>
+              <option value="Veneto">Veneto</option>
+            </select>
           </div>
-          <div class="form-check mb-3">
-            <input type="checkbox" id="approva" class="form-check-input">
-            <label for="approva" class="form-check-label">Approva pagamento</label>
-          </div>
-          <button type="submit" class="btn btn-primary">Procedi al pagamento</button>
+          <button type="button" class="btn btn-primary" onclick="checkout()">Procedi</button>
           <button type="button" class="btn btn-outline-secondary" id="annullaBtn">Annulla</button>
           <div id="outputMsg" class="mt-3 fw-bold"></div>
         </form>
@@ -73,6 +73,7 @@
     </div>
   </div>
   <script src="https://js.stripe.com/v3/"></script>
+  <script src="/Token.js"></script>
   <script src="checkout.js"></script>
 </body>
 </html>
