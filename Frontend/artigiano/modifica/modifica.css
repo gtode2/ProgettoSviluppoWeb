@@ -1,0 +1,15 @@
+/* ✅ RESPONSIVE */
+@media (max-width: 576px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .form-prodotto label {
+    font-size: 0.95rem;
+  }
+
+  .form-prodotto input,
+  .form-prodotto button {
+    font-size: 1rem;
+  }
+}
