@@ -812,14 +812,14 @@ async function main() {
         const user = checkToken(req,res, false)
         
         if (user===-1) {
-            return
+            res.redirect("/renewtoken?from=/userarea")
         }
         if (user.usertype === 2) {
             const response = await pool.query(`SELECT * FROM attivita WHERE actid=$1`, [user.uid])
             console.log("test artigiano");
             if (response.rows.length===0) {
                 console.log("no activity");
-                res.sendFile(path.join(__dirname,"Frontend", "/registrazione/regact.html"))
+                res.redirect("/regact")
                 return
             }else{
                 console.log("invio pagina specifica");
@@ -1188,6 +1188,10 @@ async function main() {
 
 
     app.get("/changePassword", async(req,res)=>{
+        const user = checkToken(req,res,false)
+        if (user===-1) {
+            res.redirect("/renewtoken?from=/changePassword")
+        }
         res.sendFile(path.join(__dirname,"/Frontend/cambiopassword/password.html"))
     })
     app.post("/changePassword", async (req,res) => {
