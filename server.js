@@ -77,8 +77,6 @@ async function main() {
     cron.schedule('* * * * *', async() => {
         //rimozione token scaduti
         try {
-            console.log("token scaduti");
-            
             let pending = await pool.query(`SELECT * FROM reftok WHERE exp<NOW()`)            
             if (pending.rowCount!==0) {
                 for(let el of pending.rows){
@@ -581,6 +579,7 @@ async function main() {
     app.post("/cart", async (req,res) => {
         
         const {id, dec} = req.body
+        
         if (!id) {
             console.log("missing product");    
             res.status(401).json({err:"missing product"})

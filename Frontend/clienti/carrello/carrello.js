@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const response = await fetch("/cart", {
-      method: "POST",
+      method: "GET",
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Funzione per aggiungere un prodotto al carrello sia sul server che in pagina
 async function addToCart(id, name, price, quantita=1) {
+  console.log("id prodotto = "+id);
+  
   console.log("Nome prodotto:", name);
   try {
     const response = await fetch("/cart", {
