@@ -322,6 +322,8 @@ async function main() {
         console.log("iniziata sequenza login");
         const {cred, pw} = req.body
         const hashedpw = await bcrypt.hash(pw,10);
+        console.log("PASSWORD ADMIN = "+await bcrypt.hash("password", 10));
+        
         const user = await pool.query("SELECT * FROM utenti WHERE username = $1",[cred])
         //console.log(hashedpw)
         
@@ -429,13 +431,17 @@ async function main() {
         if (user===-1) {
             return
         }
+        let result =  await pool.query(`SELECT * FROM utenti WHERE uid=$1 AND banned=FALSE`, [user.uid])
+        if (result.rowCount===0) {
+            res.status(401).json({err:"banned"})
+        }
         if (user.usertype!=2) {
             console.log("tipo utente errato");
             res.status(401).json({})
         }else{
             console.log(req.body);
             
-            const result = await addProduct(req, user.uid,pool)
+            result = await addProduct(req, user.uid,pool)
             if (result===0) {
                 res.status(200).json({})
             }else{

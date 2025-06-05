@@ -59,3 +59,5 @@ CREATE TABLE ordini (
     addr JSONB,
     FOREIGN KEY (uid) REFERENCES utenti(uid),
     FOREIGN KEY (actid) REFERENCES attivita (actid));
+INSERT INTO utenti(nome, cognome, username, email, ntel, password, usertype)
+    VALUES (`admin`, `admin`, `admin`,`emailAdmin`,`numeroTelefonoAdmin`,`$2b$10$SyLGlLqb5Ot0wTetDpfpK.brKx.pvzEUWwMllEbcG8MdEhI5.HZqW`, 0)
