@@ -93,7 +93,7 @@ async function main() {
 
         //rimozione prodotti bannati da carrelli
         try {
-            await pool.query(`DELETE FROM carrello JOIN prodotti ON carrello.productid = prodotti.id WHERE banned = true`)
+            await pool.query(`DELETE FROM carrello USING prodotti WHERE carrello.productid = prodotti.id AND prodotti.banned = true;`)
         } catch (error) {
             console.log(error);
         }
