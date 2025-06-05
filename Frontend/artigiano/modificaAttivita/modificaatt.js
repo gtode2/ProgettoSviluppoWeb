@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        const response = await fetch("/userArea", {
+        const response = await fetch("/user", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body:JSON.stringify({act:true})

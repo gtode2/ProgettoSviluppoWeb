@@ -133,7 +133,7 @@ async function main() {
                         case 2:
                             const response = await pool.query(`SELECT * FROM attivita WHERE actid=$1`, [user.uid])
                             if (response.rows.length===0) {
-                                res.sendFile(path.join(__dirname,"Frontend", "registrazione/regact.html"))
+                                res.redirect("/regact")
                             }else{
                                 res.sendFile(path.join(__dirname,"Frontend","artigiano/artigiano.html"))
                             }
@@ -234,7 +234,20 @@ async function main() {
         }
     });
     app.get("/RegAct",async(req,res)=>{
-        res.sendFile(path.join(__dirname,"Frontend", "registrazione/regact.html"))
+        const user = checkToken(req,res,false)
+        if (user===-1) {
+            res.redirect("/")
+        }
+        if (user.usertype!==2) {
+            res.redirect("/")
+        }else{
+            const result = await pool.query("SELECT * FROM attivita WHERE actid = $1", [user.uid])
+            if (result.rowCount!==0) {
+                res.redirect("/")
+            }else{
+                res.sendFile(path.join(__dirname,"Frontend", "registrazione/regact.html"))
+            }        
+        }
     })
     app.post("/RegAct",async(req,res)=>{
         const user =checkToken(req,res) 
@@ -782,7 +795,7 @@ async function main() {
         res.sendFile(path.join(__dirname,"Frontend/userArea/userArea.html"))
         
     })
-    app.post("/userArea", async(req,res)=>{        
+    app.post("/user", async(req,res)=>{        
         const user = checkToken(req,res)
         const {act} = req.body
         if (user.usertype===2 && act) {
@@ -1299,14 +1312,25 @@ async function main() {
         res.sendFile(path.join(__dirname,"Frontend",`/ordini/ordine.html`))
     })
 
+    app.get("/artigiano", async (req,res) => {
+        const actid = req.query.actid
+        if (!actid) {
+            res.status(400).json({err:"missing act"})
+        }        
+        try {
+            const result = await pool.query(`SELECT attivita.nome, attivita.indirizzo, attivita.email, attivita.ntel, attivita.descr FROM attivita JOIN utenti on attivita.actid = utenti.uid WHERE actid=$1 AND banned=false`, [actid])
+            if (result.rowCount===0) {
+                res.status(404).json({err:"act not found"})
+                return
+            }
+            res.status(200).json({act:result.rows[0]})
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({})
+        }
+    })
 //FUNZIONI DI TEST TEMPORANEE
     
-    app.get("/test",(req,res)=>{
-        res.sendFile(path.join(__dirname,"/prova.html"))
-    })
-
-
-
 
     //HTTP SOLO PER TESTARE STRIPE CON CERTIFICATO SELF-SIGNED
     app.listen(3001, () => {

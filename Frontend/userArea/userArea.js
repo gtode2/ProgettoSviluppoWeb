@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   getOrders()
   try {
-    const response = await fetch("/userArea", {
+    const response = await fetch("/user", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     });

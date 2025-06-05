@@ -43,6 +43,7 @@ async function getProducts(pool, filters=null, id=null){
             prodotti.amm, 
             prodotti.banned, 
             prodotti.cat, 
+            prodotti.actid,
             attivita.nome AS nome_attivita 
             FROM prodotti
             JOIN attivita ON prodotti.actid = attivita.actid 
