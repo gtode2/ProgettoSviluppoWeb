@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dettaglio Prodotto</title>
+    <title>Artigiano</title>
 
     <!-- Bootstrap CSS -->
     <link
@@ -15,14 +15,36 @@
   </head>
   <body>
     <div class="container mt-4">
-      <h1 class="mb-4">Dettaglio Prodotto:</h1>
+      <h1 class="mb-4">Dettaglio Artigiano:</h1>
 
       <div class="row mb-3">
         <div class="col-12">
-          <label for="nome" class="form-label">Nome prodotto:</label>
+          <label for="nome" class="form-label">Nome:</label>
           <p id="nome" class="form-control-plaintext"></p>
         </div>
       </div>
+      <div class="row mb-3">
+        <div class="col-12">
+          <label for="indirizzo" class="form-label">Indirizzo:</label>
+          <p id="indirizzo" class="form-control-plaintext"></p>
+        </div>
+      </div>
+      
+      <div class="row mb-3">
+        <div class="col-12">
+          <label for="email" class="form-label">Email:</label>
+          <p id="email" class="form-control-plaintext"></p>
+        </div>
+      </div>
+      
+      
+      <div class="row mb-3">
+        <div class="col-12">
+          <label for="ntel" class="form-label">Numero di telefono:</label>
+          <p id="ntel" class="form-control-plaintext"></p>
+        </div>
+      </div>
+      
 
       <div class="row mb-3">
         <div class="col-12">
@@ -31,30 +53,6 @@
         </div>
       </div>
 
-      <div class="row mb-3">
-        <div class="col-6">
-          <label for="prezzo" class="form-label">Prezzo (€):</label>
-          <p id="prezzo" class="form-control-plaintext"></p>
-        </div>
-        <div class="col-6">
-          <label for="quantita" class="form-label">Quantità:</label>
-          <p id="quantita" class="form-control-plaintext"></p>
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <div class="col-12">
-          <label for="categoria" class="form-label">Categoria:</label>
-          <p id="categoria" class="form-control-plaintext"></p>
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <div class="col-12">
-          <label for="artigiano" class="form-label">Venduto da:</label>
-          <p id="artigiano" class="form-control-plaintext"></p>
-        </div>
-      </div>
 
       <div class="row mt-2">
         <div class="col-12">
@@ -63,16 +61,13 @@
             class="btn btn-secondary w-100"
             onclick="closeProduct()"
           >
-            Torna Indietro
+            Chiudi
           </button>
         </div>
       </div>
     </div>
 
-    <script>
-      // Estrai l'ID dalla URL
-      
-    </script>
+
   </body>
-  <script src="/prodotti/dettaglio/dettagli.js"></script>
+  <script src="/artigiano/dettaglio/dettagliArtigiano.js"></script>
 </html>

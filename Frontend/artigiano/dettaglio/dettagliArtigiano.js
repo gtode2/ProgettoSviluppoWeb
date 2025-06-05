@@ -1,6 +1,6 @@
-function getProductIdFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("id");
+function getActIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);  
+  return params.get("actid");
 }
 
 // Popola i campi HTML con i dati del prodotto
@@ -13,66 +13,66 @@ function mostraDettaglioProdotto(p) {
     (p.amm !== undefined && p.amm !== null) ? p.amm : "0";
   document.getElementById("categoria").textContent = p.cat || "non specificata";
   document.getElementById("artigiano").textContent = p.nome_attivita
-  document.getElementById("artigiano").onclick = function () {
-    art(p.actid)
-  }
-  console.log(p);
-  
 }
 
-      // Funzione per chiudere il dettaglio del prodotto
+// Funzione per chiudere il dettaglio del prodotto
 function closeProduct() {
   console.log("close");
-  if (window.parent && typeof window.parent.closeProduct === 'function') {
+  if (window.parent && typeof window.parent.closeProduct === 'function') { 
     window.parent.closeProduct();
   } else {
     window.history.back();
   }
 }
-
-      // Inizializzazione: recupera l'ID, chiama l'API e popola la pagina
+  
+// Inizializzazione: recupera l'ID, chiama l'API e popola la pagina
 document.addEventListener("DOMContentLoaded", async () => {
-  const id = getProductIdFromUrl();
-  console.log("ID prodotto estratto dalla URL:", id);
-
+  const actid = getActIdFromUrl();
   try {
-    const response = await fetch("/product", {
-      method: "POST",
+    const response = await fetch(`/artigiano?actid=${actid}`, {
+      method: "GET",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: id })
     });
-          
+    
     const data = await response.json();
-
     if (!response.ok) {
-      console.error("Errore:", response.status, data.error || "");
+
+      //gestione errori
+
       document.getElementById("descrizione").innerHTML = `
-        <div class="alert alert-danger">Errore nel caricamento del prodotto.</div>
+        <div class="alert alert-danger">Errore nel caricamento dell'Artigiano.</div>
       `;
     } else {
       console.log("Prodotti caricati correttamente");
+      console.log(data.act);
+      
+      document.getElementById("nome").innerText = data.act.nome
+      document.getElementById("indirizzo").innerText = data.act.indirizzo
+      document.getElementById("email").innerText = data.act.email
+      document.getElementById("ntel").innerText = data.act.ntel
+      document.getElementById("descrizione").innerText = data.act.descr
+
+      /*
+      
       if (data.prodotti && data.prodotti.length > 0) {
         const prodottoSelezionato = data.prodotti.find(prod => String(prod.id) === id);
         if (prodottoSelezionato) {
           mostraDettaglioProdotto(prodottoSelezionato);
         } else {
           document.getElementById("descrizione").innerHTML = `
-            <div class="alert alert-warning">Prodotto non trovato.</div>
+            <div class="alert alert-warning">Artigiano non trovato.</div>
           `;
         }
       } else {
         document.getElementById("descrizione").innerHTML = `
-          <div class="alert alert-warning">Prodotto non trovato.</div>
+          <div class="alert alert-warning">Artigiano non trovato.</div>
         `;
       }
+
+      */
     }
   } catch (err) {
     console.error(err);
     alert("Errore di rete.");
   }
 });
-
-function art(actid) {
-  console.log("art");
-  window.location.href=`/artigiano/dettaglio/dettagliArtigiano.html?actid=${actid}`  
-}

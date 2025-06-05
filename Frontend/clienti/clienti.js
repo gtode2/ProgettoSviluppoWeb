@@ -10,7 +10,7 @@ function loadCart() {
 
 
 function closeProduct() {
-    window.parent.document.getElementById("lat-iframe").src = "/admin/report/report.html";
+    window.parent.document.getElementById("lat-iframe").src = "/clienti/carrello/carrello.html";
 }
 
 function openProduct(id) {
