@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
 async function addToCart(id, name, price){
   const frame = document.getElementById("lat-iframe")
   if (!frame.src.includes("carrello.html")) {
-    frame.src = "/carrello/carrello.html"
+    frame.src = "/clienti/carrello/carrello.html"
     await new Promise(resolve => frame.onload = () => resolve());
   }
 
