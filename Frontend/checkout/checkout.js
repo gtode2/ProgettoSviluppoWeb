@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", async()=>{
 
 })
-async function checkout() {
-  const stripe = Stripe("pk_test_51RS1sSCVBLOChcNpv66SvPBqQHL2ywIF6b2U7JV55lojCqexs9UclwyWCgDSwLgyZnEPP8m6fHymSbfuNIiQP5VS00nymP7hWO");
-  
+async function checkout() {  
   const nome = document.getElementById("nome")
   const indirizzo = document.getElementById("indirizzo")
   const citta = document.getElementById("citta")
