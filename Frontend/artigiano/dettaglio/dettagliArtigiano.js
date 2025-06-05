@@ -27,6 +27,13 @@ function closeProduct() {
   
 // Inizializzazione: recupera l'ID, chiama l'API e popola la pagina
 document.addEventListener("DOMContentLoaded", async () => {
+  document.addEventListener("DOMContentLoaded", () => {
+  if (window.matchMedia("(max-width: 768px)").matches) {
+    // Redirect immediato alla pagina "modifica.html"
+    window.location.href = "/Frontend/artigiano/dettaglio/dettagliArtigiano.html";
+  }
+});
+
   const actid = getActIdFromUrl();
   try {
     const response = await fetch(`/artigiano?actid=${actid}`, {

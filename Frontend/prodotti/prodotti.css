@@ -134,3 +134,13 @@
 .prodotti-container {
   z-index: 1;
 }
+.product.banned{
+  background-color: #ffe6e6;
+  border: 2px solid red;
+  opacity: 0.6;
+}
+
+.product .add-to-cart.disabled{
+  background-color: #ccc;
+  cursor: not-allowed;
+}

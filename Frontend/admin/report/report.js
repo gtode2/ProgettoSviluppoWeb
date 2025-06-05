@@ -9,8 +9,15 @@ document.addEventListener("DOMContentLoaded", async()=>{
         
         if (!response.ok) {
             //gestire errori
-           
         }else{
+            if(data.reports.length === 0){
+                const positivo = document.getElementById("lista-report")
+                let riga = document.createElement("div");
+                riga.innerHTML = `
+                <div><Strong>Nessun nuovo report</strong></div>
+                `
+                positivo.appendChild(riga)
+            }
             data.reports.forEach(e => {
                 const type = (e)=>{
                     switch (e.type) {
@@ -27,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async()=>{
                     }
                 }
                 const riepilogo = document.getElementById("lista-report"); 
-                const riga = document.createElement("div");
+                let riga = document.createElement("div");
                 riga.className = "justify-content-between align-items-center border-bottom py-2";
                 riga.id = "reportblock"+e.id
                 riga.innerHTML = `
