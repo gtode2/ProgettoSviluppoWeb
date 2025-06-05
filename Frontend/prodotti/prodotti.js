@@ -169,6 +169,12 @@ function setViewMode(mode) {
   renderProducts(window.lastLoadedProducts);
 }
 
+function edit(productId){
+  if(window.innerWidth<= 768){
+    window.location.href = "/Frontend/artigiano/modifica/modifica.html?id=" + productId;
+  }
+}
+
 // --- FUNZIONI DI DELEGAZIONE ---
 function addToCart(id, name, price) {
   window.parent.addToCart(id, name, price);
@@ -203,10 +209,6 @@ function report(id) {
   window.parent.report(id);
 }
 
-function edit(id){
-  window.parent.edit(id)
-}
-
 // --- Assegnazione dei listener una volta che il DOM è pronto ---
 document.addEventListener("DOMContentLoaded", () => {
   // Carica i prodotti dal server senza filtri iniziali
@@ -219,10 +221,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Imposta i listener per il cambio modalità visuale:
+  const btnwarning = document.getElementById("modifica");
   const btnViewCard = document.getElementById("view-card");
   const btnViewList = document.getElementById("view-list");
   const btnViewFullscreen = document.getElementById("view-fullscreen");
   if (btnViewCard) btnViewCard.addEventListener("click", () => setViewMode("card"));
   if (btnViewList) btnViewList.addEventListener("click", () => setViewMode("list"));
   if (btnViewFullscreen) btnViewFullscreen.addEventListener("click", () => setViewMode("fullscreen"));
+  if (btnwarning) btnwarning.addEventListener('click', function(){
+        window.location.href = "Frontend/artigiano/modifica/modifica.html";
+  })
 });
