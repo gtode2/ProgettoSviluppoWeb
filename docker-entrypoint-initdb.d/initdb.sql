@@ -21,7 +21,6 @@ CREATE TABLE RefTok(
     userid INT NOT NULL,
     token VARCHAR,
     exp TIMESTAMP NOT NULL,
-    revoked BOOLEAN,
     FOREIGN KEY (userid) REFERENCES utenti(uid));
 CREATE TABLE Prodotti(
     id SERIAL PRIMARY KEY,

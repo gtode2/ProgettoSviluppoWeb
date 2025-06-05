@@ -23,14 +23,14 @@ async function loadFromServer(filters = null) {
     let res;
     if (filters !== null) {
       console.log("Caricamento prodotti con filtri");
-      res = await fetch("/getProducts", {
+      res = await fetch("/product", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ filters: filters })
       });
     } else {
       console.log("Caricamento prodotti senza filtri");
-      res = await fetch("/getProducts", {
+      res = await fetch("/product", {
         method: "POST",
         headers: { "Content-Type": "application/json" }
       });

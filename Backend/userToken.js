@@ -63,7 +63,7 @@ async function renewToken(req, res, pool){
         
         return -1
     }
-    const query = `SELECT * FROM reftok WHERE token=$1 AND revoked = false`
+    const query = `SELECT * FROM reftok WHERE token=$1`
     console.log(token);
     var response 
     try {
@@ -121,12 +121,12 @@ async function registerToken(user, pool) {
     try {
         console.log(user.rows[0].password);
         const query = `
-        INSERT INTO reftok(userid, token, exp, revoked)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO reftok(userid, token, exp)
+        VALUES ($1, $2, $3)
         `;
         const now = new Date();
         const expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-        const values = [user.rows[0].uid, refreshToken, expiresAt, false];
+        const values = [user.rows[0].uid, refreshToken, expiresAt, ];
         await pool.query(query,values)
         console.log("token in db");
     } catch (error) {

@@ -1,7 +1,7 @@
 // Caricamento iniziale del carrello al DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const response = await fetch("/getCart", {
+    const response = await fetch("/cart", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     });
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function addToCart(id, name, price, quantita=1) {
   console.log("Nome prodotto:", name);
   try {
-    const response = await fetch("/addCart", {
+    const response = await fetch("/cart", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: id })
@@ -89,8 +89,8 @@ function add(id, name, price, quantita) {
 // Funzione per svuotare il carrello
 async function remove() {
   try {
-    const response = await fetch("/emptyCart", {
-      method: "POST",
+    const response = await fetch("/cart", {
+      method: "DELETE",
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
@@ -120,7 +120,7 @@ async function remove() {
 // Funzioni placeholder per future implementazioni
 async function increase(id, price) {
   try {
-    const response = await fetch("/addCart", {
+    const response = await fetch("/cart", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: id })
@@ -165,7 +165,7 @@ async function decrease(id, price) {
   if (document.getElementById(`qtt${id}`).textContent==="1") {
     //funzione per rimuovere
     try {
-      const response = await fetch("/addCart", {
+      const response = await fetch("/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: id, dec:"r"})
@@ -200,7 +200,7 @@ async function decrease(id, price) {
   }else{
     //funzione per scalare
     try {
-      const response = await fetch("/addCart", {
+      const response = await fetch("/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: id, dec:"d"})

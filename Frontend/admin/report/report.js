@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async()=>{
     try {
-        const response = await fetch("/getReports", {
-            method: "POST",
+        const response = await fetch("/report", {
+            method: "GET",
             headers: { "Content-Type": "application/json" },            
         })
         const data = await response.json()
@@ -52,8 +52,8 @@ document.addEventListener("DOMContentLoaded", async()=>{
 
 async function removeReport(id) {
     try {
-        const response = await fetch("/closeReport", {
-        method: "POST",
+        const response = await fetch("/report", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },            
         body: JSON.stringify({id:id})
         })
@@ -89,28 +89,4 @@ function openProd(id){
 }
 function banArtigiano(id) {
     window.parent.document.getElementById("lat-iframe").src="./admin/report/banArtigiano.html?id="+id
-}
-
-
-
-
-
-
-
-
-async function renewToken() {
-    try {
-        const response = await fetch("/renewToken", {
-            method:"POST",
-            headers: { "Content-Type": "application/json" }, 
-        })
-        if (response.ok) {
-            return 0
-        }else{
-            return -1
-        }
-    } catch (error) {
-        console.log(error);
-        
-    }
 }

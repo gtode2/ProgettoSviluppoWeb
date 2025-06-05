@@ -94,7 +94,7 @@ async function save() {
 async function logout() {
   try {
       await fetch("/logout", {
-        method: "POST",
+        method: "DELETE",
         headers: { "Content-Type": "application/json" },
       });
     } catch (error) {
@@ -106,7 +106,7 @@ async function logout() {
 
 async function getOrders() {
   try {
-    const response = await fetch("/getOrders", {
+    const response = await fetch("/order", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     })

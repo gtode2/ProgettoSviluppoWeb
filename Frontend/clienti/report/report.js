@@ -10,7 +10,7 @@ async function send() {
   };
 
   try {
-    const response = await fetch("/addReport", {
+    const response = await fetch("/report", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(sdata)

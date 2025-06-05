@@ -75,24 +75,57 @@ async function main() {
         }
     }
     cron.schedule('* * * * *', async() => {
-
-        //DEVE VERIFICARE ANCHE PRESENZA DI PRODOTTI BANNATI NEL CARRELLO
-        //RIMUOVERE REPORT SU PRODOTTI / UTENTI BANNATI
-
+        //rimozione token scaduti
         try {
+            console.log("token scaduti");
+            
+            let pending = await pool.query(`SELECT * FROM reftok WHERE exp<NOW()`)            
+            if (pending.rowCount!==0) {
+                for(let el of pending.rows){
+                    await pool.query(`DELETE FROM reftok WHERE id=$1`,[el.id])
+                }
+                                        
+            }
+        } catch (error) {
+            console.log(error);
+            
+        }
+
+        //rimozione prodotti bannati da carrelli
+        try {
+            await pool.query(`DELETE * FROM carrello JOIN prodotti ON carrello.productid = prodotti.id WHERE banned = true`)
+        } catch (error) {
+            console.log(error);
+        }
+        //rimozione report prodotti / utenti bannati
+        try {
+            await pool.query(`UPDATE report SET solved = true FROM prodotti WHERE report.prodid = prodotti.id AND prodotti.banned = true`)
+        } catch (error) {
+            console.log(error);
+            
+        }
+
+        //rimozione prodotti pending scaduti
+        try {
+            console.log("verifica rimozione ordini");
+            
             await pool.query("BEGIN")
-            const pending = await pool.query("SELECT id, expires_at, products FROM ordini WHERE expires_at<NOW()")            
-            for(const el of pending.rows){
+            let pending = await pool.query("SELECT id, expires_at, products FROM ordini WHERE expires_at<NOW()")            
+            for(let el of pending.rows){
                 //rimuovo da db
-                await pool.query("DELETE FROM ordini WHERE id=$1",[el.uid])
+                await pool.query("DELETE FROM ordini WHERE id=$1",[el.id])
                 console.log("ordine rimosso");
                 //aggiungo elementi a prodotti
                 const prodotti = el.products
-                for (const [id, prod] of Object.entries(prodotti)) {   
-                    console.log(prod);
-                                    
-                    await pool.query(`UPDATE prodotti set amm=amm+$1 WHERE id=$2`,[prod.quantita, id])
-                    console.log("reinseriti prodotti "+id);  
+                console.log(prodotti);
+                
+                for (const [actid, prod] of Object.entries(prodotti)) {   
+                    for(const[prodid, prodotto] of Object.entries(prod)){
+                        console.log(prod);
+                    
+                        await pool.query(`UPDATE prodotti set amm=amm+$1 WHERE id=$2`,[prodotto.quantita, prodid])
+                        console.log("reinseriti prodotti "+prodid);  
+                    }                
                 }
             }
             await pool.query("COMMIT")
@@ -364,14 +397,11 @@ async function main() {
             .json({})
         }
     })
-    app.post('/logout', async (req, res) => {
+    app.delete('/logout', async (req, res) => {
         console.log("logout");
         const token = req.cookies.refreshToken
-                //disabilitazione token
-        const query = `UPDATE reftok SET revoked = true WHERE token=$1`
-        const values = [token]
         try {
-            await pool.query(query,values)
+            await pool.query(`DELETE FROM reftok WHERE token=$1`,[token])
             
         } catch (error) {
             console.log(error);
@@ -417,7 +447,7 @@ async function main() {
     })
 
 
-    app.post("/getProducts", async(req,res)=>{     
+    app.post("/product", async(req,res)=>{     
         console.log("Get products");
         var {filters} = req.body  
         user = await checkToken(req,res,false)
@@ -465,7 +495,7 @@ async function main() {
         }
     })
 
-    app.post("/editProducts", async (req,res) => {
+    app.patch("/product", async (req,res) => {
         console.log("AAAA");
         
         const {id, nome, descr, costo, qt, cat} = req.body
@@ -548,7 +578,7 @@ async function main() {
     })
 
 
-    app.post("/addCart", async (req,res) => {
+    app.post("/cart", async (req,res) => {
         
         const {id, dec} = req.body
         if (!id) {
@@ -601,7 +631,7 @@ async function main() {
     })
 
 
-    app.post("/getCart", async (req,res) => {
+    app.get("/cart", async (req,res) => {
         console.log("getCart");
         
         const user = checkToken(req,res)
@@ -623,7 +653,7 @@ async function main() {
         }
     })
     
-    app.post("/emptyCart", async (req,res) => {
+    app.delete("/cart", async (req,res) => {
         console.log("emptyCart");
         
         const user = checkToken(req,res)
@@ -644,7 +674,7 @@ async function main() {
     })
     
 
-    app.post("/addReport", async(req,res)=>{
+    app.post("/report", async(req,res)=>{
         console.log("add report");
         
         user = await checkToken(req,res)
@@ -668,7 +698,7 @@ async function main() {
         }
         
     })
-    app.post("/getReports", async(req,res)=>{
+    app.get("/report", async(req,res)=>{
         const user = checkToken(req,res)
         if (user!==-1) {
               if (user.usertype!==0) {
@@ -683,7 +713,7 @@ async function main() {
             }
         }
     })
-    app.post("/closeReport", async (req,res) => {
+    app.patch("/report", async (req,res) => {
         const user = checkToken(req,res)
         if (user===-1) {
             console.log("wrong token");
@@ -832,7 +862,7 @@ async function main() {
         res.sendFile(path.join(__dirname,"Frontend/artigiano/modificaAttivita/modificaatt.html"))
     })
 
-    app.post("/updateAct", async (req,res) => {
+    app.patch("/act", async (req,res) => {
         const {nome, email, ntel, descr} = req.body
         const user = checkToken(req,res)
         if (user===-1) {
@@ -1186,7 +1216,7 @@ async function main() {
 
 
 
-    app.post("/getOrders", async (req,res) => {
+    app.post("/order", async (req,res) => {
         const user = checkToken(req,res)
         console.log("token verificato");
         
@@ -1329,8 +1359,10 @@ async function main() {
             res.status(500).json({})
         }
     })
-//FUNZIONI DI TEST TEMPORANEE
-    
+
+
+
+
 
     //HTTP SOLO PER TESTARE STRIPE CON CERTIFICATO SELF-SIGNED
     app.listen(3001, () => {
@@ -1339,10 +1371,6 @@ async function main() {
     https.createServer(options, app).listen(port, () => {
         console.log(`Server attivo su https://localhost:${port}`);
     });
-
-    
-    
-    
 
 }
 

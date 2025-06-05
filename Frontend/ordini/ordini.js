@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
 async function getOrders(id) {
   try {
-    const response = await fetch("/getOrders", {
+    const response = await fetch("/order", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body:JSON.stringify({id:id})

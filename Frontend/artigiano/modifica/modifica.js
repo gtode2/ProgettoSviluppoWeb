@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async() => {
   
   // Richiesta all'API per recuperare i dati del prodotto
   try {
-    const response = await fetch("/getProducts", {
+    const response = await fetch("/product", {
       method:"POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({id:id})    
@@ -117,8 +117,8 @@ async function send() {
     console.log("nessun valore inserito");
   }else{
     try {
-      const response = await fetch("/editProducts", {
-        method: "POST",
+      const response = await fetch("/product", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       })

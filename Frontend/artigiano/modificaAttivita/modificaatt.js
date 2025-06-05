@@ -36,8 +36,8 @@ async function save() {
     }
   });
   try {
-    const response = await fetch("/updateAct", {
-      method: "POST",
+    const response = await fetch("/act", {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
