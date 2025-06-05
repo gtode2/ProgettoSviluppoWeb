@@ -1,3 +1,5 @@
+let count = 0
+
 // Caricamento iniziale del carrello al DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -10,7 +12,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log(data);
       data.carrello.forEach(el => {
         add(el.productid, el.name, el.costo, el.quantita);
+        count +=el.quantita
       });
+      counter()
     } else {
       // Gestione errori in caso di risposta non ok
       console.error("Errore nella risposta:", data);
@@ -23,9 +27,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Funzione per aggiungere un prodotto al carrello sia sul server che in pagina
 async function addToCart(id, name, price, quantita=1) {
-  console.log("id prodotto = "+id);
-  
-  console.log("Nome prodotto:", name);
   try {
     const response = await fetch("/cart", {
       method: "POST",
@@ -38,8 +39,22 @@ async function addToCart(id, name, price, quantita=1) {
       if (data.res === "added") {
         add(id, name, price, quantita);
         console.log("Prodotto aggiunto");
+        count+=1
+        counter()
       } else {
-        await increase(id, price);
+   
+        ///////////////////////////////////////////////////
+        document.getElementById(`qtt${id}`).textContent = Number(document.getElementById(`qtt${id}`).innerText)+1
+        const totale = document.getElementById("totale");
+        let tot = totale.innerText.replace("€", "").trim();
+        console.log(data);
+        
+        let prezzo = parseFloat(tot) + price;
+        totale.innerText = "€" + prezzo.toFixed(2);
+
+        count+=1
+        counter()
+
         console.log("Prodotto duplicato:", data.res);
       }
     } else {
@@ -101,6 +116,9 @@ async function remove() {
       
       document.getElementById("riepilogo").innerHTML = '';
       document.getElementById("totale").innerText = "€0";
+
+      count=0
+      counter()
     } else {
       // Gestione errori per svuotamento carrello
       if (response.status === 401 && data.err === "missing token") {
@@ -138,6 +156,8 @@ async function increase(id, price) {
       let prezzo = parseFloat(tot) + price;
       totale.innerText = "€" + prezzo.toFixed(2);
 
+      count+=1
+      counter()
     } else {
       if (data.res === "product removed") {
         alert("Il prodotto è stato rimosso dall'artigiano");
@@ -162,8 +182,6 @@ async function increase(id, price) {
 }
 
 async function decrease(id, price) {
-  console.log("dec "+id);
-
   if (document.getElementById(`qtt${id}`).textContent==="1") {
     //funzione per rimuovere
     try {
@@ -182,6 +200,8 @@ async function decrease(id, price) {
         let prezzo = parseFloat(tot) - price;
         totale.innerText = "€" + prezzo.toFixed(2);
 
+        count-=1
+        counter()
       } else {
         if (response.status === 401) {
           if (data.err === "missing token") {
@@ -218,6 +238,8 @@ async function decrease(id, price) {
         let prezzo = parseFloat(tot) - price;
         totale.innerText = "€" + prezzo.toFixed(2);
 
+        count-=1
+        counter()
       } else {
         if (data.res === "product removed") {
           alert("Il prodotto è stato rimosso dall'artigiano");
@@ -282,3 +304,15 @@ document.addEventListener("DOMContentLoaded", () => {
   btnPagamento.addEventListener("click", () => checkout());
   btnSvuota.addEventListener("click", () => remove());
 });
+
+function counter() {
+  console.log(count);
+  
+  if (count===0) {
+    document.getElementById("proseguiPagamento").disabled=true
+    document.getElementById("svuotaCarrello").disabled=true
+  }else{
+    document.getElementById("proseguiPagamento").disabled=false
+    document.getElementById("svuotaCarrello").disabled=false
+  }
+}
