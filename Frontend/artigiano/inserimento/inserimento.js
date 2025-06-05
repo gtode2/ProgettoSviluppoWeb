@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
 async function sendData(){
   if(validateForm()){
     console.log("Invio prodotto");
-
+  
     const msg = {
       name: document.getElementById("nome").value,
       descr: document.getElementById("descrizione").value,

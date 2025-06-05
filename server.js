@@ -1383,3 +1383,9 @@ main().catch((err) => {
     console.error("Errore durante l'inizializzazione del server:", err);
     process.exit(1);
   });
+
+
+
+function stripeKey() {
+    
+}
