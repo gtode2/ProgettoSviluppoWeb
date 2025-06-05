@@ -1078,7 +1078,7 @@ async function main() {
             return
         }
         //prendo informazioni ordine
-        var elementi = await pool.query(`SELECT * FROM ordini WHERE uid=$1 AND expires_at IS NOT NULL`, [user.uid])
+        var elementi = await pool.query(`SELECT * FROM ordini WHERE uid=$1 AND expires_at IS NOT NULL AND actid IS NULL`, [user.uid])
         //eseguire verifica e rimozione di elementi bannati
         //creo array con elementi
         var li = []
@@ -1093,7 +1093,9 @@ async function main() {
             for(const [id, prodBlock] of Object.entries(elementi.products)){
                 //gestione prodotti produttore id
                 //creo entry in db per ogni produttore
-                console.log("id produttore = "+id);
+                console.log(id);    
+                console.log(prodBlock);
+             
                 
                 let aprod = {}
                 for(const[prodId, prod] of Object.entries(prodBlock)){
@@ -1108,7 +1110,7 @@ async function main() {
                     li.push(p)
                     aprod[prodId] = prod
                 }
-                await pool.query(`INSERT INTO ordini(uid, products, sent, created, expires_at, actid, addr) values($1,$2,$3,$4,$5,$6, $7)`,[user.uid, aprod, false, elementi.created, elementi.expires_at, id, addr])
+                await pool.query(`INSERT INTO ordini(uid, products, sent, created, expires_at, actid, addr) values($1,$2,$3,$4,$5,$6,$7)`,[user.uid, aprod, false, elementi.created, elementi.expires_at, id, addr])
                 console.log("aprod = "+JSON.stringify(aprod));    
             }
             await pool.query(`DELETE FROM ordini WHERE uid=$1 AND expires_at IS NOT NULL AND actid IS NULL`, [user.uid])            
@@ -1117,6 +1119,7 @@ async function main() {
             
         } catch (error) {
             await pool.query(`ROLLBACK`)
+            res.status(500).json({})
             console.log(error);
             
         }
@@ -1150,8 +1153,6 @@ async function main() {
     app.post("/stripe/webhook", express.raw({ type: 'application/json' }), async (req, res) => {
         const sig = req.headers["stripe-signature"];
         let event;
-
-        console.log("req.body = "+req.body);
         
         try {
             event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);

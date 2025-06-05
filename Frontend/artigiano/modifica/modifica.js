@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async() => {
       console.log(response.status);
       //gestione errori
     }else{
-      document.getElementById("nome").placeholder=data.prodotti[0].nameAdd
+      document.getElementById("nome").placeholder=data.prodotti[0].name
       document.getElementById("descrizione").placeholder=data.prodotti[0].descr
       document.getElementById("prezzo").placeholder=data.prodotti[0].costo
       document.getElementById("quantita").placeholder=data.prodotti[0].amm

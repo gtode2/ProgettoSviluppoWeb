@@ -2,6 +2,9 @@ document.addEventListener("DOMContentLoaded", async()=>{
 
 })
 async function checkout() {  
+  console.log(stripepk);
+  
+  const stripe = Stripe(stripepk);
   const nome = document.getElementById("nome")
   const indirizzo = document.getElementById("indirizzo")
   const citta = document.getElementById("citta")
@@ -56,10 +59,14 @@ async function checkout() {
           }
         }
       }
+      console.log(response.status);
+      
     }else{
       console.log(data.id);
       
       const result = await stripe.redirectToCheckout({sessionId:data.id})
+      console.log(result);
+      
       if (result.error) {
           alert("Errore nel reindirizzamento: " + result.error.message);
       }
@@ -70,3 +77,6 @@ async function checkout() {
   }
 }
 
+function annulla(){
+  window.location.href="/"
+}

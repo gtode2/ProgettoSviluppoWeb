@@ -1,4 +1,6 @@
+
 function cancel() {
+  renewToken()
   window.location.href="/userarea"
 }
 

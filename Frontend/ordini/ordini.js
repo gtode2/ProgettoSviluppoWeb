@@ -110,6 +110,12 @@ async function complete(id) {
 }
 
 function exit() {
-  window.location.href="/userArea"
+  const res = renewToken()
+  if (res===0) {
+    window.location.href="/userArea"  
+  }else{
+    window.location.href="/"
+  }
+  
 }
 
