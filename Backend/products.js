@@ -202,7 +202,6 @@ async function removeCart(pool, prodid, uid) {
         return -1
     }
 }
-
 async function increment(pool, prodid, uid) {
     try {
         const query = `
@@ -220,7 +219,6 @@ async function increment(pool, prodid, uid) {
         
     }
 }
-
 async function decrement(pool, prodid, uid) {
     try {
         const query = `
@@ -242,6 +240,12 @@ async function decrement(pool, prodid, uid) {
 async function getCart(pool, uid){
     try {
         const res = await pool.query(`SELECT * FROM carrello JOIN prodotti ON carrello.productid = prodotti.id WHERE uid = $1 AND banned=FALSE`, [uid])
+        for(const el of res.rows){
+            if (el.amm<el.quantita) {
+                await pool.query(`UPDATE carrello SET quantita=$1 WHERE productid = $2 AND uid=$3`, [el.amm, el.id, uid])
+                return getCart(pool, uid)
+            }
+        }
         console.log(res.rows);
         return res.rows
     } catch (error) {

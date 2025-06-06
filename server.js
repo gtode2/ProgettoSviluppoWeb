@@ -640,24 +640,20 @@ async function main() {
     })
 
 
-    app.get("/cart", async (req,res) => {
-        console.log("getCart");
-        
-        const user = checkToken(req,res)
-        if (user!==-1) {
-              if (user.usertype!==1) {
+    app.get("/cart", async (req,res) => {       
+        const user = checkToken(req,res, false)
+        if (user===-1) {
+            res.redirect("/renewtoken?from=/cart")
+        }else{
+            if (user.usertype!==1) {
                 res.status(401).json({})
                 return
             }
             const response = await getCart(pool, user.uid)
             if (response!==-1) {
                 res.status(200).json({carrello:response})
-                console.log("AAA");
-                
             }else{
-                res.status(500).json({})
-                console.log("BBB");
-                
+                res.status(500).json({})                
             }
         }
     })
@@ -708,9 +704,12 @@ async function main() {
         
     })
     app.get("/report", async(req,res)=>{
-        const user = checkToken(req,res)
-        if (user!==-1) {
-              if (user.usertype!==0) {
+        const user = checkToken(req,res, false)
+        if (user===-1) {
+            res.redirect("/renewtoken?from=/report")
+        }
+        else{
+            if (user.usertype!==0) {
                 res.status(401).json({})
                 return
             }
@@ -1333,7 +1332,7 @@ async function main() {
     app.get("/order", async (req,res) => {
         const user = checkToken(req,res, false)
         if (user===-1) {
-            res.redirect("/")
+            res.redirect("/renewToken?from=/order")
             return
         }
         const id = req.query.id
@@ -1397,8 +1396,3 @@ main().catch((err) => {
     process.exit(1);
   });
 
-
-
-function stripeKey() {
-    
-}

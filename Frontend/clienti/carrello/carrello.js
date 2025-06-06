@@ -11,7 +11,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (response.ok) {
       console.log(data);
       data.carrello.forEach(el => {
-        add(el.productid, el.name, el.costo, el.quantita);
+        console.log(el);
+        let qtt = (el.amm<el.quantita) ? el.amm : el.quantita 
+        add(el.productid, el.name, el.costo, qtt);
         count +=el.quantita
       });
       counter()
