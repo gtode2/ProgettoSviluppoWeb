@@ -76,86 +76,82 @@ function renderProducts(data) {
     const col = document.createElement("div");
     
     if (currentView === "card" || currentView === "fullscreen") {
-      // Template originale in modalità "card" (o "fullscreen")
+      // Template per la modalità "card" o "fullscreen"
       col.className = "col-md-4 mb-5 mt-5";
       if (lastUserType === 1) {
-    col.innerHTML = `
-      <div class="card text-center shadow-sm" id="productcard${el.id}">
-        <div class="card-body">
-          <h5 class="card-title">${el.name}</h5>
-          <p class="card-text">${el.descr}</p>
-          <p class="card-text">${el.cat}</p>
-          <p class="price text-success fw-bold">€${validateAndFormatPrice(el.costo)}</p>
-          <p class="nome artigiano"></p>
-          
-          <div class="d-flex flex-column gap-2 product-actions cliente">
-            <div class="d-flex justify-content-center gap-2">
-              <button class="btn btn-primary aggiungi-carrello" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
-              <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>
+        col.innerHTML = `
+          <div class="card text-center shadow-sm" id="productcard${el.id}">
+            <div class="card-body">
+              <h5 class="card-title">${el.name}</h5>
+              <p class="card-text">${el.descr}</p>
+              <p class="card-text">${el.cat}</p>
+              <p class="price text-success fw-bold">€${el.costo}</p>
+              <p class="nome artigiano"></p>
+              
+              <div class="d-flex flex-column gap-2 product-actions cliente">
+                <div class="d-flex justify-content-center gap-2">
+                  <button class="btn btn-primary aggiungi-carrello" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
+                  <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>
+                </div>
+                <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+              </div>
             </div>
-            <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
           </div>
-        </div>
-      </div>
-    `;
-
-    } else if (lastUserType === 2) {
-    col.innerHTML = `
-      <div class="card text-center shadow-sm" id="productcard${el.id}">
-        <div class="card-body">
-          <h5 class="card-title">${el.name}</h5>
-          <p class="card-text">${el.descr}</p>
-          <p class="card-text">${el.cat}</p>
-          <p class="price text-success fw-bold">€${validateAndFormatPrice(el.costo)}</p>
-          
-          <div class="d-flex flex-column gap-2 product-actions artigiano">
-            <div class="d-flex justify-content-center gap-2">
-              <button class="btn btn-warning" onclick="event.stopPropagation(); edit(${el.id})">Modifica</button>
-              <button class="btn btn-danger" onclick="event.stopPropagation(); removeProduct(${el.id})">Elimina</button>
+        `;
+      } else if (lastUserType === 2) {
+        col.innerHTML = `
+          <div class="card text-center shadow-sm" id="productcard${el.id}">
+            <div class="card-body">
+              <h5 class="card-title">${el.name}</h5>
+              <p class="card-text">${el.descr}</p>
+              <p class="card-text">${el.cat}</p>
+              <p class="price text-success fw-bold">€${el.costo}</p>
+              
+              <div class="d-flex flex-column gap-2 product-actions artigiano">
+                <div class="d-flex justify-content-center gap-2">
+                  <button class="btn btn-warning" onclick="event.stopPropagation(); edit(${el.id})">Modifica</button>
+                  <button class="btn btn-danger" onclick="event.stopPropagation(); removeProduct(${el.id})">Elimina</button>
+                </div>
+                <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+              </div>
             </div>
-            <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
           </div>
-        </div>
-      </div>
-    `;
-
-    }else if(lastUserType===0){
-    console.log("admin");
-    col.innerHTML = `
-      <div class="card text-center shadow-sm" id="productcard${el.id}">
-        <div class="card-body">
-          <h5 class="card-title">${el.name}</h5>
-          <p class="card-text">${el.descr}</p>
-          <p class="card-text">${el.cat}</p>
-          <p class="price text-success fw-bold">€${validateAndFormatPrice(el.costo)}</p>
-          <div>
-          <button class="btn btn-secondary" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
-          </div
-        </div>
-      </div>
-    `;
-        //admin
-    }else{
-      col.innerHTML = `
-        <div class="card text-center shadow-sm" id="productcard${el.id}">
-          <div class="card-body">
-            <h5 class="card-title">${el.name}</h5>
-            <p class="card-text">${el.descr}</p>
-            <p class="card-text">${el.cat}</p>
-            <p class="price text-success fw-bold">€${validateAndFormatPrice(el.costo)}</p>
-            <div>
+        `;
+      } else if (lastUserType === 0) {
+        console.log("admin");
+        col.innerHTML = `
+          <div class="card text-center shadow-sm" id="productcard${el.id}">
+            <div class="card-body">
+              <h5 class="card-title">${el.name}</h5>
+              <p class="card-text">${el.descr}</p>
+              <p class="card-text">${el.cat}</p>
+              <p class="price text-success fw-bold">€${el.costo}</p>
+              
+              <div class="d-flex flex-column gap-2 product-actions admin">
+                <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+              </div>
             </div>
-            <button class="btn btn-secondary" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
           </div>
-        </div>
-      `;
-      console.log("unlogged");
-      //unlogged
-    }
+        `;
+      } else {
+        col.innerHTML = `
+          <div class="card text-center shadow-sm" id="productcard${el.id}">
+            <div class="card-body">
+              <h5 class="card-title">${el.name}</h5>
+              <p class="card-text">${el.descr}</p>
+              <p class="card-text">${el.cat}</p>
+              <p class="price text-success fw-bold">€${el.costo}</p>
+              
+              <div class="d-flex flex-column gap-2 product-actions unlogged">
+                <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+              </div>
+            </div>
+          </div>
+        `;
+        console.log("unlogged");
+      }
     } else if (currentView === "list") {
-      // Template per la modalità lista:
-      // Dispone l'immagine a sinistra e le info sulla destra, in una card più "lineare"
-      col.className = "col-12 mb-3";
+      // Template per la modalità lista: immagine a sinistra e info a destra
       col.className = "col-12 mb-3";
       col.innerHTML = `
         <div class="card shadow-sm" id="productcard${el.id}">
@@ -168,12 +164,14 @@ function renderProducts(data) {
                 <h5 class="card-title">${el.name}</h5>
                 <p class="card-text">${el.descr}</p>
                 <p class="card-text">${el.cat}</p>
-                <p class="card-text"><small class="text-muted">€${validateAndFormatPrice(el.costo)}</small></p>
-                <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">
-                  Aggiungi al carrello
-                </button>
-                  </div>
-                <button class="btn btn-secondary" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+                <p class="card-text"><small class="text-muted">€${el.costo}</small></p>
+                
+                <!-- Contenitore dei pulsanti: allineati a destra con ps-2 (padding sinistro di circa 5px) -->
+                <div class="d-flex justify-content-end gap-2 ps-2">
+                  <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
+                  <button class="btn btn-secondary" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+                  <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>
+                </div>
               </div>
             </div>
           </div>
