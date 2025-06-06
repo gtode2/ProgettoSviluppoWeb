@@ -1,72 +1,96 @@
+/* Imposta lo sfondo della pagina a bianco e uno stile di base per il testo */
 body {
-  background-color: #f8f9fa;
+  background-color: #ffffff;
+  color: #212529;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-.admin-overlay {
-  padding: 20px;
-  background-color: #fff;
-  border-left: 1px solid #ddd;
+/* Container per centrare la card */
+.login-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* Card del checkout: box arancione con effetto "card" */
+.login-card {
+  background-color: #ffa500;  /* Arancione */
+  color: #212529;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
   position: relative;
 }
 
-/* Modalità mobile: nascondi il checkout a meno che non venga esplicitamente aperto */
-@media (max-width: 767.98px) {
-  .admin-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 80%;
-    height: 100%;
-    z-index: 1050;
-    overflow-y: auto;
-    box-shadow: -4px 0 6px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-  }
-  .admin-overlay.aperto {
-    display: block;
-  }
-}
-
-/* Modalità desktop: forza la visualizzazione dell'overlay */
-@media (min-width: 768px) {
-  .admin-overlay {
-    display: block !important;
-    position: relative;
-    width: 100%;
-    height: auto;
-    box-shadow: none;
-  }
-}
-
-/* Stile per il pulsante di chiusura */
-.btn-close-overlay {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
+/* Pulsante per chiudere la card */
+.login-card .btn-close-overlay {
+  background: transparent;
   border: none;
-  font-size: 24px;
+  color: #ffffff;
+  font-size: 1.5rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
   cursor: pointer;
 }
 
-/* Stile per il pulsante di apertura del checkout (modalità mobile) */
-#openCheckout {
-  margin: 10px;
+/* Titolo e etichette all’interno della card */
+.login-card h2 {
+  color: #212529;
+  margin-bottom: 1rem;
+}
+.login-card .form-label {
+  color: #212529;
 }
 
-/* ✅ RESPONSIVE */
-@media (max-width: 576px) {
-  h1 {
-    font-size: 1.5rem;
-  }
+/* Campi di input e select: sfondo bianco, testo scuro */
+.login-card .form-control,
+.login-card .form-select {
+  background-color: #ffffff;
+  color: #212529;
+  border: 1px solid #ced4da;
+}
 
-  .form-prodotto label {
-    font-size: 0.95rem;
-  }
+/* Pulsante primario: stile invertito per una buona leggibilità */
+.login-card .btn.btn-primary {
+  background-color: #ffffff;
+  color: #ffa500;
+  border-color: #ffffff;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 
-  .form-prodotto input,
-  .form-prodotto button {
-    font-size: 1rem;
-  }
+.login-card .btn.btn-primary:hover {
+  background-color: #e9ecef;
+  border-color: #e9ecef;
+  color: #ffa500;
+}
+
+/* Pulsante secondario: outline con bordi e testo bianco */
+.login-card .btn.btn-outline-secondary {
+  background-color: transparent;
+  color: #ffffff;
+  border-color: #ffffff;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.login-card .btn.btn-outline-secondary:hover {
+  background-color: #ffffff;
+  color: #ffa500;
+}
+
+/* Link generici: mantenere il colore arancione sui link */
+a,
+a:visited {
+  color: #ffa500;
+}
+
+a:hover,
+a:focus {
+  color: #e9ecef;
 }
