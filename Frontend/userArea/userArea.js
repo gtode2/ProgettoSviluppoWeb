@@ -57,6 +57,10 @@ async function cancel() {
 }
 
 async function save() {
+  if(!checkValidity()){
+    return;
+  }
+  
   const values = {};
   ["nome", "cognome", "username", "email", "telefono"].forEach(id => {
     const el = document.getElementById(id);
@@ -171,4 +175,32 @@ function openOrder(id) {
 
 function closeUserArea() {
       window.location.href="/"
+}
+
+function checkValidity(){
+  const nome = document.getElementById("nome");
+  const cognome = document.getElementById("cognome");
+  const username =  document.getElementById("username");
+  const email = document.getElementById("email");
+  const telefono = document.getElementById("telefono"); 
+
+  //raccatto i valori ripuliti dagli spazi
+  const getNome = nome.value.trim();
+  const getCognome = cognome.value.trim();
+  const getUsername = username.value.trim();
+  const getEmail = email.value.trim();
+  const getTelefono = telefono.value.trim();
+
+  //se nessuno dei campi è stato modificato, allora nulla
+  if(!getNome && !getCognome && !getUsername && !getEmail && getTelefono ){
+    return;
+  }
+  //email corretta:
+  if(getEmail){
+    const checkEmail =  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRegex.test(email)){
+      alert("Email non in formato corretto");
+      return;
+    }
+  }
 }

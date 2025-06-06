@@ -101,3 +101,30 @@ function cancel() {
   document.getElementById("indirizzo").value = "";
   document.getElementById("descr").value = "";
 }
+function checkValidity(){
+  const nome = document.getElementById("nome").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const telefono = document.getElementById("telefono").value.trim();
+  const indirizzo = document.getElementById("indirizzo").value.trim();
+  const descr = document.getElementById("descr").value.trim(); 
+
+  //raccatto i valori ripuliti dagli spazi
+  const getNome = nome.value.trim();
+  const getCognome = cognome.value.trim();
+  const getTelefono = telefono.value.trim();
+  const getIndirizzo = indirizzo.value.trim();
+  const getDescr = descr.value.trim();
+
+  //se nessuno dei campi è stato modificato, allora nulla
+  if(!getNome && !getCognome && !getTelefono && !getIndirizzo && getDescr ){
+    return;
+  }
+  //email corretta:
+  if(getEmail){
+    const checkEmail =  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRegex.test(email)){
+      alert("Email non in formato corretto");
+      return;
+    }
+  }
+}
