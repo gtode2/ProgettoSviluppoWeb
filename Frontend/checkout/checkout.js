@@ -50,17 +50,26 @@ async function checkout() {
     
     if (!response.ok) {
       if (response.status===401) {
-        if (data.err==="missing token") {
+        if (data.err==="missing token" || data.err==="invalid token") {
           const result = await renewToken()
           if (result===1) {
             checkout()
           }else{
             window.location.href="/"
           }
+        }else if(data.err==="no order"){
+          alert("ordine non trovato")
+          window.location.href="/"
         }
+      }else if (response.status===400) {
+        if (data.err==="missing addr") {
+          alert("indirizzo mancante")
+        }
+      }else if (response.status===500) {
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
       }
-      console.log(response.status);
-      
     }else{
       console.log(data.id);
       

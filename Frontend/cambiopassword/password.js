@@ -54,7 +54,7 @@ async function send() {
       data = await response.json()    
       if (!response.ok) {  
         if (response.status===401) {
-          if (data.err==="missing token") {
+          if (data.err==="missing token" || data.err==="invalid token") {
             const result = await renewToken()
             if (result ===1) {
               send()
@@ -65,10 +65,15 @@ async function send() {
             vecchia.setCustomValidity("Password errata");
             vecchia.reportValidity();
           }
+        }else if (response.status===400) {
+          if (data.err==="missing data") {
+            alert("informazioni mancanti")
+          }
+        }else if (response.status===500){
+          alert("errore del server")
+        }else{
+          alert("errore sconosciuto")
         }
-        console.log(response.status);
-          
-        //gestione errore
       }else{
         alert("password modificata correttamente")
         window.location.href="/"

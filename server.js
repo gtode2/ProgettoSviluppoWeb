@@ -1109,12 +1109,6 @@ async function main() {
             console.log(error);
             
         }
-
-        console.log("AAAAA");
-        
-        console.log(JSON.stringify(li));
-        
-
         try {   
             const session = await stripe.checkout.sessions.create({
                 payment_method_types:['card'],
@@ -1128,10 +1122,10 @@ async function main() {
             })
             console.log(session.id);
             
-            res.json({id:session.id})
+            res.status(200).json({id:session.id})
         } catch (error) {
             console.log(error);
-            
+            res.status(500).json({})
         }
     })
     
