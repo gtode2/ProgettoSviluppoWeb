@@ -62,19 +62,48 @@ function checkDesc() {
   return true
 }
 function checkPrezzo(){
-  const prezzo = document.getElementById("prezzo")
-  if (!prezzo.value.trim()) {
-    return false
+  const priceInput = document.getElementById("prezzo");
+  if(!priceInput.value.trim()){
+    priceInput.setCustomValidity("Prezzo mancante");
+    priceInput.reportValidity();
+    formValido = false;
+    return formValido;
+  } else if(parseFloat(priceInput.value) <= 0){
+    priceInput.setCustomValidity("Il prezzo non può essere uguale o inferiore a 0");
+    priceInput.reportValidity();
+    formValido = false;
+    return formValido;
+  } else {
+    priceInput.setCustomValidity("");
   }
-  return true
+  return priceInput.toFixed(2);
 }
+
 function checkQtt() {
-  const quantita = document.getElementById("quantita")
-  if (!quantita.value.trim()) {
-    return false
-  }
-  return true
+  const quantitaInput = document.getElementById("quantita");
+  if (!quantitaInput.value.trim()) {
+    quantitaInput.setCustomValidity("Il campo quantità non può essere vuoto!");
+    quantitaInput.reportValidity();
+    formValido = false;
+    return formValido;
+  } else {
+    const quantitaVal = parseFloat(quantitaInput.value);
+    if (quantitaVal <= 0) {
+      quantitaInput.setCustomValidity("La quantità non può essere inferiore o uguale a 0");
+      quantitaInput.reportValidity();
+      formValido = false;
+      return formValido;
+    } else if (!Number.isInteger(quantitaVal)) {
+      quantitaInput.setCustomValidity("La quantità deve essere un numero intero!");
+      quantitaInput.reportValidity();
+      alert("Errore: la quantità deve essere un numero intero!");
+      formValido = false;
+      return formValido;
+    } else {
+      quantitaInput.setCustomValidity("");
+    }
 }
+
 function checkCat(){
   const cat = document.getElementById("categoria").value
   return cat!==defCat
@@ -152,4 +181,4 @@ async function send() {
     }   
   }
 }
-
+}

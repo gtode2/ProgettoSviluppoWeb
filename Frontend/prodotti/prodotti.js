@@ -153,7 +153,8 @@ function renderProducts(data) {
     } else if (currentView === "list") {
       // Template per la modalità lista: immagine a sinistra e info a destra
       col.className = "col-12 mb-3";
-      col.innerHTML = `
+
+      /*col.innerHTML = `
         <div class="card shadow-sm" id="productcard${el.id}">
           <div class="row g-0">
             <div class="col-md-2">
@@ -176,7 +177,8 @@ function renderProducts(data) {
             </div>
           </div>
         </div>
-      `;
+      `;*/
+      
     }
     container.appendChild(col);
   });

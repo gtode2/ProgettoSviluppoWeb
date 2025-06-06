@@ -34,7 +34,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const checkPassword = () => {
             const password = document.getElementById("password").value;
-            return password.length >= 6;
+            const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/; 
+            if(password.length < 8){
+                alert("La password deve contenere almeno 8 caratteri");
+                return false;
+            }else if(!strongPasswordRegex.test(password)){
+                alert("La password non è sicura. Verifica di avere: \n un carattere maiuscolo; \n un carattere minuscolo; \n un carattere speciale; \n un numero");
+                return false;
+            }
+            return true;
         };
 
         const checkConfirmPassword = () => {
