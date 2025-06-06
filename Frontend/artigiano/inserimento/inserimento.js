@@ -128,12 +128,12 @@ function validateForm(){
   }
 
   // Validazione per il campo 'quantita'
-  const quantitaInput = document.getElementById("quantita");
+   const quantitaInput = document.getElementById("quantita");
   if (!quantitaInput.value.trim()) {
     quantitaInput.setCustomValidity("Il campo quantità non può essere vuoto!");
     quantitaInput.reportValidity();
     formValido = false;
-    return formValido
+    return formValido;
   } else {
     const quantitaVal = parseFloat(quantitaInput.value);
     if (quantitaVal <= 0) {
@@ -141,10 +141,17 @@ function validateForm(){
       quantitaInput.reportValidity();
       formValido = false;
       return formValido;
+    } else if (!Number.isInteger(quantitaVal)) {
+      quantitaInput.setCustomValidity("La quantità deve essere un numero intero!");
+      quantitaInput.reportValidity();
+      alert("Errore: la quantità deve essere un numero intero!");
+      formValido = false;
+      return formValido;
     } else {
       quantitaInput.setCustomValidity("");
     }
   }
+  
   const categoriaInput = document.getElementById("categoria");
   if(!categoriaInput.value.trim()){
     categoriaInput.setCustomValidity("Il campo quantità non può essere vuoto!");

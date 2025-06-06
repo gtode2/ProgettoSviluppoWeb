@@ -79,58 +79,76 @@ function renderProducts(data) {
       // Template originale in modalità "card" (o "fullscreen")
       col.className = "col-md-4 mb-5 mt-5";
       if (lastUserType === 1) {
-    col.innerHTML= `
-    <div class="card text-center shadow-sm" id="productcard${el.id}">
-      <div class="card-body" onclick="openProduct(${el.id})">
-        <h5 class="card-title">${el.name}</h5>
-        <p class="card-text">${el.descr}</p>
-        <p class="card-text">${el.cat}</p>
-        <p class="price text-success fw-bold">€${el.costo}</p>
-        <p class="nome artigiano"></p>
-        <div class="d-flex justify-content-center gap-2 product-actions cliente" style="padding-bottom:50px">
-          <button class="btn btn-primary aggiungi-carrello" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
-          <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>
+    col.innerHTML = `
+      <div class="card text-center shadow-sm" id="productcard${el.id}">
+        <div class="card-body">
+          <h5 class="card-title">${el.name}</h5>
+          <p class="card-text">${el.descr}</p>
+          <p class="card-text">${el.cat}</p>
+          <p class="price text-success fw-bold">€${validateAndFormatPrice(el.costo)}</p>
+          <p class="nome artigiano"></p>
+          
+          <div class="d-flex flex-column gap-2 product-actions cliente">
+            <div class="d-flex justify-content-center gap-2">
+              <button class="btn btn-primary aggiungi-carrello" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
+              <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>
+            </div>
+            <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+          </div>
         </div>
       </div>
-    </div>
     `;
+
     } else if (lastUserType === 2) {
     col.innerHTML = `
-    <div class="card text-center shadow-sm" id="productcard${el.id}">
-      <div class="card-body" onclick="openProduct(${el.id})">
-        <h5 class="card-title">${el.name}</h5>
-        <p class="card-text">${el.descr}</p>
-        <p class="card-text">${el.cat}</p>
-        <p class="price text-success fw-bold">€${el.costo}</p>
-        <div class="d-flex justify-content-center gap-2 product-actions artigiano">
-          <button class="btn btn-warning" onclick="event.stopPropagation(); edit(${el.id})">Modifica</button>
-          <button class="btn btn-danger" onclick="removeProduct(${el.id})">Elimina</button>
+      <div class="card text-center shadow-sm" id="productcard${el.id}">
+        <div class="card-body">
+          <h5 class="card-title">${el.name}</h5>
+          <p class="card-text">${el.descr}</p>
+          <p class="card-text">${el.cat}</p>
+          <p class="price text-success fw-bold">€${validateAndFormatPrice(el.costo)}</p>
+          
+          <div class="d-flex flex-column gap-2 product-actions artigiano">
+            <div class="d-flex justify-content-center gap-2">
+              <button class="btn btn-warning" onclick="event.stopPropagation(); edit(${el.id})">Modifica</button>
+              <button class="btn btn-danger" onclick="event.stopPropagation(); removeProduct(${el.id})">Elimina</button>
+            </div>
+            <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+          </div>
         </div>
       </div>
-    </div>
     `;
+
     }else if(lastUserType===0){
     console.log("admin");
     col.innerHTML = `
       <div class="card text-center shadow-sm" id="productcard${el.id}">
-        <div class="card-body" onclick="openProduct(${el.id})">
+        <div class="card-body">
           <h5 class="card-title">${el.name}</h5>
           <p class="card-text">${el.descr}</p>
           <p class="card-text">${el.cat}</p>
-          <p class="price text-success fw-bold">€${el.costo}</p>
+          <p class="price text-success fw-bold">€${validateAndFormatPrice(el.costo)}</p>
+          <div>
+          <button class="btn btn-secondary" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+          </div
         </div>
-      </div>`
+      </div>
+    `;
         //admin
     }else{
       col.innerHTML = `
         <div class="card text-center shadow-sm" id="productcard${el.id}">
-          <div class="card-body>
+          <div class="card-body">
             <h5 class="card-title">${el.name}</h5>
             <p class="card-text">${el.descr}</p>
             <p class="card-text">${el.cat}</p>
-            <p class="price text-success fw-bold">€${el.costo}</p>
+            <p class="price text-success fw-bold">€${validateAndFormatPrice(el.costo)}</p>
+            <div>
+            </div>
+            <button class="btn btn-secondary" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
           </div>
-        </div>`
+        </div>
+      `;
       console.log("unlogged");
       //unlogged
     }
@@ -138,27 +156,30 @@ function renderProducts(data) {
       // Template per la modalità lista:
       // Dispone l'immagine a sinistra e le info sulla destra, in una card più "lineare"
       col.className = "col-12 mb-3";
+      col.className = "col-12 mb-3";
       col.innerHTML = `
         <div class="card shadow-sm" id="productcard${el.id}">
           <div class="row g-0">
             <div class="col-md-2">
+              <!-- eventuale immagine o placeholder -->
             </div>
             <div class="col-md-10">
-              <div class="card-body" onclick="openProduct(${el.id})">
+              <div class="card-body">
                 <h5 class="card-title">${el.name}</h5>
                 <p class="card-text">${el.descr}</p>
                 <p class="card-text">${el.cat}</p>
-                <p class="card-text"><small class="text-muted">€${el.costo}</small></p>
+                <p class="card-text"><small class="text-muted">€${validateAndFormatPrice(el.costo)}</small></p>
                 <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">
                   Aggiungi al carrello
                 </button>
+                  </div>
+                <button class="btn btn-secondary" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
               </div>
             </div>
           </div>
         </div>
       `;
     }
-    
     container.appendChild(col);
   });
 }
@@ -177,6 +198,11 @@ function edit(productId){
 
 // --- FUNZIONI DI DELEGAZIONE ---
 function addToCart(id, name, price) {
+  const validPrice = validateAndFormatPrice(price);
+  if(validPrice === null){
+    alert("Prodotto non aggiunto: \n si prega di inserire un prezzo valido")
+    return;
+  }
   window.parent.addToCart(id, name, price);
 }
 
@@ -232,3 +258,24 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "Frontend/artigiano/modifica/modifica.html";
   })
 });
+
+//function per validare un prezzo
+function validateAndFormatPrice(input){
+  if(typeof input === "string"){
+    input = input.trim();
+    if(input === ""){
+      alert("il campo prezzo non può essere vuoto");
+      return;
+    }
+  }
+  const num = parseFloat(input);
+  if(isNaN(num)){
+    alert("Prezzo non valido: deve essere un numero");
+    return;
+  }
+  if(num <= 0){
+    alert("Il prezzo deve essere maggiore di 0");
+    return;
+  }
+  return num.toFixed(2);
+}

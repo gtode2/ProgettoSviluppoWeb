@@ -178,7 +178,6 @@ async function increase(id, price) {
     console.error(error);
     alert("Errore di rete.");
   }
-  
 }
 
 async function decrease(id, price) {
