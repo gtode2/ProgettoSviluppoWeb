@@ -191,7 +191,9 @@ function setViewMode(mode) {
 function edit(productId){
   if(window.innerWidth<= 768){
     window.location.href = "/Frontend/artigiano/modifica/modifica.html?id=" + productId;
-  }
+  }else{
+    window.parent.edit(productId)
+  }  
 }
 
 // --- FUNZIONI DI DELEGAZIONE ---
