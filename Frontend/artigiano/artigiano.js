@@ -5,7 +5,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const toggleOverlayButton = document.getElementById('btn-toggle-overlay');
     const closeOverlayButton = document.getElementById('btn-close-overlay');
-    const adminOverlay = document.getElementById('admin-overlay'); // ✅ MANCAVA
+    const adminOverlay = document.getElementById('admin-overlay');
+    const adminAreaButton = document.getElementById('adminOverlay');
 
     if (toggleOverlayButton) {
         toggleOverlayButton.addEventListener('click', function () {
@@ -18,9 +19,13 @@ document.addEventListener('DOMContentLoaded', function () {
             adminOverlay.classList.remove('aperto'); // ✅ Overlay nascosto
         });
     }
-    if(adminOverlay){
-      adminOverlay.addEventListener('click', function(){
-        window.location.href = "/userArea"
+    
+    adminOverlay.onclick = null;
+
+    if(adminAreaButton){
+      adminAreaButton.addEventListener('click', function(event){
+        event.stopPropagation();
+        window.location.href = "/userArea";
       })
     }
 });
