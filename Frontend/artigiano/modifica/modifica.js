@@ -22,8 +22,7 @@ document.addEventListener('DOMContentLoaded', async() => {
     })
     let data = await response.json()
     if (!response.ok) {
-      console.log(response.status);
-      //gestione errori
+      alert("errore sconosciuto")
     }else{
       document.getElementById("nome").placeholder=data.prodotti[0].name
       document.getElementById("descrizione").placeholder=data.prodotti[0].descr
@@ -111,8 +110,6 @@ async function send() {
   }
   
   
-  //eseguire verifica valori
-  
   if (!nome && !descrizione && !prezzo && !quantita && !categoria) {
     console.log("nessun valore inserito");
   }else{
@@ -125,7 +122,7 @@ async function send() {
       data = await response.json()    
       if (!response.ok) {  
         if (response.status===401) {
-          if (data.err==="missing token") {
+          if (data.err==="missing token" || data.err==="invalid token") {
             const result = await renewToken()
             if (result ===1) {
               send()
@@ -133,6 +130,15 @@ async function send() {
               window.parent.location.href="/"
             }
           }
+          //401 - missing product va ignorato 
+        }else if (response.status===400) {
+          if (data.err==="missing id") {
+            alert("id prodotto mancante")
+          }
+        }else if (response.status===500) {
+          alert("errore del server")
+        }else{
+          alert("errore sconosciuto")
         }
         console.log(response.status);
           

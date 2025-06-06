@@ -13,7 +13,7 @@ const https = require('https');
 
 const { checkdb } = require("./Backend/dbmanager.js");
 const {checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
-const {addProduct, removeProduct, getProducts, addCart, removeCart, decrCart, getCart, emptyCart} = require("./Backend/products.js");
+const {addProduct, removeProduct, getProducts, editProduct, addCart, removeCart, decrCart, getCart, emptyCart} = require("./Backend/products.js");
 const {addReport, getReports, removeReport, removeReportedProduct, banArtigiano} = require("./Backend/reports.js");
 const e = require("express");
 
@@ -437,7 +437,7 @@ async function main() {
         }
         if (user.usertype!=2) {
             console.log("tipo utente errato");
-            res.status(401).json({})
+            res.status(401).json({err:"usertype"})
         }else{
             console.log(req.body);
             
@@ -499,12 +499,10 @@ async function main() {
         }
     })
 
-    app.patch("/product", async (req,res) => {
-        console.log("AAAA");
-        
-        const {id, nome, descr, costo, qt, cat} = req.body
+    app.patch("/product", async (req,res) => { 
+        const {id} = req.body
         if (!id) {
-            res.status(400).json({err:"no id"})
+            res.status(400).json({err:"missing id"})
             console.log("no id prodotto");
             
             return
@@ -514,36 +512,20 @@ async function main() {
             return
         }
         try {
-            const result = await pool.query(`SELECT * FROM prodotti WHERE id=$1 AND actid=$2`,[id, user.uid])
+            let result = await pool.query(`SELECT * FROM prodotti WHERE id=$1 AND actid=$2`,[id, user.uid])
             if (result.rows.length===0) {
                 console.log("no prod");
-                res.status(401).json({err:"no product"})
+                res.status(401).json({err:"missing product"})
                 return
             }
             console.log("prodotto trovato");
-            if (nome) {
-                await pool.query(`UPDATE prodotti SET name=$1 WHERE id=$2`,[nome, id])
-                console.log("nome modificato");
+            result = await editProduct(pool,id,req)
+            
+            if (result===0) {
+                res.status(200).json({})    
+            }else{
+                res.status(500).json({})
             }
-            if (descr) {
-                await pool.query(`UPDATE prodotti SET descr=$1 WHERE id=$2`,[descr, id])
-                console.log("descr modificata");
-            }
-            if (costo) {
-                await pool.query(`UPDATE prodotti SET costo=$1 WHERE id=$2`,[costo, id])
-                console.log("costo mod");
-                
-            }
-            if (qt) {
-                await pool.query(`UPDATE prodotti SET amm=$1 WHERE id=$2`,[qt, id])
-                console.log("qt mod");
-                
-            }
-            if (cat) {
-                await pool.query(`UPDATE prodotti SET cat=$1 WHERE id=$2`,[cat, id])
-                console.log("cat mod");   
-            }            
-            res.status(200).json({})
         } catch (error) {
             console.log(error);
             res.status(500).json({})
@@ -710,7 +692,7 @@ async function main() {
         }
         else{
             if (user.usertype!==0) {
-                res.status(401).json({})
+                res.status(401).json({err:"usertype"})
                 return
             }
             const response = await getReports(pool)
@@ -729,12 +711,12 @@ async function main() {
         }
         if (user.usertype!==0) {
             console.log("wrong usertype");
-            res.status(401).json({})
+            res.status(401).json({err:"usertype"})
             return
         }
         const {id}=req.body
         if (!id) {
-            res.status(400).json({})
+            res.status(400).json({err:"missing id"})
             console.log("missing id");
             return
         }
@@ -758,12 +740,12 @@ async function main() {
         }
         if (user.usertype!==0) {
             console.log("wrong usertype");
-            res.status(401).json({})
+            res.status(401).json({err:"usertype"})
             return
         }
         const {id, type}=req.body
         if (!id && !type) {
-            res.status(400).json({})
+            res.status(400).json({err:"missing info"})
             console.log("missing info");
             return
         }
@@ -784,7 +766,6 @@ async function main() {
             }else{
                 res.status(500).json({})
             }
-            //ban artigiano
         }
         
     })
@@ -851,7 +832,6 @@ async function main() {
                 console.log("ID = "+user.uid);
                 
                 const response = await pool.query(`SELECT nome, cognome, username, email, ntel FROM utenti WHERE uid = $1`, [user.uid])
-                //gestire richiesta acquisti
                 res.status(200).json({user:response.rows[0]})
                 console.log(response);
                 
@@ -913,15 +893,14 @@ async function main() {
         values.push(user.uid)
         try {
             if (values.length<2) {
-                res.status(400).json({})
+                res.status(400).json({err:"no value"})
                 console.log("nessun valore inserito");
-                
                 return
             }
             console.log(query);
             console.log(values);
             
-            const result = await pool.query(query, values)
+            await pool.query(query, values)
             res.status(200).json({})
         } catch (error) {
             console.log(error);

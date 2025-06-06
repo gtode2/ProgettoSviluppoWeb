@@ -47,7 +47,16 @@ async function sendData(){
               }else{
                   window.parent.location.href = "/"
               }
+          }else if (data.err==="usertype") {
+            alert("tipo utente errato\nredirect a homepage")
+            window.parent.location.href = "/"
+          }else if (data.err==="banned"){
+            window.parent.location.href = "/"
           }
+        }else if (response.status===500) {
+          alert("errore del server")
+        }else{
+          alert("errore sconosciuto")
         }
       }else{
         console.log("prodotto inserito correttamente \n tentativo modifica prodotti");

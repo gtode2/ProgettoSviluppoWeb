@@ -33,98 +33,102 @@ async function removeProduct(pool, productid, uid) {
 async function getProducts(pool, filters=null, id=null){
         
     var res=null
-    if (id!==null) {
-        //prodotto specifico
-        res = await pool.query(`SELECT 
-            prodotti.id, 
-            prodotti.name, 
-            prodotti.descr, 
-            prodotti.costo, 
-            prodotti.amm, 
-            prodotti.banned, 
-            prodotti.cat, 
-            prodotti.actid,
-            attivita.nome AS nome_attivita 
-            FROM prodotti
-            JOIN attivita ON prodotti.actid = attivita.actid 
-            WHERE id = $1`, [id]) 
-    }else if (filters!==null) {
-        //caricamento prodotti con filtri
-        console.log("FILTRI = "+filters);
+    try {
+        if (id!==null) {
+            //prodotto specifico
+            res = await pool.query(`SELECT 
+                prodotti.id, 
+                prodotti.name, 
+                prodotti.descr, 
+                prodotti.costo, 
+                prodotti.amm, 
+                prodotti.banned, 
+                prodotti.cat, 
+                prodotti.actid,
+                attivita.nome AS nome_attivita 
+                FROM prodotti
+                JOIN attivita ON prodotti.actid = attivita.actid 
+                WHERE id = $1`, [id]) 
+        }else if (filters!==null) {
+            //caricamento prodotti con filtri
+            console.log("FILTRI = "+filters);
+
+            var query = `SELECT * FROM prodotti WHERE banned = FALSE `
+            //array contenente parametri
+
+            var values = []
+            //ricerca
+            if (filters.search) {
+                query = query + "AND name ILIKE $"+(values.length+1)+" OR descr ILIKE $"+(values.length+1)
+                values.push("%"+filters.search+"%")
+                console.log(query);
+                console.log(values)
+            }
+
+            //prezzo minimo
+            if (filters.min) {
+                query = query + " AND costo >= $"+(values.length+1)
+                values.push(filters.min)
+                console.log(query);
+                console.log(values)
+            }
+
+            //prezzo massimo
+            if (filters.max) {
+                query = query + " AND costo <= $"+(values.length+1)
+                values.push(filters.max)
+                console.log(query);
+                console.log(values)
+            }
+
+            //categoria
+            if (filters.cat) {
+                query = query + " AND cat =$"+(values.length+1)
+                values.push(filters.cat)   
+                console.log(query);
+                console.log(values)         
+            }
+
+            //produttore
+            if (filters.produttore) {
+                query = query + " AND actid = $"+(values.length+1)
+                values.push(filters.produttore)
+                console.log(query);
+                console.log(values)
+            }
+            //solo disponibili
+            if (filters.disp) {
+
+                ///////
+                query = query + " AND amm != 0 "
+            }
+            //ordine
+            if (!filters.order) {
+                //order id desc default 
+                console.log("NO ORDINE");
+
+                query = query + " ORDER BY id DESC"
+            }else if (filters.order==="pa") {
+                query = query + " ORDER BY costo DESC"
+            }else if (filters.order==="pb") {
+                query = query + " ORDER BY costo ASC"
+            }else if (filters.order==="aa"){
+                query = query + " ORDER BY name ASC"
+            }else if (filters.order==="ac"){
+                query = query + " ORDER BY name DESC"
+            }
+            console.log(query);
+            console.log(values)
+            res = await pool.query(query, values)
+
+        }else{
+            //caricamento prodotti senza filtri
+            res = await pool.query(`SELECT * FROM prodotti WHERE banned = FALSE ORDER BY id DESC`)    
+        }
+        return res.rows
+    } catch (error) {
         
-        var query = `SELECT * FROM prodotti WHERE banned = FALSE `
-        //array contenente parametri
-
-        var values = []
-        //ricerca
-        if (filters.search) {
-            query = query + "AND name ILIKE $"+(values.length+1)+" OR descr ILIKE $"+(values.length+1)
-            values.push("%"+filters.search+"%")
-            console.log(query);
-            console.log(values)
-        }
-
-        //prezzo minimo
-        if (filters.min) {
-            query = query + " AND costo >= $"+(values.length+1)
-            values.push(filters.min)
-            console.log(query);
-            console.log(values)
-        }
-
-        //prezzo massimo
-        if (filters.max) {
-            query = query + " AND costo <= $"+(values.length+1)
-            values.push(filters.max)
-            console.log(query);
-            console.log(values)
-        }
-
-        //categoria
-        if (filters.cat) {
-            query = query + " AND cat =$"+(values.length+1)
-            values.push(filters.cat)   
-            console.log(query);
-            console.log(values)         
-        }
-
-        //produttore
-        if (filters.produttore) {
-            query = query + " AND actid = $"+(values.length+1)
-            values.push(filters.produttore)
-            console.log(query);
-            console.log(values)
-        }
-        //solo disponibili
-        if (filters.disp) {
-
-            ///////
-            query = query + " AND amm != 0 "
-        }
-        //ordine
-        if (!filters.order) {
-            //order id desc default 
-            console.log("NO ORDINE");
-            
-            query = query + " ORDER BY id DESC"
-        }else if (filters.order==="pa") {
-            query = query + " ORDER BY costo DESC"
-        }else if (filters.order==="pb") {
-            query = query + " ORDER BY costo ASC"
-        }else if (filters.order==="aa"){
-            query = query + " ORDER BY name ASC"
-        }else if (filters.order==="ac"){
-            query = query + " ORDER BY name DESC"
-        }
-        console.log(query);
-        console.log(values)
-        res = await pool.query(query, values)
-        
-    }else{
-        //caricamento prodotti senza filtri
-        res = await pool.query(`SELECT * FROM prodotti WHERE banned = FALSE ORDER BY id DESC`)    
     }
-    return res.rows
     
 }
 async function addCart(pool, prodid, uid){
@@ -254,7 +258,6 @@ async function getCart(pool, uid){
     }
 }
 
-
 async function emptyCart(pool, uid){
     try {
         await pool.query(`DELETE FROM carrello WHERE uid = $1`, [uid])
@@ -264,5 +267,36 @@ async function emptyCart(pool, uid){
         return -1    
     }
 }
+async function editProduct(pool, id, req) {
+    const {nome, descr, costo, qt, cat} = req.body
+    try {
+        if (nome) {
+                await pool.query(`UPDATE prodotti SET name=$1 WHERE id=$2`,[nome, id])
+                console.log("nome modificato");
+            }
+            if (descr) {
+                await pool.query(`UPDATE prodotti SET descr=$1 WHERE id=$2`,[descr, id])
+                console.log("descr modificata");
+            }
+            if (costo) {
+                await pool.query(`UPDATE prodotti SET costo=$1 WHERE id=$2`,[costo, id])
+                console.log("costo mod");
+                
+            }
+            if (qt) {
+                await pool.query(`UPDATE prodotti SET amm=$1 WHERE id=$2`,[qt, id])
+                console.log("qt mod");
+                
+            }
+            if (cat) {
+                await pool.query(`UPDATE prodotti SET cat=$1 WHERE id=$2`,[cat, id])
+                console.log("cat mod");   
+            }
+            return 0
+    } catch (error) {
+        console.log(error);
+        return -1
+    }
+}
 
-module.exports = {addProduct, removeProduct, getProducts, addCart, removeCart, decrCart, getCart, emptyCart} 
+module.exports = {addProduct, removeProduct, getProducts, editProduct, addCart, removeCart, decrCart, getCart, emptyCart} 

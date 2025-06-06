@@ -26,7 +26,30 @@ async function confirmP() {
         const data = await response.json()
         console.log("AAAAA");
         if (!response.ok) {
-            //gestione response 
+            if (response.status === 400) {
+                alert("account non autorizzato\nreindirizzamento verso homepage")
+                window.parent.location.href = "/"
+            }else if (response.status === 401) {
+                if (data.err==="missing token" || data.err==="invalid token") {
+                    const res = renewToken()
+                    if (res===0) {
+                        confirmP()
+                    } else{
+                        window.parent.location.href = "/"
+                    }
+                }
+                if (data.err==="usertype") {
+                    window.parent.location.href = "/"
+                }else{
+                    alert("si è verificato un errore sconosciuto")
+                    window.parent.location.href = "/"
+                }
+            }else if (response.status === 500) {
+                alert("errore del server")
+            }else{
+                alert("errore sconosciuto")
+            }
+            
         }else{
             window.parent.document.getElementById("prodotti-iframe").src="./prodotti/prodotti.html"
             window.parent.document.getElementById("lat-iframe").src="./admin/report/report.html"
@@ -47,7 +70,29 @@ async function confirmA() {
         const data = await response.json()
         console.log("AAAAA");
         if (!response.ok) {
-            //gestione response 
+            if (response.status === 400) {
+                alert("account non autorizzato\nreindirizzamento verso homepage")
+                window.parent.location.href = "/"
+            }else if (response.status === 401) {
+                if (data.err==="missing token" || data.err==="invalid token") {
+                    const res = renewToken()
+                    if (res===0) {
+                        confirmP()
+                    } else{
+                        window.parent.location.href = "/"
+                    }
+                }
+                if (data.err==="usertype") {
+                    window.parent.location.href = "/"
+                }else{
+                    alert("si è verificato un errore sconosciuto")
+                    window.parent.location.href = "/"
+                }
+            }else if (response.status === 500) {
+                alert("errore del server")
+            }else{
+                alert("errore sconosciuto")
+            }
         }else{
             window.parent.document.getElementById("prodotti-iframe").src="./prodotti/prodotti.html"
             window.parent.document.getElementById("lat-iframe").src="./admin/report/report.html"

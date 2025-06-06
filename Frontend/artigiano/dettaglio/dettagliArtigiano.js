@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Redirect immediato alla pagina "modifica.html"
     window.location.href = "/Frontend/artigiano/dettaglio/dettagliArtigiano.html";
   }
-});
+  });
 
   const actid = getActIdFromUrl();
   try {
@@ -43,12 +43,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     const data = await response.json();
     if (!response.ok) {
-
-      //gestione errori
-
       document.getElementById("descrizione").innerHTML = `
         <div class="alert alert-danger">Errore nel caricamento dell'Artigiano.</div>
       `;
+      if (response.status===400) {
+        alert("id attività mancante")
+      }else if (response.status===500) {
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
+      }
     } else {
       console.log("Prodotti caricati correttamente");
       console.log(data.act);

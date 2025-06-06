@@ -8,7 +8,14 @@ document.addEventListener("DOMContentLoaded", async()=>{
         console.log("AAAAA");
         
         if (!response.ok) {
-            //gestire errori
+            if (response.status===401) {
+                alert("tipo utente errato\nredirect a homepage")
+                window.parent.location.href = "/"
+            }else if(response.status===500){
+                alert("errore del server")
+            }else{
+                alert("errore sconosciuto")
+            }
         }else{
             if(data.reports.length === 0){
                 const positivo = document.getElementById("lista-report")
@@ -70,14 +77,23 @@ async function removeReport(id) {
         if (!response.ok) {
             //gestione response 
             if (response.status===401) {
-                if (data.err==="missing token") {
+                if (data.err==="missing token" || data.err==="invalid token") {
                     const res =await renewToken()
                     if (res===0) {
                         await removeReport(id)
                     }else{
                         window.parent.location.href = "/"
                     }
+                }else if (data.err==="usertype") {
+                    alert("tipo utente errato\nredirect a homepage")
+                    window.parent.location.href = "/"
                 }
+            }else if (response.status === 400) {
+                alert("id prodotto mancante")                
+            }else if (response.status === 500) {
+                alert("errore del server")
+            }else{
+                alert("errore sconosciuto")
             }
         }else{
           const riepilogo = document.getElementById("lista-report"); 

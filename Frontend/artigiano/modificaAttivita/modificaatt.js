@@ -9,7 +9,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(data);
 
     if (!response.ok) {
-      console.log(response.status);
+      if (response.status===401) {
+        if (data.err==="missing token" || data.err==="invalid token") {
+            const result = await renewToken()
+            if (result ===1) {
+              send()
+            }else{
+              window.parent.location.href="/"
+            }
+          }
+      }else if (response.status===500) {
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
+      }
     } else {
       // Imposta i placeholder con i dati correnti
       document.getElementById("nome").placeholder = data.act.nome;
@@ -60,7 +73,7 @@ async function save() {
   if (descr) dataToUpdate.descr = descr;
   
   try {
-    const response = await fetch("/updateActivity", {
+    const response = await fetch("/act", {
       method: "PATCH", // Aggiornamento parziale
       headers: {
         "Content-Type": "application/json"
@@ -70,22 +83,27 @@ async function save() {
     const result = await response.json();
     
     if (response.ok) {
-      alert("Dati modificati correttamente");
-      // Puoi ricaricare la pagina o aggiornare l'interfaccia in altro modo
       window.location.reload();
     } else {
-      // Gestione errori (es. token mancante)
-      if (response.status === 401 && result.err === "missing token") {
-        const res = await renewToken();
-        if (res === 0) {
-          await save();
-        } else {
-          window.location.href = "/";
+      if (response.status===401) {
+        if (result.err==="missing token" || result.err==="invalid token") {
+          const res = await renewToken();
+          if (res === 0) {
+            await save();
+          } else {
+            window.location.href = "/";
+          }  
         }
-      } else {
-        // Eventuale alert personalizzato dal server
-        alert(result.alert || "Errore durante l'aggiornamento");
+      }else if(response.status===400){
+        if (result.err==="no value") {
+          alert("nessun valore modificato")
+        }
+      }else if (response.status===500) {
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
       }
+      
     }
   } catch (error) {
     console.error("Errore:", error);
