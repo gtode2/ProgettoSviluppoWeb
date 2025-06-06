@@ -134,7 +134,7 @@ async function main() {
     });
 
     const stripe = require('stripe')(process.env.STRIPE_SECRET);
-    const endpointSecret = "whsec_7a1e711d036e2611d7c4a3c44f46781dce517ce0364509d60986104464e6e4b6"; 
+    const endpointSecret = process.env.STRIPE_SESSION; 
 
 
     /////////////////////////////////////////////////////////////////////////
@@ -1067,6 +1067,10 @@ async function main() {
     })
     
     app.get("/checkout", (req,res)=>{
+        const user = checkToken(req,res,false)
+        if (!user || user.usertype!==1) {
+            res.redirect("/renewtoken?from=/checkout")
+        }
         res.sendFile(path.join(__dirname,"Frontend","/checkout/checkout.html"))
     })
     //restituire errore nel caso di prodotti banned
