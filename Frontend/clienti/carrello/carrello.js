@@ -18,8 +18,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
       counter()
     } else {
-      // Gestione errori in caso di risposta non ok
-      console.error("Errore nella risposta:", data);
+      if (response.status===401) {
+        if (data.err==="usertype") {
+          alert("tipo utente errato\nredirect a homepage")
+          window.location.href = "/"
+        }
+      }else if (response.status===500) {
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
+      }
     }
   } catch (error) {
     console.error(error);
