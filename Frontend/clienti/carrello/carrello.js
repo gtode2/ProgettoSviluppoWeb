@@ -62,6 +62,11 @@ async function addToCart(id, name, price, quantita=1) {
         alert("Il prodotto è stato rimosso dall'artigiano");
         parent.location.reload();
       }
+      if (response.status===409) {
+        if (data.err==="max") {
+          alert("impossibile aggiungere altri elementi:\nnumero massimo raggiunto")
+        }
+      }
       if (response.status === 401) {
         if (data.err === "missing token") {
           const res = await renewToken();
@@ -171,6 +176,11 @@ async function increase(id, price) {
           } else {
             window.parent.location.href = "/";
           }
+        }
+      }
+      if (response.status===409) {
+        if (data.err==="max") {
+          alert("impossibile aggiungere altri elementi:\nnumero massimo raggiunto")
         }
       }
     }

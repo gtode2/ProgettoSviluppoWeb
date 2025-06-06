@@ -95,6 +95,12 @@ async function getProducts(pool, filters=null, id=null){
             console.log(query);
             console.log(values)
         }
+        //solo disponibili
+        if (filters.disp) {
+
+            ///////
+            query = query + " AND amm != 0 "
+        }
         //ordine
         if (!filters.order) {
             //order id desc default 
@@ -121,82 +127,72 @@ async function getProducts(pool, filters=null, id=null){
     return res.rows
     
 }
-async function addCart(pool, prodid, uid) {
+async function addCart(pool, prodid, uid){
     try {
-        // Verifica che il prodotto esista e non sia bannato.
-        let result = await pool.query(`SELECT * FROM prodotti WHERE id = $1 AND banned = FALSE`, [prodid]);
-        if (result.rows.length === 0) {
-            console.log("Prodotto rimosso");
-            return -2;
+        let  prod = await pool.query(`SELECT * FROM prodotti WHERE id=$1 AND banned=FALSE`, [prodid])
+        if (prod.rows.length===0) {
+            console.log("prodotto rimosso");
+            return -2
+        } 
+        let result = await pool.query(`SELECT * FROM carrello WHERE uid = $1 AND productid = $2`,[uid, prodid])
+
+        if (prod.rows[0].amm===0) {
+            console.log("prodotto non disponibile");
+            return -3
         }
+
+
+        console.log(result.rows.length);
         
-        // Controlla se la quantità disponibile è maggiore di 0.
-        if (result.rows[0].quantita <= 0) {
-            console.log("Quantità insufficiente");
-            return -3; // Puoi restituire un codice a tua scelta
+        if (result.rows.length!==0) {
+            console.log("prodotto già nel carrello");
+            console.log("PRODOTTO="+prodid);
+            if (prod.rows[0].amm === (result.rows[0].quantita)) {
+                console.log("limite superato");  
+                return -4
+            }   
+            result = increment(pool,prodid,uid)
+            return result
         }
+
         
-        // Verifica se il prodotto è già presente nel carrello
-        result = await pool.query(`SELECT COUNT(*) FROM carrello WHERE uid = $1 AND productid = $2`, [uid, prodid]);
-        console.log("Prodotto già presente? " + result.rows[0].count);
-        
-        if (result.rows[0].count !== "0") {
-            console.log("Prodotto già nel carrello, incremento quantità...");
-            const resInc = await increment(pool, prodid, uid);
-            if (resInc === 0) {
-                // Se l'incremento ha successo, riduci la quantità nel db
-                await pool.query(`UPDATE prodotti SET quantita = quantita - 1 WHERE id = $1`, [prodid]);
-            }
-            return resInc;
-        }
-        
-        // Inserisce il prodotto nel carrello
-        const query = `
+        query = `
             INSERT INTO carrello(uid, productid, quantita)
             VALUES ($1, $2, $3)
-        `;
-        const values = [uid, prodid, 1];
-        await pool.query(query, values);
-        
-        // Riduci la quantità disponibile del prodotto nel db di 1
-        await pool.query(`UPDATE prodotti SET quantita = quantita - 1 WHERE id = $1`, [prodid]);
-        return 0;
+        `
+        values = [uid, prodid, 1]
+        await pool.query(query,values)
+        return 0
     } catch (error) {
         console.log(error);
-        return -1;
+        return -1
     }
 }
-
 async function decrCart(pool, prodid, uid) {
     try {
-        // Verifica che il prodotto esista e non sia bannato.
-        let result = await pool.query(`SELECT * FROM prodotti WHERE id = $1 AND banned = FALSE`, [prodid]);
-        if (result.rows.length === 0) {
-            console.log("Prodotto rimosso");
-            return -2;
+        var result = await pool.query(`SELECT * FROM prodotti WHERE id=$1 AND banned=FALSE`, [prodid])
+        if (result.rows.length===0) {
+            console.log("prodotto rimosso");
+            return -2
+        } 
+
+        result = await pool.query(`SELECT COUNT(*) FROM carrello WHERE uid = $1 AND productid = $2`,[uid, prodid])
+        console.log(result.rows[0].count);
+        console.log(uid);
+        console.log(prodid);
+        
+          
+        if (result.rows[0].count==="0") {
+            console.log("prodotto non nel carrello");
+            return 1
         }
-        
-        // Controlla se il prodotto è realmente presente nel carrello
-        result = await pool.query(`SELECT COUNT(*) FROM carrello WHERE uid = $1 AND productid = $2`, [uid, prodid]);
-        console.log("Count in cart: " + result.rows[0].count);
-        if (result.rows[0].count === "0") {
-            console.log("Prodotto non presente nel carrello");
-            return 1;
-        }
-        
-        // Decrementa la quantità del prodotto nel cart (eventualmente con la funzione decrement)
-        await decrement(pool, prodid, uid);
-        
-        // Dopo la rimozione (o decremento), incrementa la quantità disponibile nel db di 1
-        await pool.query(`UPDATE prodotti SET quantita = quantita + 1 WHERE id = $1`, [prodid]);
-        
-        return 0;
+        await decrement(pool,prodid,uid)
+        return 0
     } catch (error) {
         console.log(error);
-        return -1;
+        return -1
     }
 }
-
 async function removeCart(pool, prodid, uid) {
     try {
         await pool.query(`DELETE FROM carrello WHERE uid = $1 AND productid = $2`,[uid, prodid])

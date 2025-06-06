@@ -607,7 +607,11 @@ async function main() {
                 res.status(200).json({res:"added"})
             } else if (status===-2){
                 res.status(404).json({err:"product removed"})   
-            }else {        
+            }else if (status===-3) {
+                res.status(409).json({err:"0"})
+            }else if (status===-4) {
+                res.status(409).json({err:"max"})
+            }else{        
                 res.status(200).json({res:status})
             }
         }else{
