@@ -90,7 +90,13 @@ function renderProducts(data) {
               
               <div class="d-flex flex-column gap-2 product-actions cliente">
                 <div class="d-flex justify-content-center gap-2">
-                  <button class="btn btn-primary aggiungi-carrello" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
+                  ${
+                    el.amm > 0 
+                    ? `
+                      <button class="btn btn-primary aggiungi-carrello" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
+                    `
+                    : `<button class="btn btn-danger" disabled>Quantità finita</button>`
+                  }
                   <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>
                 </div>
                 <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
@@ -109,6 +115,7 @@ function renderProducts(data) {
               
               <div class="d-flex flex-column gap-2 product-actions artigiano">
                 <div class="d-flex justify-content-center gap-2">
+                  ${ el.amm <= 0 ? `<p class="text-danger fw-bold m-0">Quantità 0</p>` : `` }
                   <button class="btn btn-warning" onclick="event.stopPropagation(); edit(${el.id})">Modifica</button>
                   <button class="btn btn-danger" onclick="event.stopPropagation(); removeProduct(${el.id})">Elimina</button>
                 </div>
