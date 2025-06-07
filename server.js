@@ -39,7 +39,7 @@ async function main() {
 
     app.use(cookieParser());
     app.use(cors({
-        origin:'https://localhost:3005',
+        origin:'https://localhost:3000',
         credentials:true
     }));
     app.use((req, res, next) => {
@@ -332,7 +332,7 @@ async function main() {
             
             const isCorrect = await bcrypt.compare(pw, user.rows[0].password)
             if (!isCorrect) {
-                    res.status(401).json({err:"Credenziali non valide"})
+                    res.status(401).json({err:"wrong info"})
                     console.log("password errata");
                     return
             }
@@ -570,7 +570,7 @@ async function main() {
         
         if (!id) {
             console.log("missing product");    
-            res.status(401).json({err:"missing product"})
+            res.status(400).json({err:"missing product"})
             return
         }
         const user = checkToken(req,res)
@@ -604,7 +604,7 @@ async function main() {
             }else if (dec==="r") {
                 status = await removeCart(pool, id, user.uid)
             }else{
-                res.status(400).json({})
+                res.status(400).json({err:"invalid dec"})
                 return
             }
             if (status===-1) {
@@ -628,7 +628,7 @@ async function main() {
             res.redirect("/renewtoken?from=/cart")
         }else{
             if (user.usertype!==1) {
-                res.status(401).json({})
+                res.status(401).json({err:"usertype"})
                 return
             }
             const response = await getCart(pool, user.uid)
@@ -646,14 +646,12 @@ async function main() {
         const user = checkToken(req,res)
         if (user!==-1) {
               if (user.usertype!==1) {
-                res.status(401).json({})
+                res.status(401).json({err:"usertype"})
                 return
             }
             const response = await emptyCart(pool, user.uid)
             if (response===0) {
-                res.status(200).json({})
-                console.log("AAA");
-                
+                res.status(200).json({})                
             }else{
                 res.status(500).json({})                
             }
@@ -671,15 +669,13 @@ async function main() {
         const {productid, dove, desc} = req.body
         if (!productid && !dove && !desc) {
             console.log("informazioni mancanti");
-            res.status(400).json({})
+            res.status(400).json({err:"missing info"})
             return
         }
         const response = await addReport(pool,user.uid, productid, dove, desc)
         console.log(response);
         if (response===0) {
             res.status(200).json({})
-        }else if (response===-2) {
-            res.status(404).json({})
         }else{
             res.status(500).json({})
         }
@@ -994,7 +990,7 @@ async function main() {
             var ord = {}
         
             if (products.rowCount===0) {
-                res.status(401).json({})
+                res.status(404).json({err:"empty"})
             }
             //per ogni prodotto
             for (const el of products.rows) {
@@ -1006,7 +1002,7 @@ async function main() {
                 if (qt.rows[0].amm<el.quantita) {
                     console.log("troppo pochi")
                     await pool.query(`ROLLBACK`)
-                    res.status(409).json({error:"prodotti non sufficienti"})
+                    res.status(409).json({err:"not enough"})
                     return
                 }else{
                     //riduci quantità
@@ -1020,9 +1016,7 @@ async function main() {
                         ord[el.actid] = {};
                     }
                     ord[el.actid][el.productid]= prodData
-                }
-                console.log(ord);
-                
+                } 
             }
             
             console.log("prodotti verificati e bloccati");
@@ -1051,7 +1045,6 @@ async function main() {
         }
         res.sendFile(path.join(__dirname,"Frontend","/checkout/checkout.html"))
     })
-    //restituire errore nel caso di prodotti banned
     app.post("/confirmCheckout", async (req,res)=>{
         const {addr} = req.body
         if (!addr) {
@@ -1297,11 +1290,6 @@ async function main() {
         }
     })
 
-    app.get("/ban", (req,res)=>{
-        res.sendFile(path.join(__dirname,"Frontend/login/accountbannato/ban.html"))
-    })
-
-
     app.get("/order", async (req,res) => {
         const user = checkToken(req,res, false)
         if (user===-1) {
@@ -1330,6 +1318,12 @@ async function main() {
             }
         }
         res.sendFile(path.join(__dirname,"Frontend",`/ordini/ordine.html`))
+    })
+    
+
+
+    app.get("/ban", (req,res)=>{
+        res.sendFile(path.join(__dirname,"Frontend/login/accountbannato/ban.html"))
     })
 
     app.get("/artigiano", async (req,res) => {

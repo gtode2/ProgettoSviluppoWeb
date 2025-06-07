@@ -19,13 +19,26 @@ async function send() {
     
     if (response.ok) {
       exit();
-    } else if (response.status === 401 && data.err === "missing token") {
-      const res = await renewToken();
-      if (res === 0) {
-        send();
-      } else {
-        window.parent.location.href = "/";
+    } else{
+      if (response.status===401) {
+        if (data.err==="missing token" || data.err==="invalid token") {
+          const res = await renewToken();
+          if (res === 0) {
+            send();
+          } else {
+            window.parent.location.href = "/";
+          }
+        }
+      }else if (response.status===400) {
+        if (data.err==="missing info") {
+          alert("informazioni mancanti")
+        }
+      }else if (response.status===500) {
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
       }
+      
     }
   } catch (error) {
     console.log(error);

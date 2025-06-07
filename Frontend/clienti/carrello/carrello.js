@@ -68,17 +68,8 @@ async function addToCart(id, name, price, quantita=1) {
         console.log("Prodotto duplicato:", data.res);
       }
     } else {
-      if (data.res === "product removed") {
-        alert("Il prodotto è stato rimosso dall'artigiano");
-        parent.location.reload();
-      }
-      if (response.status===409) {
-        if (data.err==="max") {
-          alert("impossibile aggiungere altri elementi:\nnumero massimo raggiunto")
-        }
-      }
-      if (response.status === 401) {
-        if (data.err === "missing token") {
+      if (response.status===401) {
+        if (data.err === "missing token" || data.err==="invalid token") {
           const res = await renewToken();
           if (res === 0) {
             addToCart(id, name, price, quantita);
@@ -86,6 +77,29 @@ async function addToCart(id, name, price, quantita=1) {
             window.parent.location.href = "/";
           }
         }
+      }else if (response.status===400) {
+        if (data.err==="missing product") {
+          alert("formato messaggio errato")
+          window.parent.reload()
+        }else if (data.err==="invalid dec") {
+          alert("formato messaggio errato")
+        }
+      }else if (response.status===404){
+        if (data.err==="product removed") {
+          alert("prodotto rimosso dall'artigiano")
+          parent.location.reload()
+        }
+      }else if (response.status===409) {
+        if (data.err==="max") {
+          alert("impossibile aggiungere altri elementi:\nnumero massimo raggiunto")
+        }
+        else if (data.err==="0") {
+          alert("prodotto esaurito")
+        }
+      }else if (response.status===500){
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
       }
     }
   } catch (error) {
@@ -135,15 +149,22 @@ async function remove() {
       count=0
       counter()
     } else {
-      // Gestione errori per svuotamento carrello
-      if (response.status === 401 && data.err === "missing token") {
-        const res = await renewToken();
-        if (res === 0) {
-          console.log("Tentativo di rimozione dopo token rinnovato");
-          remove();
-        } else {
-          window.parent.location.href = "/";
-        }
+      if (response.status === 401) {
+        if (data.err === "missing token" || data.err === "invalid token") {
+          const res = await renewToken();
+          if (res === 0) {
+            console.log("Tentativo di rimozione dopo token rinnovato");
+            remove();
+          } else {
+            window.parent.location.href = "/";
+          }  
+        }else if (data.err==="usertype") {
+          alert("utente non autorizzato\nredirect a homepage")
+        }   
+      }else if (response.status===500) {
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
       }
     }
   } catch (error) {
@@ -174,26 +195,40 @@ async function increase(id, price) {
       count+=1
       counter()
     } else {
-      if (data.res === "product removed") {
-        alert("Il prodotto è stato rimosso dall'artigiano");
-        parent.location.reload();
-      }
-      if (response.status === 401) {
-        if (data.err === "missing token") {
+      if (response.status===401) {
+        if (data.err === "missing token" || data.err==="invalid token") {
           const res = await renewToken();
           if (res === 0) {
-            increase(id, price)
+            increase(id,price);
           } else {
             window.parent.location.href = "/";
           }
         }
-      }
-      if (response.status===409) {
+      }else if (response.status===400) {
+        if (data.err==="missing product") {
+          alert("formato messaggio errato")
+          window.parent.reload()
+        }else if (data.err==="invalid dec") {
+          alert("formato messaggio errato")
+        }
+      }else if (response.status===404){
+        if (data.err==="product removed") {
+          alert("prodotto rimosso dall'artigiano")
+          parent.location.reload()
+        }
+      }else if (response.status===409) {
         if (data.err==="max") {
           alert("impossibile aggiungere altri elementi:\nnumero massimo raggiunto")
         }
+        else if (data.err==="0") {
+          alert("prodotto esaurito")
+        }
+      }else if (response.status===500){
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
       }
-    }
+    } 
   } catch (error) {
     console.error(error);
     alert("Errore di rete.");
@@ -222,17 +257,40 @@ async function decrease(id, price) {
         count-=1
         counter()
       } else {
-        if (response.status === 401) {
-          if (data.err === "missing token") {
-            const res = await renewToken();
-            if (res === 0) {
-              decrease(id, price)
-            } else {
-              window.parent.location.href = "/";
-            }
+      if (response.status===401) {
+        if (data.err === "missing token" || data.err==="invalid token") {
+          const res = await renewToken();
+          if (res === 0) {
+            increase(id, price);
+          } else {
+            window.parent.location.href = "/";
           }
         }
+      }else if (response.status===400) {
+        if (data.err==="missing product") {
+          alert("formato messaggio errato")
+          window.parent.reload()
+        }else if (data.err==="invalid dec") {
+          alert("formato messaggio errato")
+        }
+      }else if (response.status===404){
+        if (data.err==="product removed") {
+          alert("prodotto non trovato")
+          parent.location.reload()
+        }
+      }else if (response.status===409) {
+        if (data.err==="max") {
+          alert("impossibile aggiungere altri elementi:\nnumero massimo raggiunto")
+        }
+        else if (data.err==="0") {
+          alert("prodotto esaurito")
+        }
+      }else if (response.status===500){
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
       }
+      } 
     } catch (error) {
       console.error(error);
       alert("Errore di rete.");
@@ -299,13 +357,28 @@ async function checkout() {
       parent.window.location.href = "/checkout";
     } else {
       // Gestione errori per checkout
-      if (data.err === "missing token") {
+      if (response.status===401) {
+        if (data.err === "missing token" || data.err==="invalid token") {
         const res = await renewToken();
         if (res === 0) {
           checkout();
         } else {
           window.parent.location.href = "/";
         }
+        }
+      }else if (response.status===404) {
+        if (data.err==="empty") {
+          alert("i prodotti nel carrello non sono più disponibili")
+        }
+      }else if (response.status===409){
+        if (data.err==="not enough") {
+          alert("alcuni prodotti non sono più disponibili nella quantità selezionata")
+          window.parent.location.reload()
+        }
+      }else if (response.status===500){
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
       }
     }
   } catch (error) {
