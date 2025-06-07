@@ -44,12 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           
     const data = await response.json();
 
-    if (!response.ok) {
-      console.error("Errore:", response.status, data.error || "");
-      document.getElementById("descrizione").innerHTML = `
-        <div class="alert alert-danger">Errore nel caricamento del prodotto.</div>
-      `;
-    } else {
+    if (response.ok) {
       console.log("Prodotti caricati correttamente");
       if (data.prodotti && data.prodotti.length > 0) {
         const prodottoSelezionato = data.prodotti.find(prod => String(prod.id) === id);
@@ -67,8 +62,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   } catch (err) {
+    document.getElementById("descrizione").innerHTML = `
+        <div class="alert alert-danger">Errore nel caricamento del prodotto.</div>
+      `;
     console.error(err);
     alert("Errore di rete.");
+    
   }
 });
 

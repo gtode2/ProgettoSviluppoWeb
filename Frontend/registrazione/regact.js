@@ -8,9 +8,23 @@ async function loadUser(){
           method: "POST",
           headers: { "Content-Type": "application/json" },
         });
-        data = await response.json();
+        let data = await response.json();
 
         if (!response.ok) {
+            if (response.status===401) {
+                if (data.err==="missing token" || data.err==="invalid token") {
+                    const result = await renewToken()
+                    if (result === 0) {
+                        loadUser()
+                    }else{
+                        window.location.href="/"
+                    }
+                }
+            }else if(response.status===500){
+                alert("errore del server nel caricamento delle informazioni")
+            }else{
+                alert("errore sconosciuto")
+            }
         } else {
             document.getElementById("email").placeholder=data.user.email
             document.getElementById("phone").placeholder=data.user.ntel
@@ -98,8 +112,10 @@ async function send(){
                 }
                 
             }else if (response.status===409) {
-                alert("hai già un attività")
+                alert("hai già un'attività")
                 window.location.href = "/"
+            }else if (response.status===500) {
+                alert("errore del server")
             }else{
                 alert("errore sconosciuto")
             }

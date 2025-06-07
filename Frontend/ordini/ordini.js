@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
     
     //fetch per raccolta prodotti
     getOrders(id)
-    //gestione email e telefono oppure bottone per confermare invio
+
 })
 
 
@@ -19,14 +19,21 @@ async function getOrders(id) {
     const data = await response.json()
     if (!response.ok) {
       if (response.status===401) {
-        if (data.err === "missing token") {
+        if (data.err === "missing token" || data.err==="invalid token") {
           const result = await renewToken()
           if (result===1) {
             getOrders()
           }else{
             window.location.href="/"
           }
+        }else if (data.err==="unauthorized") {
+          alert("accesso non autorizzzato")
+          window.location.href="/userArea"
         }
+      }else if (response.status===500) {
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
       }
     }else{
       console.log("risultato valido");
@@ -89,7 +96,6 @@ async function getOrders(id) {
 }
 
 
-
 async function complete(id) {
   try {
     const response = await fetch("/order", {
@@ -99,7 +105,27 @@ async function complete(id) {
     })
     const data = await response.json()
     if (!response.ok) {
-      //gestione errori
+      if (response.status===400) {
+        if (data.err==="missing id") {
+          alert("informazioni ordine mancanti")
+        }
+      }else if (response.status===401) {
+        if (data.err==="missing token" || data.err==="invalid token") {
+          const result = checkToken()
+          if (result===0) {
+            complete(id)
+          }else{
+            window.location.href="/"
+          }
+        }else if (data.err==="unauthorized") {
+          alert("modifica non autorizzata")
+          window.location.href="/userArea"
+        }
+      }else if (response.status==500){
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
+      }
     }
     else{
       window.location.reload()

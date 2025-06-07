@@ -87,13 +87,14 @@ document.addEventListener("DOMContentLoaded", () => {
             
             })
             const data = await response.json()
-            console.log("AAAAA");
-            
+                        
             if (!response.ok) {
               if (response.status===409) {
                 alert("utente già registrato")
               }
-              else{
+            else if (response.status===500) {
+                alert("errore del server")
+            } else{
                 alert("errore sconosciuto")
               }
             }else{

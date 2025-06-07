@@ -203,7 +203,7 @@ async function main() {
             const existing = await pool.query(checkQuery, [email]);
 
             if (existing.rows.length > 0) {
-                return res.status(409).json({err:"Email già registrata."});
+                return res.status(409).json({err:"mail"});
             }
 
             // Hash della password
@@ -233,7 +233,7 @@ async function main() {
                     httpOnly:true,
                     secure:true,
                     sameSite:'Strict',
-                    maxAge: 50 * 60 * 1000 //50 minuti
+                    maxAge: 30 * 60 * 1000 //50 minuti
                 })
                 .cookie('refreshToken', tokens["refresh"],{
                     httpOnly:true,
@@ -250,7 +250,7 @@ async function main() {
                     httpOnly:true,
                     secure:true,
                     sameSite:'Strict',
-                    maxAge: 50 * 60 * 1000 //50 minuti
+                    maxAge: 30 * 60 * 1000 //30 minuti
                 })
                 .cookie('refreshToken', tokens["refresh"],{
                     httpOnly:true,
@@ -293,7 +293,7 @@ async function main() {
         
         var result = await pool.query(query,[user.uid])
         if (result.rows.length>0) {
-            res.status(409).json({err:"utente ha già attività"})
+            res.status(409).json({err:"ex"})
             return
         }
         //aggiungo a DB
@@ -369,7 +369,7 @@ async function main() {
                 }).json({usertype:user.usertype})
             
         }else{
-            res.status(401).json({err:"Credenziali non valide"})
+            res.status(401).json({err:"wrong info"})
             console.log("no rows");
             
         } 
@@ -1201,7 +1201,6 @@ async function main() {
 
     app.post("/order", async (req,res) => {
         const user = checkToken(req,res)
-        console.log("token verificato");
         
         const {id} = req.body
         console.log(id);
@@ -1238,7 +1237,7 @@ async function main() {
                     res.status(500).json()
                 }
             }else{
-                res.status(401).json({})
+                res.status(401).json({err:"unauthorized"})
             }
         }else{
             console.log("id trovato");
@@ -1281,7 +1280,15 @@ async function main() {
         if (user===-1) {
             return
         }
+
+        //verifica che ordine si riferisca a artigiano
+        
+        
         try {
+            const art = await res.pool(`SELECT actid FROM ordini WHERE id=$1`, [id])
+            if (!art || art[0].actid!==user.uid) {
+                res.status(401).json({err:"unauthorized"})
+            }
             await pool.query(`UPDATE ordini SET sent = TRUE WHERE id=$1`, [id])    
             res.status(200).json({})
         } catch (error) {

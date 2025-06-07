@@ -9,16 +9,22 @@ document.addEventListener("DOMContentLoaded", async() => {
       method: "POST",
       headers: { "Content-Type": "application/json" }})
     const data = await res.json()
-    if (data!==0) {
-      const block = document.getElementById("produttori")
-      data.art.forEach(el => {
-        const option = document.createElement("option")
-        option.value = el.actid
-        option.textContent = el.nome
-        block.appendChild(option)
-      });
-    }else{
-      //rimuovere selezione
+    await renewToken() //blocco caricamento artigiani in caso di token scaduto
+    if (res.ok) {
+      if (data.art!==0) {
+        const block = document.getElementById("produttori")
+        console.log(data.art);
+      
+        data.art.forEach(el => {
+          const option = document.createElement("option")
+          option.value = el.actid
+          option.textContent = el.nome
+          block.appendChild(option)
+        });
+      }else{
+        const block = document.getElementById("bloccoartigiano")
+        block.remove()
+      }
     }
   } catch (error) {
     console.log(error);
