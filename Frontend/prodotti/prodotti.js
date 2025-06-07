@@ -73,95 +73,103 @@ function renderProducts(data) {
 
   
   data.forEach(el => {
-    const col = document.createElement("div");
+  const col = document.createElement("div");
+  
+  if (currentView === "card" || currentView === "fullscreen") {
+    // Template per la modalità "card" o "fullscreen"
+    col.className = "col-md-4 mb-5 mt-5";
     
-    if (currentView === "card" || currentView === "fullscreen") {
-      // Template per la modalità "card" o "fullscreen"
-      col.className = "col-md-4 mb-5 mt-5";
-      if (lastUserType === 1) {
-        col.innerHTML = `
-          <div class="card text-center shadow-sm" id="productcard${el.id}">
-            <div class="card-body">
-              <h5 class="card-title">${el.name}</h5>
-              <p class="card-text">${el.descr}</p>
-              <p class="card-text">${el.cat}</p>
-              <p class="price text-success fw-bold">€${el.costo}</p>
-              <p class="nome artigiano"></p>
-              
-              <div class="d-flex flex-column gap-2 product-actions cliente">
-                <div class="d-flex justify-content-center gap-2">
-                  ${
-                    el.amm > 0 
-                    ? `
-                      <button class="btn btn-primary aggiungi-carrello" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
-                    `
-                    : `<button class="btn btn-danger" disabled>Quantità finita</button>`
-                  }
-                  <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>
-                </div>
-                <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+    if (lastUserType === 1) {
+      // Caso "cliente"
+      col.innerHTML = `
+        <div class="card text-center shadow-sm" id="productcard${el.id}">
+          <div class="card-body">
+            <h5 class="card-title">${el.name}</h5>
+            <p class="card-text">${el.descr}</p>
+            <p class="card-text">${el.cat}</p>
+            <p class="price text-success fw-bold">€${el.costo}</p>
+            <p class="nome artigiano"></p>
+            
+            <div class="d-flex flex-column gap-2 product-actions cliente">
+              <div class="d-flex justify-content-center gap-2">
+                ${
+                  el.amm > 0 
+                  ? `
+                    <button class="btn btn-primary aggiungi-carrello" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
+                  `
+                  : `<button class="btn btn-danger" disabled>Quantità finita</button>`
+                }
+                <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>
               </div>
+              <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
             </div>
           </div>
-        `;
-      } else if (lastUserType === 2) {
-        col.innerHTML = `
-          <div class="card text-center shadow-sm" id="productcard${el.id}">
-            <div class="card-body">
-              <h5 class="card-title">${el.name}</h5>
-              <p class="card-text">${el.descr}</p>
-              <p class="card-text">${el.cat}</p>
-              <p class="price text-success fw-bold">€${el.costo}</p>
-              
-              <div class="d-flex flex-column gap-2 product-actions artigiano">
-                <div class="d-flex justify-content-center gap-2">
-                  ${ el.amm <= 0 ? `<p class="text-danger fw-bold m-0">Quantità 0</p>` : `` }
-                  <button class="btn btn-warning" onclick="event.stopPropagation(); edit(${el.id})">Modifica</button>
-                  <button class="btn btn-danger" onclick="event.stopPropagation(); removeProduct(${el.id})">Elimina</button>
-                </div>
-                <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+        </div>
+      `;
+    } else if (lastUserType === 2) {
+      // Caso "artigiano"
+      col.innerHTML = `
+        <div class="card text-center shadow-sm" id="productcard${el.id}">
+          <div class="card-body">
+            <h5 class="card-title">${el.name}</h5>
+            <p class="card-text">${el.descr}</p>
+            <p class="card-text">${el.cat}</p>
+            <p class="price text-success fw-bold">€${el.costo}</p>
+            
+            <div class="d-flex flex-column gap-2 product-actions artigiano">
+              <div class="d-flex justify-content-center gap-2">
+                ${ el.amm <= 0 ? `<p class="text-danger fw-bold m-0">Quantità 0</p>` : `` }
+                <button class="btn btn-warning" onclick="event.stopPropagation(); edit(${el.id})">Modifica</button>
+                <button class="btn btn-danger" onclick="event.stopPropagation(); removeProduct(${el.id})">Elimina</button>
               </div>
+              <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
             </div>
           </div>
-        `;
-      } else if (lastUserType === 0) {
-        console.log("admin");
-        col.innerHTML = `
-          <div class="card text-center shadow-sm" id="productcard${el.id}">
-            <div class="card-body">
-              <h5 class="card-title">${el.name}</h5>
-              <p class="card-text">${el.descr}</p>
-              <p class="card-text">${el.cat}</p>
-              <p class="price text-success fw-bold">€${el.costo}</p>
-              
-              <div class="d-flex flex-column gap-2 product-actions admin">
-                <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
-              </div>
+        </div>
+      `;
+    } else if (lastUserType === 0) {
+      // Caso "admin"
+      console.log("admin");
+      col.innerHTML = `
+        <div class="card text-center shadow-sm" id="productcard${el.id}">
+          <div class="card-body">
+            <h5 class="card-title">${el.name}</h5>
+            <p class="card-text">${el.descr}</p>
+            <p class="card-text">${el.cat}</p>
+            <p class="price text-success fw-bold">€${el.costo}</p>
+            
+            <div class="d-flex flex-column gap-2 product-actions admin">
+              <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
             </div>
           </div>
-        `;
-      } else {
-        col.innerHTML = `
-          <div class="card text-center shadow-sm" id="productcard${el.id}">
-            <div class="card-body">
-              <h5 class="card-title">${el.name}</h5>
-              <p class="card-text">${el.descr}</p>
-              <p class="card-text">${el.cat}</p>
-              <p class="price text-success fw-bold">€${el.costo}</p>
-              
-              <div class="d-flex flex-column gap-2 product-actions unlogged">
-                <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
-              </div>
+        </div>
+      `;
+    } else {
+      // Caso "unlogged" o non definito
+      col.innerHTML = `
+        <div class="card text-center shadow-sm" id="productcard${el.id}">
+          <div class="card-body">
+            <h5 class="card-title">${el.name}</h5>
+            <p class="card-text">${el.descr}</p>
+            <p class="card-text">${el.cat}</p>
+            <p class="price text-success fw-bold">€${el.costo}</p>
+            
+            <div class="d-flex flex-column gap-2 product-actions unlogged">
+              <button class="btn btn-secondary w-100" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
             </div>
           </div>
-        `;
-        console.log("unlogged");
-      }
-    } else if (currentView === "list") {
-      // Template per la modalità lista: immagine a sinistra e info a destra
-      col.className = "col-12 mb-3";
-
-      /*col.innerHTML = `
+        </div>
+      `;
+      console.log("unlogged");
+    }
+    
+  } else if (currentView === "list") {
+    // Template per la modalità lista: immagine a sinistra e info a destra
+    col.className = "col-12 mb-3";
+    
+    if (lastUserType === 1) {  
+      // Caso "cliente"
+      col.innerHTML = `
         <div class="card shadow-sm" id="productcard${el.id}">
           <div class="row g-0">
             <div class="col-md-2">
@@ -174,21 +182,103 @@ function renderProducts(data) {
                 <p class="card-text">${el.cat}</p>
                 <p class="card-text"><small class="text-muted">€${el.costo}</small></p>
                 
-                <!-- Contenitore dei pulsanti: allineati a destra con ps-2 (padding sinistro di circa 5px) -->
+                <!-- Contenitore dei pulsanti allineati a destra -->
                 <div class="d-flex justify-content-end gap-2 ps-2">
-                  <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>
-                  <button class="btn btn-secondary" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+                  ${
+                    el.amm > 0
+                      ? `<button class="btn btn-primary" onclick="event.stopPropagation(); addToCart(${el.id}, '${el.name}', ${el.costo})">Aggiungi al carrello</button>`
+                      : `<button class="btn btn-danger" disabled>Quantità finita</button>`
+                  }
                   <button class="btn btn-outline-primary" onclick="event.stopPropagation(); report(${el.id})">Segnala</button>
+                  <button class="btn btn-secondary" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      `;*/
-      
+      `;
+    } else if (lastUserType === 2) {  
+      // Caso "artigiano"
+      col.innerHTML = `
+        <div class="card shadow-sm" id="productcard${el.id}">
+          <div class="row g-0">
+            <div class="col-md-2">
+              <!-- eventuale immagine o placeholder -->
+            </div>
+            <div class="col-md-10">
+              <div class="card-body">
+                <h5 class="card-title">${el.name}</h5>
+                <p class="card-text">${el.descr}</p>
+                <p class="card-text">${el.cat}</p>
+                <p class="card-text"><small class="text-muted">€${el.costo}</small></p>
+                
+                <!-- Contenitore dei pulsanti allineati a destra -->
+                <div class="d-flex justify-content-end gap-2 ps-2">
+                  ${ el.amm <= 0 ? `<p class="text-danger fw-bold m-0">Quantità 0</p>` : `` }
+                  <button class="btn btn-warning" onclick="event.stopPropagation(); edit(${el.id})">Modifica</button>
+                  <button class="btn btn-danger" onclick="event.stopPropagation(); removeProduct(${el.id})">Elimina</button>
+                  <button class="btn btn-secondary" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (lastUserType === 0) {  
+      // Caso "admin"
+      col.innerHTML = `
+        <div class="card shadow-sm" id="productcard${el.id}">
+          <div class="row g-0">
+            <div class="col-md-2">
+              <!-- eventuale immagine o placeholder -->
+            </div>
+            <div class="col-md-10">
+              <div class="card-body">
+                <h5 class="card-title">${el.name}</h5>
+                <p class="card-text">${el.descr}</p>
+                <p class="card-text">${el.cat}</p>
+                <p class="card-text"><small class="text-muted">€${el.costo}</small></p>
+                
+                <!-- Contenitore dei pulsanti allineati a destra -->
+                <div class="d-flex justify-content-end gap-2 ps-2">
+                  <button class="btn btn-secondary" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {  
+      // Caso "unlogged" o non definito
+      col.innerHTML = `
+        <div class="card shadow-sm" id="productcard${el.id}">
+          <div class="row g-0">
+            <div class="col-md-2">
+              <!-- eventuale immagine o placeholder -->
+            </div>
+            <div class="col-md-10">
+              <div class="card-body">
+                <h5 class="card-title">${el.name}</h5>
+                <p class="card-text">${el.descr}</p>
+                <p class="card-text">${el.cat}</p>
+                <p class="card-text"><small class="text-muted">€${el.costo}</small></p>
+                
+                <!-- Contenitore dei pulsanti allineati a destra -->
+                <div class="d-flex justify-content-end gap-2 ps-2">
+                  <button class="btn btn-secondary" onclick="event.stopPropagation(); openProduct(${el.id})">Dettagli</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      console.log("unlogged");
     }
-    container.appendChild(col);
-  });
+  }
+  
+  container.appendChild(col);
+});
+
 }
 
 // --- FUNZIONE PER CAMBIARE MODALITÀ DI VISUALIZZAZIONE ---
