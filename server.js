@@ -948,15 +948,11 @@ async function main() {
             values.push(ntel)
         }
 
-        if (user===2) {
-            //gestione update dati artigiano
-        }
-
         query = query + ` WHERE uid = $`+(values.length+1)
         values.push(user.uid)
         try {
             if (values.length<2) {
-                res.status(400).json({})
+                res.status(400).json({err:"empty"})
                 return
             }
             console.log(query);
