@@ -206,3 +206,16 @@ body {
     .order-card .card-body {
       padding: 20px;
     }
+button{
+  margin-bottom: 4px;
+}
+
+.login-card{
+  width: calc(100% - 30px);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.login-card button{
+  margin-bottom: 10px;
+}
