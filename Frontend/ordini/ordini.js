@@ -33,11 +33,11 @@ async function getOrders(id) {
       let contanier = document.getElementById("elencoprodotti")
       for(const [id, product] of Object.entries(data.ord.products)){
         let element = `
-          <div class="bt-3">
-            <p>${product.nome}</p>
-            <p>${product.prezzo}</p>
-            <p>x ${product.quantita}</p> 
-          </div> 
+          <div class="bt-3 d-flex">
+            <p class="mb-0">${product.nome}</p>
+            <p class="mb-0 ms-3">${product.prezzo}</p>
+            <p class="mb-0 ms-3">x ${product.quantita}</p>
+          </div>
         `
         contanier.innerHTML+=element
       }
@@ -66,12 +66,13 @@ async function getOrders(id) {
         //inserimento contatti 
         element = `
         <div class="mb-3">
-        <h5 class="text-center mb-4">Hai bisogno di aiuto?</h5>
-        <p class="text-center">Indirizzo Email:</p>
-        <p class="text-center" id="email">${data.ord.email}</p>
-        <p class="text-center">Numero di telefono:</p>
-        <p class="text-center" id="ntel">${data.ord.ntel}</p>
-      </div>`
+          <h5 class="text-start mb-4">Hai bisogno di aiuto?</h5>
+          <p class="text-start">Indirizzo Email:</p>
+          <p class="text-start" id="email">${data.ord.email}</p>
+          <p class="text-start">Numero di telefono:</p>
+          <p class="text-start" id="ntel">${data.ord.ntel}</p>
+        </div>
+        `
       contanier.innerHTML+=element
       }
       
