@@ -192,3 +192,17 @@ body {
         border: none;         /* Rimuove eventuali bordi */
         display: block;
       }
+/* Card personalizzata: occupa tutta la larghezza dello schermo
+       lasciando un margine di 10px a sinistra e a destra */
+    .order-card {
+      width: calc(100% - 20px);
+      margin: 0 10px; /* 10px di spazio da sinistra e destra */
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      background-color: #fff;
+    }
+    
+    /* Se desideri dare un po' di padding interno alla card */
+    .order-card .card-body {
+      padding: 20px;
+    }
