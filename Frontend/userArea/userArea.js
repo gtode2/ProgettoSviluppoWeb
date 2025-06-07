@@ -19,10 +19,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       el.style.pointerEvents = "none";
       el.style.opacity = "0.5";
     });
-    return; // ❗ STOP: non caricare dati né bind eventi se siamo in modalità sfondo
+    return; 
   }
 
-  // 👤 Richiesta dati utente
+
   let data;
   
   getOrders()
@@ -35,7 +35,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     data = await response.json();
 
     if (!response.ok) {
-      window.location.href = "/";
+      if (response.status===401) {
+        const result = await renewToken()
+        if (result===0) {
+          window.location.reload()
+        }else{
+          window.location.href="/"
+        }
+      }else if (response.status===500) {
+        alert("errore del server nel caricamento delle informazioni")
+      }else{
+        alert("errore sconosciuto nel caricamento delle informazioni")
+      }
     } else {
       document.getElementById("nome").placeholder = data.user.nome;
       document.getElementById("cognome").placeholder = data.user.cognome;
@@ -55,6 +66,7 @@ async function cancel() {
     if (el) el.value = "";
   });
 }
+
 
 async function save() {
   if(!checkValidity()){
@@ -76,7 +88,7 @@ async function save() {
     });
     const data = await response.json()
     if (response.ok) {
-      window.location.href = "/userArea";
+      window.location.reload()
     } else {
       //gestione errori
       if (response.status===401) {      
@@ -88,6 +100,12 @@ async function save() {
             window.location.href="/"
           }
         }
+      }else if (response.status===400) {
+        alert("nessna informazione modificata")
+      }else if (response.status===500) {
+        alert("errore del server")
+      }else{
+        alert("errore sconosciuto")
       }
     }
   } catch (error) {
@@ -124,7 +142,13 @@ async function getOrders() {
           }else{
             window.location.href="/"
           }
+        }else if (data.err==="unauthorized") {
+          alert("caricamento ordini non autorizzato")
         }
+      }else if (response.status===500) {
+        alert("errore nel server durante il caricamento degli ordini")
+      }else{
+        alert("errore sconosciuto durante il caricamento degli ordini")
       }
     }else{
       console.log("risultato valido");

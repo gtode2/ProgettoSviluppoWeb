@@ -64,8 +64,6 @@ function checkDesc() {
 function checkPrezzo(){
   const priceInput = document.getElementById("prezzo");
   if(!priceInput.value.trim()){
-    priceInput.setCustomValidity("Prezzo mancante");
-    priceInput.reportValidity();
     formValido = false;
     return formValido;
   } else if(parseFloat(priceInput.value) <= 0){
@@ -75,15 +73,15 @@ function checkPrezzo(){
     return formValido;
   } else {
     priceInput.setCustomValidity("");
+    console.log("ASDASDASDASD");
+
+    return parseFloat(priceInput).toFixed(2);    
   }
-  return priceInput.toFixed(2);
 }
 
 function checkQtt() {
   const quantitaInput = document.getElementById("quantita");
   if (!quantitaInput.value.trim()) {
-    quantitaInput.setCustomValidity("Il campo quantità non può essere vuoto!");
-    quantitaInput.reportValidity();
     formValido = false;
     return formValido;
   } else {
@@ -100,10 +98,11 @@ function checkQtt() {
       formValido = false;
       return formValido;
     } else {
-      quantitaInput.setCustomValidity("");
+      return true
+      
     }
+  }
 }
-
 function checkCat(){
   const cat = document.getElementById("categoria").value
   return cat!==defCat
@@ -113,6 +112,8 @@ function cancel() {
   window.parent.closeProduct()
 }
 async function send() {
+  console.log("SE NON VA MI FACCIO ESPLODERE");
+  
   let data = {}
   console.log(id);
   
@@ -141,6 +142,7 @@ async function send() {
   
   if (!nome && !descrizione && !prezzo && !quantita && !categoria) {
     console.log("nessun valore inserito");
+    alert("nessun valore inserito")
   }else{
     try {
       const response = await fetch("/product", {
@@ -180,5 +182,4 @@ async function send() {
       console.log(error);
     }   
   }
-}
 }
