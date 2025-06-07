@@ -268,7 +268,7 @@ async function emptyCart(pool, uid){
     }
 }
 async function editProduct(pool, id, req) {
-    const {nome, descr, costo, qt, cat} = req.body
+    const {nome, descr, prezzo, qt, cat} = req.body
     try {
         if (nome) {
                 await pool.query(`UPDATE prodotti SET name=$1 WHERE id=$2`,[nome, id])
@@ -278,8 +278,8 @@ async function editProduct(pool, id, req) {
                 await pool.query(`UPDATE prodotti SET descr=$1 WHERE id=$2`,[descr, id])
                 console.log("descr modificata");
             }
-            if (costo) {
-                await pool.query(`UPDATE prodotti SET costo=$1 WHERE id=$2`,[costo, id])
+            if (prezzo) {
+                await pool.query(`UPDATE prodotti SET costo=$1 WHERE id=$2`,[prezzo, id])
                 console.log("costo mod");
                 
             }
