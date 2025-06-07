@@ -136,12 +136,13 @@ async function getOrders() {
         let prodotti = qtt===1 ? "prodotto" : "prodotti"
         let status = el.sent ? "completato" : "da inviare"  
         let element = `
-          <div class="border-bottom" onclick="openOrder(${el.id})" id="orderelement">
-            <p class="mt-3">${new Date(el.created).toISOString().split("T")[0]}</p>
-            <p>${qtt+" "+prodotti}</p>
-            <p>${status}</p>
+          <div class="order-card" onclick="openOrder(${el.id})" id="orderelement">
+            <div class="order-content">
+              <p class="order-date">${new Date(el.created).toISOString().split("T")[0]}</p>
+              <p class="order-detail">${qtt + " " + prodotti}</p>
+              <p class="order-status">${status}</p>
+            </div>
           </div>
-        
         `
         contanier.innerHTML+=element
       });
@@ -198,7 +199,7 @@ function checkValidity(){
   //email corretta:
   if(getEmail){
     const checkEmail =  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(!emailRegex.test(email)){
+    if(!emailRegex.test(checkEmail)){
       alert("Email non in formato corretto");
       return;
     }
