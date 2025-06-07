@@ -35,7 +35,7 @@ logReport("=== Avvio test: " + startTime.toISOString() + " ===");
 logReport(`Informazioni ambiente: Node ${envInfo.nodeVersion}, Platform: ${envInfo.platform}, CI: ${envInfo.ci}`);
 
 // ----------------------
-// PARTE 1: Test degli Event Listener
+// PARTE 1: Test degli Event Listener sul DOM fittizio
 // ----------------------
 
 // Costruttore per un elemento fittizio
@@ -129,7 +129,7 @@ assert.strictEqual(
 logReport("Test per il click sull'overlay superato.");
 
 // ----------------------
-// PARTE 2: Test di openProduct, closeProduct ed edit
+// PARTE 2: Test delle funzioni di navigazione (openProduct, closeProduct, edit)
 // ----------------------
 
 // Simulazione globale di window.parent.document per l'iframe "lat-iframe"
@@ -189,6 +189,7 @@ logReport("Test per edit superato.");
 
 // ----------------------
 // PARTE 3: Scansione ricorsiva dei file JS nella directory "Backend"
+// e verifica delle funzioni esportate
 // ----------------------
 
 // Per evitare errori "document is not defined", definiamo uno stub globale per document se non esiste
@@ -221,8 +222,32 @@ if (fs.existsSync(backendDir) && fs.statSync(backendDir).isDirectory()) {
   walkDir(backendDir, function(file) {
     if (file.endsWith('.js')) {
       try {
-        require(file);
+        // Carico il file
+        const mod = require(file);
         logReport("File " + file + " caricato correttamente.");
+        // Verifica presenza ed esecuzione delle funzioni esportate
+        Object.keys(mod).forEach(key => {
+          if (typeof mod[key] === 'function') {
+            logReport("Funzione '" + key + "' trovata in " + file + ".");
+            if (mod[key].length === 0) {
+              try {
+                mod[key]();
+                logReport("Funzione '" + key + "' eseguita correttamente in " + file + ".");
+              } catch (e) {
+                logReport("Errore nell'esecuzione della funzione '" + key + "' in " + file + ": " + e.message);
+              }
+            } else {
+              // Creazione di dummy arguments: un array di 'null' della lunghezza richiesta.
+              const dummyArgs = new Array(mod[key].length).fill(null);
+              try {
+                mod[key](...dummyArgs);
+                logReport("Funzione '" + key + "' eseguita con dummy arguments (" + dummyArgs.join(", ") + ") in " + file + ".");
+              } catch(e) {
+                logReport("Errore nell'esecuzione della funzione '" + key + "' con dummy arguments in " + file + ": " + e.message);
+              }
+            }
+          }
+        });
       } catch (err) {
         logReport("Errore nel file " + file + ": " + err.message);
       }
@@ -310,4 +335,4 @@ const metadata = {
 
 const htmlReport = generateHtmlReport(report, metadata);
 fs.writeFileSync("test-report-backend.html", htmlReport, 'utf8');
-logReport("Report HTML generato come test-report.html");
+logReport("Report HTML generato come test-report-backend.html");

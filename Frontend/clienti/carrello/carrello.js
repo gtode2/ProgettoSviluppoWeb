@@ -408,3 +408,4 @@ function counter() {
     document.getElementById("svuotaCarrello").disabled=false
   }
 }
+

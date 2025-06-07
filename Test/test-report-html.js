@@ -26,6 +26,9 @@ console.log("----------------------------------------------------");
 let totalHtmlFiles = htmlFiles.length;
 let passedHtml = 0;
 
+// Salviamo i risultati in un array di oggetti per poi generare il report
+let results = [];
+
 htmlFiles.forEach(file => {
   const content = fs.readFileSync(file, "utf8");
   const errors = [];
@@ -48,8 +51,7 @@ htmlFiles.forEach(file => {
   // Controlla se esiste il tag <body>
   if (!/<body\b[^>]*>/i.test(content)) {
     errors.push("Manca il tag <body>");
-    }
-
+  }
   
   if (errors.length > 0) {
     console.log(`File: ${file}\n  ERRORI: ${errors.join(" - ")}`);
@@ -57,7 +59,83 @@ htmlFiles.forEach(file => {
     console.log(`File: ${file} - OK`);
     passedHtml++;
   }
+  
+  // Aggiunge il risultato all'array
+  results.push({
+    file,
+    errors
+  });
 });
 
 console.log("----------------------------------------------------");
 console.log(`HTML Test - Superati: ${passedHtml} di ${totalHtmlFiles}`);
+
+// ----------------------
+// GENERAZIONE REPORT HTML
+// ----------------------
+function generateReport(results, totalFiles, passed) {
+  let failed = totalFiles - passed;
+  let html = `
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Report Test - FrontEnd HTML</title>
+  <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      h1, h2 { color: #333; }
+      table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+      th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+      th { background: #f0f0f0; }
+      .passed { color: green; font-weight: bold; }
+      .failed { color: red; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Report Test - FrontEnd HTML</h1>
+  <h2>Sommario</h2>
+  <ul>
+    <li>Total files testati: ${totalFiles}</li>
+    <li>File superati: <span class="passed">${passed}</span></li>
+    <li>File con errori: <span class="failed">${failed}</span></li>
+  </ul>
+  <h2>Dettaglio Test</h2>
+  <table>
+    <tr>
+      <th>File</th>
+      <th>Risultato</th>
+      <th>Errori</th>
+    </tr>
+`;
+  results.forEach(result => {
+    let fileName = path.relative(path.join(__dirname, '..'), result.file);
+    if (result.errors.length === 0) {
+      html += `<tr>
+        <td>${fileName}</td>
+        <td class="passed">OK</td>
+        <td>-</td>
+      </tr>
+      `;
+    } else {
+      html += `<tr>
+        <td>${fileName}</td>
+        <td class="failed">Errore</td>
+        <td>${result.errors.join(" - ")}</td>
+      </tr>
+      `;
+    }
+  });
+  html += `
+  </table>
+</body>
+</html>  
+`;
+  return html;
+}
+
+const reportHtml = generateReport(results, totalHtmlFiles, passedHtml);
+
+// Salva il report nella directory principale (la root del progetto)
+const outputPath = path.join(__dirname, '..', "report-frontend.html");
+fs.writeFileSync(outputPath, reportHtml, "utf8");
+console.log("Report HTML generato: " + outputPath);
