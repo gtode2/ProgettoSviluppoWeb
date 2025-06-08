@@ -492,7 +492,6 @@ async function main() {
             }
         }else{
             console.log("richiesta prodotto specifico");
-            //richiesta prodotto specifico
             var result  = await getProducts(pool, null, id)
             if (user!==-1) {
                res.status(200).json({prodotti:result, usertype:user.usertype})
