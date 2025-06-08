@@ -11,11 +11,9 @@ const fs = require('fs');
 const https = require('https');
 
 
-const { checkdb } = require("./Backend/dbmanager.js");
 const {checkToken, renewToken, registerToken} = require("./Backend/userToken.js")
 const {addProduct, removeProduct, getProducts, editProduct, addCart, removeCart, decrCart, getCart, emptyCart} = require("./Backend/products.js");
 const {addReport, getReports, removeReport, removeReportedProduct, banArtigiano} = require("./Backend/reports.js");
-const e = require("express");
 
 
 
