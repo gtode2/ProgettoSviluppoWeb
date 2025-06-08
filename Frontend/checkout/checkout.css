@@ -1,96 +1,52 @@
-/* Imposta lo sfondo della pagina a bianco e uno stile di base per il testo */
-body {
-  background-color: #ffffff;
-  color: #212529;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #FAFAD2;
+  font-family: Arial, sans-serif;
 }
 
-/* Container per centrare la card */
-.login-container {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 1rem;
-}
-
-/* Card del checkout: box arancione con effetto "card" */
-.login-card {
-  background-color: #ffa500;  /* Arancione */
-  color: #212529;
-  padding: 2rem;
+.admin-overlay {
+  background-color: #F0F8FF;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
-  width: 100%;
-  position: relative;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: #333;
+  position: relative; 
 }
 
-/* Pulsante per chiudere la card */
-.login-card .btn-close-overlay {
-  background: transparent;
+.admin-overlay h2,
+.admin-overlay label {
+  color: #333;
+}
+
+.admin-overlay .form-control,
+.admin-overlay .form-select {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.admin-overlay .btn-primary {
+  background-color: #FF8C00; 
+  border-color: #FF8C00;
+}
+
+.admin-overlay .btn-outline-secondary {
+  color: #333;
+  border-color: #333;
+}
+
+.btn-close-overlay {
+  background: none;
   border: none;
-  color: #ffffff;
+  color: #333;
   font-size: 1.5rem;
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 10px;
+  right: 10px;
   cursor: pointer;
-}
-
-/* Titolo e etichette all’interno della card */
-.login-card h2 {
-  color: #212529;
-  margin-bottom: 1rem;
-}
-.login-card .form-label {
-  color: #212529;
-}
-
-/* Campi di input e select: sfondo bianco, testo scuro */
-.login-card .form-control,
-.login-card .form-select {
-  background-color: #ffffff;
-  color: #212529;
-  border: 1px solid #ced4da;
-}
-
-/* Pulsante primario: stile invertito per una buona leggibilità */
-.login-card .btn.btn-primary {
-  background-color: #ffffff;
-  color: #ffa500;
-  border-color: #ffffff;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.login-card .btn.btn-primary:hover {
-  background-color: #e9ecef;
-  border-color: #e9ecef;
-  color: #ffa500;
-}
-
-/* Pulsante secondario: outline con bordi e testo bianco */
-.login-card .btn.btn-outline-secondary {
-  background-color: transparent;
-  color: #ffffff;
-  border-color: #ffffff;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.login-card .btn.btn-outline-secondary:hover {
-  background-color: #ffffff;
-  color: #ffa500;
-}
-
-/* Link generici: mantenere il colore arancione sui link */
-a,
-a:visited {
-  color: #ffa500;
-}
-
-a:hover,
-a:focus {
-  color: #e9ecef;
 }

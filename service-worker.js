@@ -1,9 +1,6 @@
-// Nome della cache per questa versione della PWA.
 const CACHE_NAME = 'pwa-cache-v1';
 
-// Elenco degli asset da pre-caching, inclusi tutti i file utili per le transizioni:
 const ASSETS_TO_CACHE = [
-  // Pagine di navigazione fondamentali:
   '/Frontend/admin/admin.html',
   '/Frontend/admin/report/report.html',
   '/Frontend/admin/report/banArtigiano.html',
@@ -32,7 +29,6 @@ const ASSETS_TO_CACHE = [
   '/Frontend/userArea/userArea.html',
   '/Frontend/userArea/userAreaArtigiano.html',
 
-  //Asset statici
   '/Frontend/admin/report/report.css',
   '/Frontend/artigiano/inserimento/inserimento.css',
   '/Frontend/cambiopassword/password.css',
@@ -47,13 +43,11 @@ const ASSETS_TO_CACHE = [
   '/Frontend/registrazione/registrazione.css',
   '/style.css',
 
-  //Manifest & registrazione service worker
   '/manifest.webmanifest',
   '/sw-register.js'
 ];
 
 self.addEventListener('install', event => {
-  // Forza la nuova versione del service worker ad attivarsi subito.
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -68,13 +62,11 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Se la richiesta è di tipo "navigate" (ovvero l'utente sta passando da una pagina all'altra)
   if (event.request.mode === 'navigate') {
     event.respondWith(
       caches.match(event.request).then(cachedResponse => {
         console.log('Navigazione verso:', event.request.url);
         return cachedResponse || fetch(event.request).catch(() => {
-          // In caso di errore (es. offline), fornisci una pagina di fallback.
           return caches.match('/Frontend/unlogged/unlogged.html');
         });
       })
@@ -82,7 +74,6 @@ self.addEventListener('fetch', event => {
     return;
   }
   
-  // Per tutte le altre richieste, usa la strategia cache-first.
   event.respondWith(
     caches.match(event.request)
       .then(cachedResponse => {
@@ -99,7 +90,6 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(name => {
-          // Elimina le cache che non corrispondono alla versione attuale.
           if (name !== CACHE_NAME) {
             console.log('Service Worker: Eliminazione cache vecchia:', name);
             return caches.delete(name);

@@ -1,6 +1,5 @@
 let count = 0
 
-// Caricamento iniziale del carrello al DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const response = await fetch("/cart", {
@@ -35,7 +34,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// Funzione per aggiungere un prodotto al carrello sia sul server che in pagina
 async function addToCart(id, name, price, quantita=1) {
   try {
     const response = await fetch("/cart", {
@@ -53,7 +51,6 @@ async function addToCart(id, name, price, quantita=1) {
         counter()
       } else {
    
-        ///////////////////////////////////////////////////
         document.getElementById(`qtt${id}`).textContent = Number(document.getElementById(`qtt${id}`).innerText)+1
         const totale = document.getElementById("totale");
         let tot = totale.innerText.replace("€", "").trim();
@@ -108,7 +105,6 @@ async function addToCart(id, name, price, quantita=1) {
   }
 }
 
-// Funzione per aggiungere il prodotto alla parte visuale del carrello
 function add(id, name, price, quantita) {
   console.log("Aggiungo prodotto:", name);
   
@@ -132,7 +128,6 @@ function add(id, name, price, quantita) {
   totale.innerText = "€" + prezzo.toFixed(2);
 }
 
-// Funzione per svuotare il carrello
 async function remove() {
   try {
     const response = await fetch("/cart", {
@@ -173,7 +168,6 @@ async function remove() {
   }
 }
 
-// Funzioni placeholder per future implementazioni
 async function increase(id, price) {
   try {
     const response = await fetch("/cart", {
@@ -237,7 +231,6 @@ async function increase(id, price) {
 
 async function decrease(id, price) {
   if (document.getElementById(`qtt${id}`).textContent==="1") {
-    //funzione per rimuovere
     try {
       const response = await fetch("/cart", {
         method: "POST",
@@ -297,7 +290,6 @@ async function decrease(id, price) {
     }
     
   }else{
-    //funzione per scalare
     try {
       const response = await fetch("/cart", {
         method: "POST",
@@ -338,13 +330,7 @@ async function decrease(id, price) {
       alert("Errore di rete.");
     }
   }
-
-
-  
-  
 }
-
-// Funzione per procedere al checkout
 async function checkout() {
   console.log("Eseguo checkout");
   try {
@@ -356,7 +342,6 @@ async function checkout() {
     if (response.ok) {
       parent.window.location.href = "/checkout";
     } else {
-      // Gestione errori per checkout
       if (response.status===401) {
         if (data.err === "missing token" || data.err==="invalid token") {
         const res = await renewToken();
@@ -387,8 +372,6 @@ async function checkout() {
   }
 }
 
-
-// Associa i gestori degli eventi ai pulsanti
 document.addEventListener("DOMContentLoaded", () => {
   const btnPagamento = document.getElementById("proseguiPagamento");
   const btnSvuota = document.getElementById("svuotaCarrello");

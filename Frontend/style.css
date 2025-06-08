@@ -1,4 +1,3 @@
-/* RESET BASE */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,7 +8,6 @@ body {
   line-height: 1.6;
 }
 
-/* LAYOUT CONTAINER: struttura principale */
 .layout-container,
 .user-area {
   display: flex;
@@ -17,7 +15,6 @@ body {
   height: 100vh;
 }
 
-/* DESKTOP: struttura orizzontale */
 @media (min-width: 768px) {
   .layout-container,
   .user-area {
@@ -25,7 +22,6 @@ body {
   }
 }
 
-/* AREA PRODOTTI (75%) */
 .view-prodotti,
 .user-background {
   height: 100vh;
@@ -38,15 +34,14 @@ body {
   border: none;
 }
 
-/* OVERLAY / FORM (25%) */
 .admin-overlay,
 .user-content {
   position: fixed;
   top: 0;
   right: 0;
   width: 100%;
-  height: calc(100vh - 4rem); /* 100vh meno il padding (2rem top + 2rem bottom) */
-  box-sizing: border-box; /* Garantisce che il padding sia incluso nell'altezza */
+  height: calc(100vh - 4rem);
+  box-sizing: border-box; 
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(4px);
   padding: 2rem;
@@ -61,8 +56,6 @@ body {
   transform: translateX(0);
 }
 
-
-/* MOBILE: pulsanti apertura e chiusura */
 .btn-toggle-overlay {
   display: block;
   position: fixed;
@@ -87,7 +80,6 @@ body {
   cursor: pointer;
 }
 
-/* PULSANTE INTERNO */
 .adminOverlay {
   display: block;
   margin: 1rem 0;
@@ -100,7 +92,6 @@ body {
   cursor: pointer;
 }
 
-/* SEZIONI E COMPONENTI */
 .admin-header {
   margin-bottom: 1rem;
 }
@@ -121,7 +112,6 @@ body {
   margin-right: 0.5rem;
 }
 
-/* FORM */
 .form-prodotto input,
 .form-prodotto button {
   display: block;
@@ -132,17 +122,13 @@ body {
   border: 1px solid #ccc;
 }
 
-/* DESKTOP STILE: pannello laterale 25% */
 @media (min-width: 768px) {
-  /* Riassegna la larghezza e aggiungi il margine destro all'area prodotti */
   .view-prodotti,
   .user-background {
-    width: calc(100% - 350px);  /* Oppure, se preferisci, potresti usare '75%' se il layout è sempre 75%-25% */
-    /* In alternativa se il 25% corrisponde a 350px, meglio usare il calcolo in pixel */
-    margin-right: 350px;        /* Questo spinge la fine dei prodotti fino all'inizio dell'overlay */
+    width: calc(100% - 350px);
+    margin-right: 350px;
   }
 
-  /* Imposta l'overlay con larghezza fissa */
   .admin-overlay,
   .user-content {
     position: fixed;
@@ -155,14 +141,12 @@ body {
     transform: none !important;
   }
 
-  /* Nascondi i pulsanti mobile in desktop */
   .btn-toggle-overlay,
   .btn-close-overlay {
     display: none;
   }
 }
 
-/* Gli iframe interni (nella lista-report o simili) riempiono tutto lo spazio */
 .lista-report,
 .report-iframe {
   width: 100%;
@@ -175,34 +159,31 @@ body {
   display: flex;
   flex-direction: column;
 }
-/* Sfondo full-screen: l'iframe occupa l'intera viewport */
 .iframe-sfondo {
-        position: fixed;      /* Fissa lo sfondo nella viewport */
-        top: 0;               /* Allinea in alto */
-        left: 0;              /* Allinea a sinistra */
-        width: 100%;          /* Copre il 100% della larghezza */
-        height: 100vh;        /* Copre il 100% dell'altezza della viewport */
-        z-index: -1;          /* Assicura che l'iframe sia dietro gli altri elementi */
-        overflow: hidden;     /* Nasconde eventuali scrollbar indesiderate */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: -1;
+        overflow: hidden;
       }
       
       .iframe-sfondo iframe {
         width: 100%;
         height: 100%;
-        border: none;         /* Rimuove eventuali bordi */
+        border: none;
         display: block;
       }
-/* Card personalizzata: occupa tutta la larghezza dello schermo
-       lasciando un margine di 10px a sinistra e a destra */
-    .order-card {
+
+      .order-card {
       width: calc(100% - 20px);
-      margin: 0 10px; /* 10px di spazio da sinistra e destra */
+      margin: 0 10px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
       background-color: #fff;
     }
     
-    /* Se desideri dare un po' di padding interno alla card */
     .order-card .card-body {
       padding: 20px;
     }

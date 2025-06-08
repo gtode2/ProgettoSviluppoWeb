@@ -37,7 +37,6 @@ async function loadUser(){
 
 
 async function send(){
-    // Controlla che il nome ci sia
     const checkName = () => {
         const name = document.getElementById("name").value.trim();
         return name.length >= 1;
@@ -47,14 +46,12 @@ async function send(){
         return addr.length >= 1;
     };
 
-    //controlla che l'email sia corretta
     const checkEmail = () => {
         const email = document.getElementById("email")
         if (email.value.trim()) {
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return regex.test(email);   
         }
-        //se vuota -> utilizza valore caricato -> già verificato in fase di registrazione
         return true
     };
 
@@ -64,13 +61,10 @@ async function send(){
             const regex = /^[0-9]{9,15}$/;
             return regex.test(phone);    
         }
-        //come email
         return true
         
     };
 
-
-    // Esegui i check
     if (
         !checkName() ||
         !checkAddress() ||
@@ -81,7 +75,6 @@ async function send(){
         return;
     }
 
-    // Se tutto è valido, prepara i dati
     const formData = {
         name: document.getElementById("name").value,
         email: document.getElementById("email").value,
@@ -124,7 +117,6 @@ async function send(){
             console.log("Registrazione attività completata");
             
             window.location.href = "/"
-            //redirect a homepage
         }
     } catch (err) {
         console.log(err);

@@ -10,7 +10,6 @@ function notEmpty() {
   const nuova = document.getElementById("nuova")
   const conferma = document.getElementById("conferma")
 
-  //inserire verifica password del login
 
   if (!vecchia.value.trim()) {
     vecchia.setCustomValidity("Inserisci un valore");
@@ -84,5 +83,3 @@ async function send() {
   }
   
 }
-
-

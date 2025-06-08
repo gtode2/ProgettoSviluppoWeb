@@ -14,13 +14,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (toggleOverlayButton) {
         toggleOverlayButton.addEventListener('click', function () {
-            adminOverlay.classList.add('aperto'); // ✅ Overlay visibile
+            adminOverlay.classList.add('aperto'); 
         });
     }
 
     if (closeOverlayButton) {
         closeOverlayButton.addEventListener('click', function () {
-            adminOverlay.classList.remove('aperto'); // ✅ Overlay nascosto
+            adminOverlay.classList.remove('aperto'); 
         });
     }
     

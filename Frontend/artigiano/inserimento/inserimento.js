@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
   console.log("Inserimento caricato");
-  //gestisciOverlayArtigiano();
   
   const send = document.getElementById("sendProduct");
   if(send){
@@ -23,7 +22,6 @@ async function sendData(){
       price: document.getElementById("prezzo").value,
       amm: document.getElementById("quantita").value,
       cat: document.getElementById("categoria").value
-      // img può essere aggiunta se necessario
     };
 
 
@@ -38,7 +36,6 @@ async function sendData(){
       console.log("Risposta ricevuta")
 
       if (!response.ok) {
-        // Inserisci qui la gestione degli errori (es. res.status per errori specifici)
         if (response.status===401) {
           if (data.err==="missing token") {
               const res =await renewToken()
@@ -60,20 +57,6 @@ async function sendData(){
         }
       }else{
         console.log("prodotto inserito correttamente \n tentativo modifica prodotti");
-        
-        //const iframe = document.getElementById("prodotti-iframe");
-        //const iframeWin = iframe.contentWindow;
-        //const id = data.id;
-        /*
-        if (iframeWin && typeof iframeWin.addProduct === "function") {
-          iframeWin.addProduct(
-            document.getElementById("nome").value,
-            document.getElementById("nome").value,
-            document.getElementById("descrizione").value,
-            document.getElementById("prezzo").value,
-            id
-          )
-        */
           console.log("svuotamento inserimento prodotti");
           document.getElementById("nome").value = ""
           document.getElementById("descrizione").value = ""
@@ -81,11 +64,7 @@ async function sendData(){
           document.getElementById("quantita").value = ""
           document.getElementById("categoria").value = ""
           alert("Prodotto inserito correttamente")
-        /*
-        } else {
-          console.error("Funzione addProduct non trovata nell'iframe!");
-        }
-        */
+        
       }
     } catch (err) {
         console.log(err);
@@ -98,7 +77,6 @@ async function sendData(){
 function validateForm(){
   let formValido = true;
   
-  // Validazione per il campo 'nome'
   const nameInput = document.getElementById('nome');
   if(!nameInput.value.trim()){
     nameInput.setCustomValidity("Nome mancante");
@@ -109,7 +87,6 @@ function validateForm(){
     nameInput.setCustomValidity("");
   }
 
-  // Validazione per il campo 'descrizione'
   const descInput = document.getElementById('descrizione');
   if(!descInput.value.trim()){
     descInput.setCustomValidity("Descrizione mancante!");
@@ -120,7 +97,6 @@ function validateForm(){
     descInput.setCustomValidity("");
   }
 
-  // Validazione per il campo 'prezzo'
   const priceInput = document.getElementById("prezzo");
   if(!priceInput.value.trim()){
     priceInput.setCustomValidity("Prezzo mancante");
@@ -136,7 +112,6 @@ function validateForm(){
     priceInput.setCustomValidity("");
   }
 
-  // Validazione per il campo 'quantita'
    const quantitaInput = document.getElementById("quantita");
   if (!quantitaInput.value.trim()) {
     quantitaInput.setCustomValidity("Il campo quantità non può essere vuoto!");

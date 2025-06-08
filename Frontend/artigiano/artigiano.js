@@ -1,7 +1,3 @@
-// Funzione per caricare i prodotti
-// Imposta gli event listener per aprire e chiudere l'overlay Artigiano
-// Funzione per caricare i prodotti
-// Imposta gli event listener per aprire e chiudere l'overlay Artigiano
 document.addEventListener('DOMContentLoaded', function () {
     const toggleOverlayButton = document.getElementById('btn-toggle-overlay');
     const closeOverlayButton = document.getElementById('btn-close-overlay');

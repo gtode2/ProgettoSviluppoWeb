@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", ()=>{
-    //estraggo get del prodotto
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     
-    //fetch per raccolta prodotti
     getOrders(id)
 
 })
@@ -70,7 +68,6 @@ async function getOrders(id) {
         
         console.log("utente");
         
-        //inserimento contatti 
         element = `
         <div class="mb-3">
           <h5 class="text-start mb-4">Hai bisogno di aiuto?</h5>

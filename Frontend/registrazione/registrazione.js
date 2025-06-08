@@ -4,12 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // Controlla che il nome ci sia
         const checkName = () => {
             const name = document.getElementById("name").value.trim();
             return name.length >= 1;
         };
-        //controlla che ci sia il cognome
         const checkSurname = () => {
             const surname = document.getElementById("surname").value.trim();
             return surname.length >= 1;
@@ -19,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const username = document.getElementById("username").value.trim();
             return username.length >= 1;
         }
-        //controlla che l'email sia corretta
         const checkEmail = () => {
             const email = document.getElementById("email").value.trim();
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -51,7 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return password === confirmPassword;
         };
 
-        // Esegui i check
         if (
             !checkName() ||
             !checkSurname() ||
@@ -65,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Se tutto è valido, prepara i dati
         const formData = {
             name: document.getElementById("name").value,
             surname: document.getElementById("surname").value,
@@ -75,9 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
             password: document.getElementById("password").value,
             user_type: document.getElementById("user_type").value
         };
-
-        // Invia i dati al backend
-        
 
         try {
             const response = await fetch("/registrazione", {
@@ -105,7 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     window.location.href = data.redirect
                 }else{
                     window.location.href = "/"
-                    //redirect a homepage
                 }
             }
         } catch (err) {

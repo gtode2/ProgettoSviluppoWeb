@@ -3,7 +3,6 @@ function getActIdFromUrl() {
   return params.get("actid");
 }
 
-// Popola i campi HTML con i dati del prodotto
 function mostraDettaglioProdotto(p) {
   console.log("Prodotto ricevuto:", p);
   document.getElementById("nome").textContent = p.name;
@@ -15,7 +14,6 @@ function mostraDettaglioProdotto(p) {
   document.getElementById("artigiano").textContent = p.nome_attivita
 }
 
-// Funzione per chiudere il dettaglio del prodotto
 function closeProduct() {
   console.log("close");
   if (window.parent && typeof window.parent.closeProduct === 'function') { 
@@ -25,11 +23,9 @@ function closeProduct() {
   }
 }
   
-// Inizializzazione: recupera l'ID, chiama l'API e popola la pagina
 document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener("DOMContentLoaded", () => {
   if (window.matchMedia("(max-width: 768px)").matches) {
-    // Redirect immediato alla pagina "modifica.html"
     window.location.href = "/Frontend/artigiano/dettaglio/dettagliArtigiano.html";
   }
   });
@@ -62,25 +58,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("email").innerText = data.act.email
       document.getElementById("ntel").innerText = data.act.ntel
       document.getElementById("descrizione").innerText = data.act.descr
-
-      /*
-      
-      if (data.prodotti && data.prodotti.length > 0) {
-        const prodottoSelezionato = data.prodotti.find(prod => String(prod.id) === id);
-        if (prodottoSelezionato) {
-          mostraDettaglioProdotto(prodottoSelezionato);
-        } else {
-          document.getElementById("descrizione").innerHTML = `
-            <div class="alert alert-warning">Artigiano non trovato.</div>
-          `;
-        }
-      } else {
-        document.getElementById("descrizione").innerHTML = `
-          <div class="alert alert-warning">Artigiano non trovato.</div>
-        `;
-      }
-
-      */
     }
   } catch (err) {
     console.error(err);

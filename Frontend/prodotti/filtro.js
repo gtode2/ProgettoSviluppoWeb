@@ -3,13 +3,12 @@ document.addEventListener("DOMContentLoaded", async() => {
   const modalEl = document.getElementById('modalFiltri');
   const closebtn = document.getElementById("apply")
 
-  //caricamento produttori
   try {
     const res = await fetch("/artigiani",{
       method: "POST",
       headers: { "Content-Type": "application/json" }})
     const data = await res.json()
-    await renewToken() //blocco caricamento artigiani in caso di token scaduto
+    await renewToken()
     if (res.ok) {
       if (data.art!==0) {
         const block = document.getElementById("produttori")

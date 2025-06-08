@@ -1,12 +1,10 @@
-// Variabili globali
-let currentView = "card"; // Modalità di visualizzazione corrente: "card", "list", "fullscreen"
-window.lastLoadedProducts = []; // Array dei prodotti caricati
-window.lastUserType = null;    // Tipo utente (1 = cliente, 2 = artigiano, 0 = admin, ecc.)
+let currentView = "card";
+window.lastLoadedProducts = [];
+window.lastUserType = null; 
 
-// --- FUNZIONE DI RICERCA ---
 async function cerca() {
   const txt = document.getElementById("searchbar").value.trim();
-  let filters = getfilters(); // Funzione che deve essere definita per raccogliere eventuali filtri
+  let filters = getfilters();
   console.log("Filters iniziali:", filters);
   if (txt) {
     console.log("Ricerca:", txt);
@@ -17,7 +15,7 @@ async function cerca() {
   loadFromServer(filters);
 }
 
-// --- LOAD DEI PRODOTTI DAL SERVER ---
+
 async function loadFromServer(filters = null) {
   try {
     let res;
@@ -39,10 +37,10 @@ async function loadFromServer(filters = null) {
     if (data.prodotti === 0) {
       console.log("Nessun prodotto trovato");
     } else {
-      // Salva globalmente i dati dei prodotti e il tipo utente
+      
       window.lastLoadedProducts = data.prodotti;
       window.lastUserType = data.usertype;
-      // Esegui il rendering dei prodotti usando la funzione renderProducts()
+      
       renderProducts(window.lastLoadedProducts);
     }
   } catch (error) {
@@ -51,22 +49,17 @@ async function loadFromServer(filters = null) {
   }
 }
 
-// --- FUNZIONE RENDER PRODUCTS ---
-// Questa funzione genera i prodotti in base al valore di currentView.
-// Mantiene il template originale (per "card") e implementa la modalità "lista".
 function renderProducts(data) {
   const container = document.getElementById("lista-prodotti");
   container.innerHTML = "";
   
-  // Opzioni per il layout del container (puoi modificarle se vuoi)
   if (currentView === "list") {
-    container.className = "row";  // Per la visualizzazione in lista, ogni prodotto occuperà una riga completa
+    container.className = "row";
     container.removeAttribute("style");
   } else if (currentView === "fullscreen") {
     container.className = "d-flex overflow-auto flex-row gap-4 px-4";
     container.style.scrollSnapType = "x mandatory";
   } else {
-    // Default: modalità "card"
     container.className = "row justify-content-center";
     container.removeAttribute("style");
   }
@@ -76,11 +69,9 @@ function renderProducts(data) {
   const col = document.createElement("div");
   
   if (currentView === "card" || currentView === "fullscreen") {
-    // Template per la modalità "card" o "fullscreen"
     col.className = "col-md-4 mb-5 mt-5";
     
     if (lastUserType === 1) {
-      // Caso "cliente"
       col.innerHTML = `
         <div class="card text-center shadow-sm" id="productcard${el.id}">
           <div class="card-body">
@@ -107,8 +98,7 @@ function renderProducts(data) {
         </div>
       `;
     } else if (lastUserType === 2) {
-      // Caso "artigiano"
-      col.innerHTML = `
+     col.innerHTML = `
         <div class="card text-center shadow-sm" id="productcard${el.id}">
           <div class="card-body">
             <h5 class="card-title">${el.name}</h5>
@@ -128,7 +118,6 @@ function renderProducts(data) {
         </div>
       `;
     } else if (lastUserType === 0) {
-      // Caso "admin"
       console.log("admin");
       col.innerHTML = `
         <div class="card text-center shadow-sm" id="productcard${el.id}">
@@ -145,7 +134,6 @@ function renderProducts(data) {
         </div>
       `;
     } else {
-      // Caso "unlogged" o non definito
       col.innerHTML = `
         <div class="card text-center shadow-sm" id="productcard${el.id}">
           <div class="card-body">
@@ -164,11 +152,9 @@ function renderProducts(data) {
     }
     
   } else if (currentView === "list") {
-    // Template per la modalità lista: immagine a sinistra e info a destra
     col.className = "col-12 mb-3";
     
     if (lastUserType === 1) {  
-      // Caso "cliente"
       col.innerHTML = `
         <div class="card shadow-sm" id="productcard${el.id}">
           <div class="row g-0">
@@ -198,7 +184,6 @@ function renderProducts(data) {
         </div>
       `;
     } else if (lastUserType === 2) {  
-      // Caso "artigiano"
       col.innerHTML = `
         <div class="card shadow-sm" id="productcard${el.id}">
           <div class="row g-0">
@@ -225,7 +210,6 @@ function renderProducts(data) {
         </div>
       `;
     } else if (lastUserType === 0) {  
-      // Caso "admin"
       col.innerHTML = `
         <div class="card shadow-sm" id="productcard${el.id}">
           <div class="row g-0">
@@ -249,7 +233,6 @@ function renderProducts(data) {
         </div>
       `;
     } else {  
-      // Caso "unlogged" o non definito
       col.innerHTML = `
         <div class="card shadow-sm" id="productcard${el.id}">
           <div class="row g-0">
@@ -281,7 +264,6 @@ function renderProducts(data) {
 
 }
 
-// --- FUNZIONE PER CAMBIARE MODALITÀ DI VISUALIZZAZIONE ---
 function setViewMode(mode) {
   currentView = mode;
   renderProducts(window.lastLoadedProducts);
@@ -295,7 +277,6 @@ function edit(productId){
   }  
 }
 
-// --- FUNZIONI DI DELEGAZIONE ---
 function addToCart(id, name, price) {
   const validPrice = validateAndFormatPrice(price);
   if(validPrice === null){
@@ -334,18 +315,14 @@ function report(id) {
   window.parent.report(id);
 }
 
-// --- Assegnazione dei listener una volta che il DOM è pronto ---
 document.addEventListener("DOMContentLoaded", () => {
-  // Carica i prodotti dal server senza filtri iniziali
   loadFromServer();
 
-  // Imposta i listener per il pulsante di ricerca
   const btnSearch = document.getElementById("btn-search");
   if (btnSearch) {
     btnSearch.addEventListener("click", cerca);
   }
 
-  // Imposta i listener per il cambio modalità visuale:
   const btnwarning = document.getElementById("modifica");
   const btnViewCard = document.getElementById("view-card");
   const btnViewList = document.getElementById("view-list");
@@ -358,7 +335,6 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 });
 
-//function per validare un prezzo
 function validateAndFormatPrice(input){
   if(typeof input === "string"){
     input = input.trim();
