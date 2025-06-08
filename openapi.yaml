@@ -1018,7 +1018,7 @@ paths:
       summary: fornisce pagina statica ban
       responses:
         '200':
-          description: report rimosso correttamente
+          description: pagina fornita correttamente
           content:
             text/html:
               schema:
@@ -1435,7 +1435,7 @@ paths:
       summary: fornisce pagina statica success
       responses:
         '200':
-          description: report rimosso correttamente
+          description: pagina success
           content:
             text/html:
               schema:
@@ -1445,9 +1445,325 @@ paths:
       summary: fornisce pagina statica cancellazione acquisto
       responses:
         '200':
-          description: report rimosso correttamente
+          description: pagina cancellazione
           content:
             text/html:
               schema:
                 type: string
-  
+  /changePassword:
+    get:
+      summary: fornisce pagina statica del cambio password
+      responses:
+        '200':
+          description: pagina cambio password
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: rediect a renewtoken 
+          headers:
+            Location:
+              description: redirect alla pagina 
+              schema:
+                type: string
+              example:
+                value: /renewToken
+    post:
+      summary: Cambio della password utente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vecchia:
+                  type: string
+                  description: Vecchia password
+                nuova:
+                  type: string
+                  description: Nuova password
+              required:
+                - vecchia
+                - nuova
+              example:
+                vecchia: "PasswordVecchia123"
+                nuova: "PasswordNuova456"
+      responses:
+        '200':
+          description: Password aggiornata con successo
+          content: {}
+        '400':
+          description: Dati mancanti nella richiesta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                example:
+                  err: "missing data"
+        '401':
+          description: Password attuale errata oppure token non valido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                examples:
+                  wrongPassword:
+                    summary: Password attuale non corretta
+                    value:
+                      err: "wrong password"
+                  invalidToken:
+                    summary: accessToken non valido
+                    value: 
+                      err: "invalid token" 
+                  missingToken:
+                    summary: accessToken mancante
+                    value: 
+                      err: "missing token" 
+        '500':
+          description: errore sconosciuto nel server
+          content: {}
+  /order:
+    post:
+      summary: Richiede gli ordini di un utente o i dettagli di uno specifico ordine
+      description: A seconda della presenza dell'`id`, restituisce la lista degli ordini oppure i dettagli di un ordine specifico.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                  description: ID dell'ordine da recuperare
+              example:
+                id: 42
+      responses:
+        '200':
+          description: Lista ordini o dettaglio ordine
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ord:
+                    oneOf:
+                      - type: array
+                        items:
+                          type: object
+                      - type: object
+                  ut:
+                    type: integer
+              examples:
+                listaUtente:
+                  summary: Lista ordini utente
+                  value:
+                    ord: []
+                    ut: 1
+                listaArtigiano:
+                  summary: Lista ordini artigiano
+                  value:
+                    ord: []
+                    ut: 2
+                dettaglioOrdine:
+                  summary: Dettaglio di un ordine specifico
+                  value:
+                    ord:
+                      id: 42
+                      uid: 1
+                      actid: 2
+                      created: "2025-06-01T12:00:00.000Z"
+                    ut: 1
+        '401':
+          description: Utente non autorizzato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                example:
+                  err: "unauthorized"
+        '404':
+          description: Ordine non trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                example:
+                  err: "not found"
+        '500':
+          description: Errore del server
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+    patch:
+      summary: Segna un ordine come "spedito"
+      description: Permette a un artigiano di segnare un ordine come spedito.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+              required:
+                - id
+              example:
+                id: 42
+      responses:
+        '200':
+          description: Ordine aggiornato correttamente
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+        '400':
+          description: ID mancante nella richiesta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                example:
+                  err: "missing id"
+        '401':
+          description: Utente non autorizzato ad aggiornare l'ordine
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                example:
+                  err: "unauthorized"
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                example:
+                  err: "Errore del database"
+    get:
+      summary: Visualizza la pagina HTML di un ordine
+      description: Restituisce la pagina HTML dell'ordine solo se l’utente è autenticato e autorizzato.
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: number
+          description: ID dell'ordine da visualizzare
+      responses:
+        '200':
+          description: Pagina HTML dell'ordine
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Redirect per token scaduto o mancante
+        '404':
+          description: Ordine non trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                example:
+                  err: "product not found"
+  /artigiano:
+    get:
+      summary: Recupera le informazioni pubbliche di un artigiano
+      description: Restituisce i dettagli dell'artigiano corrispondente all'`actid` specificato, se non è bannato.
+      parameters:
+        - name: actid
+          in: query
+          required: true
+          schema:
+            type: number
+          description: ID dell'artigiano (attività)
+      responses:
+        '200':
+          description: Informazioni sull'artigiano trovate
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  act:
+                    type: object
+                    properties:
+                      nome:
+                        type: string
+                      indirizzo:
+                        type: string
+                      email:
+                        type: string
+                      ntel:
+                        type: string
+                      descr:
+                        type: string
+                example:
+                  act:
+                    nome: "Bricolage da Mario"
+                    indirizzo: "Via Roma 123"
+                    email: "mario@artigiani.it"
+                    ntel: "1234567890"
+                    descr: "Specializzato in utensili per il bricolage"
+        '400':
+          description: Parametro `actid` mancante
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                example:
+                  err: "missing act"
+        '404':
+          description: Artigiano non trovato o bannato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  err:
+                    type: string
+                example:
+                  err: "act not found"
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+    

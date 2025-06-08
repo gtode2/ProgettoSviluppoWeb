@@ -847,7 +847,7 @@ async function main() {
                 console.log("ID = "+user.uid);
                 
                 const response = await pool.query(`SELECT nome, cognome, username, email, ntel FROM utenti WHERE uid = $1`, [user.uid])
-                res.status(200).json({user:response.rows[0]})
+                res.status(200).json({user:response.rows[0], ut:user.usertype})
                 console.log(response);
                 
             } catch (error) {
