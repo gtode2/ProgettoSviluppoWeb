@@ -49,31 +49,16 @@ async function main() {
         express.json()(req, res, next);
       }
     });
-    const pool = await initDb()
 
-    // Connessione PostgreSQL
-    async function initDb() {
-        var cdb = await checkdb()
-        if (cdb===0) {
-            console.log("Creazione pool");
+    const pool = new Pool({
+        user: process.env.DB_USER,
+        host: "postgres",
+        database: process.env.DB_NAME,
+        password: process.env.DB_PW,
+        port: process.env.DB_PORT,
+    });
 
-            const pool = new Pool({
-            user: process.env.DB_USER,
-            host: "postgres",
-            database: process.env.DB_NAME,
-            password: process.env.DB_PW,
-            port: process.env.DB_PORT,
-            });
-            console.log("Pool creata correttamente");
-            return pool
 
-        }else{
-            console.log("impossibile inizializzare DB");
-            console.log(cdb);
-        
-            process.exit(0)
-        }
-    }
     cron.schedule('* * * * *', async() => {
         //rimozione token scaduti
         try {
@@ -846,7 +831,7 @@ async function main() {
                 console.log("ID = "+user.uid);
                 
                 const response = await pool.query(`SELECT nome, cognome, username, email, ntel FROM utenti WHERE uid = $1`, [user.uid])
-                res.status(200).json({user:response.rows[0]})
+                res.status(200).json({user:response.rows[0], ut:user.usertype})
                 console.log(response);
                 
             } catch (error) {

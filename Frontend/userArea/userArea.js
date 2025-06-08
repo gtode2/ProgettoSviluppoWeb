@@ -23,7 +23,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   let data;
 
   if(userType !== "admin"){
-    getOrders();
+    console.log(userType);
+
+    
   }
 
 
@@ -49,11 +51,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("errore sconosciuto nel caricamento delle informazioni")
       }
     } else {
+      if (data.ut===0) {
+        document.getElementById("storicoop").remove()
+      }else{
+        getOrders();
+      }
       document.getElementById("nome").placeholder = data.user.nome;
       document.getElementById("cognome").placeholder = data.user.cognome;
       document.getElementById("username").placeholder = data.user.username;
       document.getElementById("email").placeholder = data.user.email;
       document.getElementById("telefono").placeholder = data.user.ntel;
+        
+      
     }
   } catch (err) {
     console.log(err);
