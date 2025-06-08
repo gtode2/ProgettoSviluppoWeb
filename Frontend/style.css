@@ -200,3 +200,17 @@ button{
 .login-card button{
   margin-bottom: 10px;
 }
+@media screen and (max-width: 780px) {
+  #toggle-admin {
+    display: none;
+  }
+  #toggle-admin:checked ~ .admin-overlay {
+    transform: translateX(0);
+  }
+  #toggle-admin:checked ~ .btn-toggle-overlay {
+    display: none;
+  }
+}
+.admin-overlay.aperto {
+  transform: translateX(0);
+}
