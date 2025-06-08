@@ -1,11 +1,9 @@
-/* Imposta lo sfondo della pagina a bianco e uno stile di base per il testo */
 body {
   background-color: #ffffff;
   color: #212529;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-/* Container per centrare la card */
 .login-container {
   position: relative;
   z-index: 1;
@@ -16,7 +14,6 @@ body {
   padding: 1rem;
 }
 
-/* Card del checkout: box arancione con effetto "card" */
 .login-card {
   background-color: #ffa500;  /* Arancione */
   color: #212529;
@@ -28,7 +25,6 @@ body {
   position: relative;
 }
 
-/* Pulsante per chiudere la card */
 .login-card .btn-close-overlay {
   background: transparent;
   border: none;
@@ -40,7 +36,6 @@ body {
   cursor: pointer;
 }
 
-/* Titolo e etichette all’interno della card */
 .login-card h2 {
   color: #212529;
   margin-bottom: 1rem;
@@ -49,7 +44,6 @@ body {
   color: #212529;
 }
 
-/* Campi di input e select: sfondo bianco, testo scuro */
 .login-card .form-control,
 .login-card .form-select {
   background-color: #ffffff;
@@ -57,7 +51,6 @@ body {
   border: 1px solid #ced4da;
 }
 
-/* Pulsante primario: stile invertito per una buona leggibilità */
 .login-card .btn.btn-primary {
   background-color: #ffffff;
   color: #ffa500;
@@ -71,7 +64,6 @@ body {
   color: #ffa500;
 }
 
-/* Pulsante secondario: outline con bordi e testo bianco */
 .login-card .btn.btn-outline-secondary {
   background-color: transparent;
   color: #ffffff;
@@ -84,7 +76,6 @@ body {
   color: #ffa500;
 }
 
-/* Link generici: mantenere il colore arancione sui link */
 a,
 a:visited {
   color: #ffa500;

@@ -1,10 +1,7 @@
-/* prodotti.css */
-
 .card-body {
   cursor: pointer;
 }
 
-/* Sfondo iframe */
 .background-frame {
   position: fixed;
   top: 0;
@@ -17,32 +14,28 @@
   opacity: 0.92;
 }
 
-/* Prezzo */
 .price {
   font-size: 1.1rem;
   margin: 10px 0;
 }
 
-/* Blocchi dinamici */
 .product-actions {
   margin-top: 15px;
 }
 
-/* Nascondi blocchi dinamici */
 .hidden {
   display: none !important;
 }
 
-/* Nasconde scrollbar per fullscreen */
 #lista-prodotti::-webkit-scrollbar {
   display: none;
 }
 #lista-prodotti {
-  -ms-overflow-style: none;  /* IE e Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;  
+  scrollbar-width: none;     
 }
 
-/* === Modalità Card === */
+
 .row.justify-content-center .card {
   height: 100%;
   background-color: rgba(255, 248, 240, 0.85);
@@ -56,7 +49,6 @@
   transform: scale(1.02);
 }
 
-/* === Modalità Lista === */
 .col-12 .card {
   flex-direction: row;
   display: flex;
@@ -74,7 +66,6 @@
   object-fit: contain;
 }
 
-/* === Modalità Fullscreen === */
 #lista-prodotti.d-flex {
   height: 100vh;
   overflow-x: auto;
@@ -100,13 +91,11 @@
   margin-bottom: 1rem;
 }
 
-/* Navbar rustica */
 .navbar {
   background-color: #fff8f0 !important;
   border-bottom: 1px solid #e6d3b3;
 }
 
-/* Pulsanti coerenti */
 .btn-outline-success {
   color: #6d4c41;
   border-color: #bfa68a;
