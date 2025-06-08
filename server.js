@@ -140,6 +140,7 @@ async function main() {
     /////////////////////////////////////////////////////////////////////////
     //HOMEPAGE
     app.get("/",async (req,res)=>{
+        
         console.log("richiesta homepage");
         console.log(req.headers);
         try {
@@ -180,9 +181,7 @@ async function main() {
             }
         } catch (error) {
             console.log(error);
-            res.status(500)
-            
-            
+            res.status(500)    
         }
     })
     
@@ -196,14 +195,23 @@ async function main() {
     // Endpoint registrazione
     app.post("/registrazione", async (req, res) => {
         const { name, surname, username, email, phone, password, user_type } = req.body;
-
+        if (!name || !surname || !username || !email || !phone || !password || !user_type) {
+            res.status(400).json({err:"missing info"})
+            return
+        }
         try {
             // Controlla se l'email è già registrata
             const checkQuery = "SELECT uid FROM utenti WHERE email = $1";
-            const existing = await pool.query(checkQuery, [email]);
+            let existing = await pool.query(checkQuery, [email]);
 
             if (existing.rows.length > 0) {
-                return res.status(409).json({err:"mail"});
+                res.status(409).json({err:"mail"});
+                return
+            }
+            existing = await pool.query(`SELECT uid FROM utenti WHERE username=$1`, [username])
+            if (existing.rows.length>0) {
+                res.status(409).json({err:"username"})
+                return
             }
 
             // Hash della password
@@ -258,6 +266,8 @@ async function main() {
                     sameSite:'Strict',
                     maxAge:7 * 24 * 60 * 60 * 1000 //7 giorni
                 }).json({})
+                console.log("inserimento completato");
+                
             }
         } catch (err) {
             console.error("Errore durante la registrazione:", err);
@@ -302,6 +312,10 @@ async function main() {
             VALUES ($1,$2,$3,$4,$5,$6)
         `
         const {name, email, phone, address, desc} = req.body
+        if (!name || !email || !phone || !address || !desc) {
+            res.status(400).json({err:"missing info"})
+            return
+        }
         const values = [user.uid, name, address, email, phone, desc]
         try {
             result = await pool.query(query,values)
@@ -321,9 +335,7 @@ async function main() {
     app.post("/login", async(req,res)=>{  
         console.log("iniziata sequenza login");
         const {cred, pw} = req.body
-        const hashedpw = await bcrypt.hash(pw,10);
-        console.log("PASSWORD ADMIN = "+await bcrypt.hash("password", 10));
-        
+        const hashedpw = await bcrypt.hash(pw,10);        
         const user = await pool.query("SELECT * FROM utenti WHERE username = $1",[cred])
         //console.log(hashedpw)
         
@@ -395,6 +407,13 @@ async function main() {
                 maxAge: 50 * 60 * 1000 //50 minuti
             })
             .json({})
+        }else{
+            res.status(401)
+            .clearCookie('refreshToken', {
+                httpOnly:true,
+                secure:true,
+                sameSite:`Strict`
+            }).json({err:"rem"})
         }
     })
     app.delete('/logout', async (req, res) => {
