@@ -135,14 +135,21 @@ async function remove() {
       headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
+
+
     if (response.ok) {
       console.log("Carrello svuotato con successo");
-      
+
+      // Svuota il riepilogo e azzera il totale
       document.getElementById("riepilogo").innerHTML = '';
       document.getElementById("totale").innerText = "€0";
 
-      count=0
-      counter()
+      count = 0;
+      counter();
+
+      window.parent.document
+        .getElementById("prodotti-iframe")
+        .contentWindow.location.reload();
     } else {
       if (response.status === 401) {
         if (data.err === "missing token" || data.err === "invalid token") {
@@ -153,13 +160,13 @@ async function remove() {
           } else {
             window.parent.location.href = "/";
           }  
-        }else if (data.err==="usertype") {
-          alert("utente non autorizzato\nredirect a homepage")
+        } else if (data.err === "usertype") {
+          alert("utente non autorizzato\nredirect a homepage");
         }   
-      }else if (response.status===500) {
-        alert("errore del server")
-      }else{
-        alert("errore sconosciuto")
+      } else if (response.status === 500) {
+        alert("Errore del server");
+      } else {
+        alert("Errore sconosciuto");
       }
     }
   } catch (error) {
@@ -167,6 +174,7 @@ async function remove() {
     alert("Errore di rete.");
   }
 }
+
 
 async function increase(id, price) {
   try {

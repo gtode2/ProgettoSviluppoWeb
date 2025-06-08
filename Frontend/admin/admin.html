@@ -14,24 +14,18 @@
 
   <div class="layout-container">
     
-    <!-- 📦 Area prodotti pubblici (iframe) -->
     <div class="view-prodotti">
       <iframe src="/prodotti/prodotti.html" title="Catalogo prodotti" id="prodotti-iframe"></iframe>
     </div>
 
-    <!-- 🔘 Bottone mobile per aprire overlay -->
     <button id="btn-toggle-overlay" class="btn-toggle-overlay">Apri Area Admin</button>
 
-    <!-- 🛠️ Area amministrativa (overlay) -->
     <div id="admin-overlay" class="admin-overlay">
       
-      <!-- ❌ Bottone chiusura (solo mobile) -->
       <button id="btn-close-overlay" class="btn-close-overlay">✖</button>
 
       <button id="adminOverlay" class="adminOverlay">Apri area privata</button>
-      <!-- 📋 Lista prodotti caricata via DOM -->
       <div id="lista-report" class="lista-report">
-          <!-- Rimosso lo stile inline, aggiunta classe report-iframe -->
           <iframe src="/admin/report/report.html" 
           frameborder="0" 
           class="report-iframe" 

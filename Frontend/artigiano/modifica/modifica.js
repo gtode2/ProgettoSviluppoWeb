@@ -4,7 +4,6 @@ let c = true
 document.addEventListener('DOMContentLoaded', async() => {
   const dettaglioContainer = document.getElementById('dettaglio-prodotto');
   
-  // Recupera l'ID prodotto dalla query string (esempio: ?id=123)
   const params = new URLSearchParams(window.location.search);
   id = params.get('id');
 
@@ -13,7 +12,6 @@ document.addEventListener('DOMContentLoaded', async() => {
     return;
   }
   
-  // Richiesta all'API per recuperare i dati del prodotto
   try {
     const response = await fetch("/product", {
       method:"POST",
@@ -30,17 +28,17 @@ document.addEventListener('DOMContentLoaded', async() => {
       document.getElementById("quantita").placeholder=data.prodotti[0].amm
       document.getElementById("categoria").value=data.prodotti[0].cat
       defCat = data.prodotti[0].cat
+
+      document.getElementById("nome").value = data.prodotti[0].name;
     }
   } catch (error) {
     console.log(error);
     alert("errore di rete")
   }
   
-  // Funzionalità per il pulsante di chiusura
   const closeButton = document.getElementById('chiudiArea');
   if (closeButton) {
     closeButton.addEventListener('click', () => {
-      // Ad esempio: torna indietro usando la history del browser
       window.history.back();
     });
   }
@@ -161,7 +159,6 @@ async function send() {
               window.parent.location.href="/"
             }
           }
-          //401 - missing product va ignorato 
         }else if (response.status===400) {
           if (data.err==="missing id") {
             alert("id prodotto mancante")
@@ -173,7 +170,6 @@ async function send() {
         }
         console.log(response.status);
           
-        //gestione errore
       }else{
         window.parent.document.getElementById("prodotti-iframe").contentWindow.location.reload()
         window.parent.closeProduct()
