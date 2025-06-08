@@ -50,33 +50,79 @@ document.addEventListener("DOMContentLoaded", async() => {
 
 
 function getfilters(){
-  var filters = {}
-  if (document.getElementById("categoria").value!=="default") {
-    filters.cat = document.getElementById("categoria").value
-    console.log("categoria");
-    
+  var filters = {};
+
+
+  var categoriaElem = document.getElementById("categoria");
+  if (categoriaElem) {
+    let catVal = categoriaElem.value.trim();
+    if (catVal !== "default") { 
+      filters.cat = catVal;
+      console.log("categoria:", catVal);
+    } else {
+      console.log("categoria impostata a default");
+    }
+  } else {
+    console.warn("Elemento con id 'categoria' non trovato");
   }
-  if (document.getElementById("prezzoMin").value.trim()) {
-    filters.min = document.getElementById("prezzoMin").value
-    console.log("minimo");
-  }if (document.getElementById("prezzoMax").value.trim()) {
-    filters.max= document.getElementById("prezzoMax").value
-    console.log("massimo");
+
+  
+  var prezzoMinElem = document.getElementById("prezzoMin");
+  if (prezzoMinElem) {
+    let minVal = prezzoMinElem.value.trim();
+    if (minVal) {
+      filters.min = minVal;
+      console.log("minimo:", minVal);
+    }
+  } else {
+    console.warn("Elemento con id 'prezzoMin' non trovato");
   }
-  if (document.getElementById("produttori").value.trim()!=="default") {
-    filters.produttore= document.getElementById("produttori").value
-    console.log("produttori");
+
+  
+  var prezzoMaxElem = document.getElementById("prezzoMax");
+  if (prezzoMaxElem) {
+    let maxVal = prezzoMaxElem.value.trim();
+    if (maxVal) {
+      filters.max = maxVal;
+      console.log("massimo:", maxVal);
+    }
+  } else {
+    console.warn("Elemento con id 'prezzoMax' non trovato");
   }
-  if (document.getElementById("ordine").value.trim()!=="default") {
-    filters.order= document.getElementById("ordine").value
-    console.log("ordine");
+
+  
+  var produttoriElem = document.getElementById("produttori");
+  if (produttoriElem) {
+    let prodVal = produttoriElem.value.trim();
+    if (prodVal !== "default") {
+      filters.produttore = prodVal;
+      console.log("produttori:", prodVal);
+    }
+  } else {
+    console.warn("Elemento con id 'produttori' non trovato");
   }
-  if (document.getElementById("disponibili").value==="on") {
-    filters.disp=true
-  }else{
-    filters.disp=false
+
+  
+  var ordineElem = document.getElementById("ordine");
+  if (ordineElem) {
+    let ordVal = ordineElem.value.trim();
+    if (ordVal !== "default") {
+      filters.order = ordVal;
+      console.log("ordine:", ordVal);
+    }
+  } else {
+    console.warn("Elemento con id 'ordine' non trovato");
   }
-  return filters
+
+  
+  var disponibiliElem = document.getElementById("disponibili");
+  if (disponibiliElem) {
+    filters.disp = disponibiliElem.value === "on";
+    console.log("disponibilità:", filters.disp);
+  } else {
+    console.warn("Elemento con id 'disponibili' non trovato");
+    filters.disp = false; 
+  }
+
+  return filters;
 }
-
-
