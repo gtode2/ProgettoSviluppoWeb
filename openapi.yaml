@@ -1,0 +1,813 @@
+openapi: 3.1.0
+info:
+  title: Progetto Sviluppo Web
+  version: 1.0.0
+  description: Documentazione delle API del server
+servers:
+  - url: https://localhost:3000
+    description: Server https
+  - ur;: http://localhost:3001
+    description: Server https usato per le applicazioni che necessitano certificati firmati per operare in https (es. stripe)
+paths:
+  /:
+    get:
+      summary: fornisce la homepage in base al tipo di utente (o ospite) o esegue redirect in caso di artigiano senza attività registrata o utente che necessita rinnovo dell'accessToken
+      responses:
+        '200':
+          description: file html della homepage tipo di utente corretto 
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Redirect ad altre pagine
+          headers:
+            Location:
+              description: esegue inoltro per il corretto caricamento della homepage o forza la registrazione dell'attività come priorità per l'account artigiano 
+              schema:
+                type: string
+              examples:
+                regact:
+                  summary: se l'utente è un artigiano ma non ha un'attività registrata a suo nome è forzato a farlo prima di accedere al sito
+                  value: "/regact"
+                renewToken: 
+                  summary: in caso di richiesta con refreshToken ma senza accessToken avviene il redirect con il parametro from=/ per il ritorno alla homepage in caso di successo
+                  value: "/renewToken"
+  /registrazione:
+    get:
+      summary: fornisce la pagina per eseguire la registrazione
+      responses:
+        '200':
+          description: file html della pagina di registrazione
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: invio informazioni per registrazione al server
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                surname:
+                  type: string
+                username:
+                  type: string
+                email:
+                  type: string
+                phone: 
+                  type: string
+                password:
+                  type: string
+                user_type:
+                  type: number
+              required:
+                - name
+                - surname
+                - username
+                - email
+                - phone
+                - password
+                - user_type
+              example:
+                name: gabriele
+                surname: todeschini
+                username: gtode
+                email: gtodeschini1@studenti.uninsubria.it
+                phone: 1122334455
+                password:
+                user_type:
+      responses:
+        '200':
+          description: utente registrato correttamente
+          content: {}
+        '400':
+          description: informazioni richieste parzialmente o completamente mancanti
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "missing info" 
+        '409':
+          description: email o username già presenti nel database
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                EmailDuplicata:
+                  summary: email già presente nel db
+                  value: 
+                    err: "mail" 
+                UsernameDuplicato:
+                  summary: username già presente nel db
+                  value: 
+                    err: "username" 
+        '500':
+          description: errore sconosciuto nel server
+          content: {}
+  /regact:
+    get:
+      summary: fornisce la pagina per eseguire la registrazione dell'attività
+      responses:
+        '200':
+          description: file html della pagina di registrazione dell'attività
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: rediect a homepage se l'utente non deve registrare un'attività 
+          headers:
+            Location:
+              description: redirect a homepage
+              schema:
+                type: string
+              examples:
+                /:
+                  summary: se usertype non corrisponde a quello dell'artigiano o se l'artigiano ha già un'attività registrata viene rimandato alla homepage
+                  value: "/"     
+    post:
+      summary: invio informazioni per registrazione attività al server
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+                address:
+                  type: string
+                desc: 
+                  type: string
+                
+              required:
+                - name
+                - email
+                - phone
+                - address
+                - desc
+              example:
+                name: bricolage da mario
+                email: bricolagedamario@gmail.com
+                phone: 6677889900
+                address: Via Roma 15, Milano
+                desc: tutto il necessario per il bricolage e il fai da te
+      responses:
+        '200':
+          description: attività registrata correttamente
+          content: {}
+        '400':
+          description: informazioni richieste parzialmente o completamente mancanti
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "missing info" 
+        '401':
+          description: AccessToken mancante o invalido
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token" 
+        '409':
+          description: attività già registrata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "ex"
+        '500':
+          description: errore sconosciuto nel server
+          content: {}
+  /login:
+    get:
+      summary: fornisce la pagina per eseguire il login
+      responses:
+        '200':
+          description: file html della pagina di login
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: invio informazioni per registrazione attività al server
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                cred:
+                  type: string
+                pw:
+                  type: string
+              required:
+                - cred
+                - pw
+              example:
+                cred: gtode
+                pw: Password
+      responses:
+        '200':
+          description: login eseguito correttamente
+          content: {}
+        '401':
+          description: informazioni errate
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "wrong info" 
+        '403':
+          description: account bannato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "banned"
+  /renewToken:
+    get:
+      summary: fornisce la pagina per ottenere un nuovo accessToken
+      responses:
+        '200':
+          description: file html della pagina di renewToken
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      summary: chiamata alla route per il rinnovo dell'accessToken
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                cred:
+                  type: string
+                pw:
+                  type: string
+              required:
+                - cred
+                - pw
+              example:
+                cred: gtode
+                pw: Password
+      responses:
+        '200':
+          description: refreshToken rinnovato correttamente
+          content: {}
+        '401':
+          description: refreshToken rimosso in quanto mancante / non valido
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "rem" 
+  /logout:
+    delete:
+      summary: rimuove token dall'utente e elimina refreshToken dal database
+      responses:
+        '200':
+          description: logout eseguito correttamente
+          content: {}
+  /addProduct:
+    post:
+      summary: invio informazioni per inserire un prodotto
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                descr:
+                  type: string
+                price:
+                  type: number
+                amm: 
+                  type: number
+                cat:
+                  type: string
+              required:
+                - name
+                - descr
+                - price
+                - amm
+                - cat
+              example:
+                name: Kit brugole esagonali
+                descr: lunghezza 64mm 
+                price: 1.50
+                amm: 33
+                cat: Materiali per artigianato
+      responses:
+        '200':
+          description: inserimento prodotto eseguito correttamente
+          content: {}
+        '401':
+          description: account non autorizzato ad inserire il prodotto
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"  
+                banned: 
+                  summary: l'account che sta provando a inserire il prodotto è stato bannato
+                  value:
+                    err: "banned"
+                usertype:
+                  summary: tipo utente diverso da quello dell'artigiano
+                  value:
+                    err: "usertype"
+        '500':
+          description: errore sconosciuto nel server
+          content: {}
+  /product:
+    post:
+      summary: richiesta invio prodotti
+      requestBody:
+        required: false
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+              example:
+                id: 1
+      responses:
+        '200':
+          description: invio prodotti trovati
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  prodotti:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: 
+                          type: number
+                        name:
+                          type: string 
+                        descr:
+                          type: string
+                        costo:
+                          type: number
+                        amm: 
+                          type: number
+                        banned:
+                          type: boolean
+                        cat: 
+                          type: string
+                        actid: 
+                          type: number
+                        nome_attivita:
+                          type: string 
+                  usertype:
+                    type: number
+              examples:
+                nessunProdotto:
+                  summary: nessun prodotto trovato
+                  value: 
+                    prodotti: "0" 
+                utenteLoggato:
+                  summary: utente ha eseguito correttamente l'accesso
+                  value: 
+                    prodotti:
+                      - id: 1
+                        name: Kit brugole esagonali
+                        descr: lunghezza 64mm 
+                        costo: 1.50
+                        amm: 33
+                        banned: false
+                        cat: Materiali per artigianato
+                        actid: 1
+                        nome_attivita: bricolage da mario
+                    usertype: 1    
+                utenteAnonimo:
+                  summary: utente ha eseguito correttamente l'accesso
+                  value: 
+                    prodotti:
+                      - id: 1
+                        name: Kit brugole esagonali
+                        descr: lunghezza 64mm 
+                        costo: 1.50
+                        amm: 33
+                        banned: false
+                        cat: Materiali per artigianato
+                        actid: 1
+                        nome_attivita: bricolage da mario
+                    usertype: 3     
+                prodottoSpecificoLoggato: 
+                  summary: utente richiede i dettagli di un prodotto specifico
+                  value: 
+                    prodotti:
+                      id: 1
+                      name: Kit brugole esagonali
+                      descr: lunghezza 64mm 
+                      costo: 1.50
+                      amm: 33
+                      banned: false
+                      cat: Materiali per artigianato
+                      actid: 1
+                      nome_attivita: bricolage da mario
+                    usertype: 1 
+                prodottoSpecificoAnonimo: 
+                  summary: utente non loggato richiede i dettagli di un prodotto specifico
+                  value: 
+                    prodotti:
+                      id: 1
+                      name: Kit brugole esagonali
+                      descr: lunghezza 64mm 
+                      costo: 1.50
+                      amm: 33
+                      banned: false
+                      cat: Materiali per artigianato
+                      actid: 1
+                      nome_attivita: bricolage da mario
+                    usertype: 3 
+    patch:
+      summary: modifica del prodotto
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                nome:
+                  type: string 
+                descr:
+                  type: string
+                prezzo:
+                  type: number
+                qt:
+                  type: number
+                cat:
+                  type: string
+              required:
+                - id
+              example:
+                id: 1
+                name: Kit brugole esagonali
+                descr: lunghezza 32mm 
+                price: 1.25
+                amm: 12
+                cat: Materiali per artigianato
+      responses:
+        '200':
+          description: modifica prodotto eseguita correttamente
+          content: {}
+        '400':
+          description: id mancante
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "missing id" 
+        '401':
+          description: account non autorizzato modificare il prodotto
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"  
+                missingproduct: 
+                  summary: il prodotto non è stato trovato, ipoteticamente è stato bannato
+                  value:
+                    err: "missing product"
+        '500':
+          description: errore sconosciuto del server
+          content: {}
+    delete:
+      summary: eliminazione del prodotto
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                pid:
+                  type: number
+          
+              required:
+                - pid
+              example:
+                pid: 1
+      responses:
+        '200':
+          description: eliminazione prodotto eseguita correttamente
+          content: {}
+        '400':
+          description: id mancante
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "no product" 
+        '401':
+          description: account non autorizzato a eliminare il prodotto
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"  
+        '500':
+          description: errore sconosciuto del server
+          content: {}
+  /cart:
+    post:
+      summary: inserimento prodotto nel carrello
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                dec:
+                  type: string
+              required:
+                - id
+              example:
+                pid: 1
+                dec: r
+      responses:
+        '200':
+          description: prodotto inserito correttamente nel carrello
+          content: {}
+        '400':
+          description: id prodotto mancante o tipo dec errato
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                missingId: 
+                  summary: id prodotto mancante
+                  value:
+                    err: "missing id" 
+                invalidDec:
+                  summary: dec non contiene ne r (rimuovi) ne d (decrementa)
+                  value:
+                    err: "invalid dec"
+        '401':
+          description: account non autorizzato a inserire il prodotto nel carrello
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"  
+                unauthorized:
+                  summary: utente non autorizzato a inserire il prodotto nel carrello
+                  value: 
+                    err: "unauthorized"  
+        '404':
+          description: prodotto non disponibile nel db
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "product removed"
+        '409':
+          description: quantità prodotti nel carrello errata
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                max:
+                  summary: quantità massima prodotti raggiunta - quanttià nel carrello = quanttià nel db
+                  value: 
+                    err: "max" 
+                zero:
+                  summary: quantità prodotto = 0
+                  value: 
+                    err: "0"     
+        '500':
+          description: errore sconosciuto del server
+          content: {}
+    get:
+      summary: richiesta carrello
+      responses:
+        '200':
+          description: invio carrello
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  carrello:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: 
+                          type: number
+                        name:
+                          type: string 
+                        descr:
+                          type: string
+                        costo:
+                          type: number
+                        amm: 
+                          type: number
+                        banned:
+                          type: boolean
+                        cat: 
+                          type: string
+                        actid: 
+                          type: number
+                        uid:
+                          type: number
+                        quantita:
+                          type: number
+                  usertype:
+                    type: number
+              example:
+                carrello: 
+                  - id: 1
+                    name: Kit brugole esagonali
+                    descr: lunghezza 64mm 
+                    costo: 1.50
+                    amm: 33
+                    banned: false
+                    cat: Materiali per artigianato
+                    actid: 1
+                    uid: 2
+                    quantita: 2
+        '401':
+          description: account non autorizzato a visualizzare il  carrello
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"  
+        '500':
+          description: errore sconosciuto del server
+          content: {}
+    delete:
+      summary: richiesta svuotamento carrello
+      responses:
+        '200':
+          description: svuotamento carrello eseguito correttamente
+          content: {}
+        '401':
+          description: account non autorizzato a svuotare  il  carrello
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"  
+        '500':
+          description: errore sconosciuto del server
+          content: {}
