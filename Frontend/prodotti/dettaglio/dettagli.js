@@ -3,7 +3,6 @@ function getProductIdFromUrl() {
   return params.get("id");
 }
 
-// Popola i campi HTML con i dati del prodotto
 function mostraDettaglioProdotto(p) {
   console.log("Prodotto ricevuto:", p);
   document.getElementById("nome").textContent = p.name;
@@ -20,7 +19,6 @@ function mostraDettaglioProdotto(p) {
   
 }
 
-      // Funzione per chiudere il dettaglio del prodotto
 function closeProduct() {
   console.log("close");
   if (window.parent && typeof window.parent.closeProduct === 'function') {
@@ -30,7 +28,6 @@ function closeProduct() {
   }
 }
 
-      // Inizializzazione: recupera l'ID, chiama l'API e popola la pagina
 document.addEventListener("DOMContentLoaded", async () => {
   const id = getProductIdFromUrl();
   console.log("ID prodotto estratto dalla URL:", id);

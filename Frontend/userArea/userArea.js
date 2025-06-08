@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const userType = params.get("user") || "cliente";
   const bgIframe = document.getElementById("user-bg-iframe");
 
-  // 🔁 Caricamento dinamico dello sfondo
   if (isBackground && bgIframe) {
     const src = userType === "artigiano"
       ? "/artigiano/artigiano.html?mode=background"
@@ -12,7 +11,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     bgIframe.src = src;
   }
   
-  // 🔒 Se in modalità background → disattiva tutta la UI
   if (isBackground) {
     document.querySelectorAll("button, input").forEach(el => {
       el.disabled = true;
@@ -90,7 +88,6 @@ async function save() {
     if (response.ok) {
       window.location.reload()
     } else {
-      //gestione errori
       if (response.status===401) {      
         if (data.err==="missing token") {
           const res = await renewToken()
@@ -120,7 +117,6 @@ async function logout() {
         headers: { "Content-Type": "application/json" },
       });
     } catch (error) {
-      // anche se fallisce il logout, lo mandiamo fuori
     } finally {
       window.location.href = "/";
     }
@@ -209,18 +205,15 @@ function checkValidity(){
   const email = document.getElementById("email");
   const telefono = document.getElementById("telefono"); 
 
-  //raccatto i valori ripuliti dagli spazi
   const getNome = nome.value.trim();
   const getCognome = cognome.value.trim();
   const getUsername = username.value.trim();
   const getEmail = email.value.trim();
   const getTelefono = telefono.value.trim();
 
-  //se nessuno dei campi è stato modificato, allora nulla
   if(!getNome && !getCognome && !getUsername && !getEmail && getTelefono ){
     return;
   }
-  //email corretta:
   if(getEmail){
     const checkEmail =  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(!emailRegex.test(checkEmail)){

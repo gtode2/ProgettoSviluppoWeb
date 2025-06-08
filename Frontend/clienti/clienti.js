@@ -1,5 +1,4 @@
 function report(id) {
-  console.log("AAAAAA");
   document.getElementById('lat-iframe').src = '/clienti/report/report.html?id=' + encodeURIComponent(id);
 }
 
@@ -7,7 +6,6 @@ function report(id) {
 function loadCart() {
   document.getElementById('lat-iframe').src = '/clienti/carrello/carrello.html';
 }
-
 
 function closeProduct() {
     window.parent.document.getElementById("lat-iframe").src = "/clienti/carrello/carrello.html";
@@ -25,13 +23,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (toggleOverlayButton) {
         toggleOverlayButton.addEventListener('click', function () {
-            adminOverlay.classList.add('aperto'); // ✅ Overlay visibile
+            adminOverlay.classList.add('aperto');
         });
     }
 
     if (closeOverlayButton) {
         closeOverlayButton.addEventListener('click', function () {
-            adminOverlay.classList.remove('aperto'); // ✅ Overlay nascosto
+            adminOverlay.classList.remove('aperto');
         });
     }
     

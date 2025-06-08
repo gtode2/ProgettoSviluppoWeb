@@ -24,7 +24,6 @@ async function confirmP() {
         body: JSON.stringify({id:id, type:0})
         })
         const data = await response.json()
-        console.log("AAAAA");
         if (!response.ok) {
             if (response.status === 400) {
                 alert("account non autorizzato\nreindirizzamento verso homepage")
@@ -68,7 +67,6 @@ async function confirmA() {
         body: JSON.stringify({id:id, type:1})
         })
         const data = await response.json()
-        console.log("AAAAA");
         if (!response.ok) {
             if (response.status === 400) {
                 alert("account non autorizzato\nreindirizzamento verso homepage")
