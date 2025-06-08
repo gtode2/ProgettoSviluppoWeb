@@ -20,10 +20,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     return; 
   }
 
-
   let data;
-  
-  getOrders()
+
+  if(userType !== "admin"){
+    getOrders();
+  }
+
+
   try {
     const response = await fetch("/user", {
       method: "POST",
