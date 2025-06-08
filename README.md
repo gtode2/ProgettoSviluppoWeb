@@ -40,6 +40,8 @@ In aggiunta, il team di sviluppo ha predisposto una sezione per la visualizzazio
 Al momento, la nostra applicazione opera con certificati Self Signed.
 A seguito del deployement sarà necessario ottenere certificati validi per poter utilizzare la libreria Stripe per HTTPS e per utilizzare la web app come Progressive Web Application.
 Al momento Stripe opera su HTTP, non avendo certificati riconosciuti, ma una volta ottenuto l'URL, occorrerà registrare una webhook. Fatto ciò, sarà possibile rimuovere la parte finale dal server il listener HTTP alla porta 3001 in modo da poter lavorare esclusivamente in HTTPS.
+Per continuare ad operare utilizzando dei certificati self-signed è necessario installare la Stripe CLI per generare la Webhook Signing Secret (tramite il comando stripe listen --forward-to http://ip:port/stripe/webhook inserendo ip e port corretti).
+È inoltre necessario impostare le chiavi SECRET_KEY e REFRESH_SECRET_KEY all'interno del file .env utilizzate per la creazione dei token
 Al primo avvio, l'account admin verrà pre-caricato nel Db, con delle credenziali temporanee:
 ### username = admin
 ### password = Password
@@ -50,4 +52,4 @@ Il team di testing ha anche predisposto degli appositi comandi npm di testing.
 Per poterli attivare, sul terminale effettuare il seguente comando:
 ### docker-compose run --rm app npm
 Per ulteriori informazioni, andare nell'apposita sezione package.json, sezione script.
-Per il testing locale, invece, è necessario installare la CLI di Stripe per ottenere la chiave da inserire in "STRIPE_SESSION" dentro il .env (la chiave inizia con whsec...
+Per il testing locale, invece, è necessario installare la CLI di Stripe per ottenere la chiave da inserire in "STRIPE_WSS" dentro il .env (la chiave inizia con whsec...
