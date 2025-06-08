@@ -15,11 +15,13 @@ Per poter utilizzare l'applicazione, effettuare il seguente comando da terminale
 una volta scaricata la directory, occorre inizializzare Docker, utilizzando il seguente comando:
 ### docker-compose up --build
 Una volta effettuata l'installazione, occorre:
-- impostare il .env con le informazioni richieste per usare postgres;
+- rinominare il file sample.env in .env 
+- impostare le informazioni richieste per usare postgres in .env;
 - impostare le key di Stripe nel file .env . Di seguito troverete il link di stripe dove, una volta registrati, potrete ottenere le chiavi sopra descritte:
 https://dashboard.stripe.com/test/dashboard
-Una volta ottenuta la suddetta key, andrà inserita nel seguente file:
+Una volta ottenute le chiavi, la public key andrà inserita anche nel seguente file:
 - Key.js
+  all'interno della variabile stripepk
 
 ## Utilizzo
 Per poter utilizzare la nostra applicazione in locale, dovrete eseguire il comando di docker:
