@@ -118,15 +118,14 @@ async function main() {
                 console.log(prodotti);
                 
                 for (const [actid, prod] of Object.entries(prodotti)) {   
-                    for(const[prodid, prodotto] of Object.entries(prod)){
-                        console.log(prod);
-                    
-                        await pool.query(`UPDATE prodotti set amm=amm+$1 WHERE id=$2`,[prodotto.quantita, prodid])
-                        console.log("reinseriti prodotti "+prodid);  
-                    }                
+                    for (const [prodid, prodotto] of Object.entries(prodotti)) {   
+                        console.log("Prodotto:", prodotto);
+                        await pool.query(`UPDATE prodotti SET amm = amm + $1 WHERE id = $2`, [prodotto.quantita, prodid]);
+                        console.log("Reinseriti prodotti " + prodid);  
+                    }
+                    await pool.query("COMMIT");                
                 }
             }
-            await pool.query("COMMIT")
         } catch (error) {
             await pool.query("ROLLBACK")
             console.log(error);

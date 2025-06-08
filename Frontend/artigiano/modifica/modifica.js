@@ -71,7 +71,6 @@ function checkPrezzo(){
     return formValido;
   } else {
     priceInput.setCustomValidity("");
-    console.log("ASDASDASDASD");
 
     return parseFloat(priceInput).toFixed(2);    
   }
