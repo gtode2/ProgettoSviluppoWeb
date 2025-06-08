@@ -4,26 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Checkout</title>
-  <!-- Bootstrap CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="checkout.css" />
   <link rel="manifest" href="/manifest.webmanifest">
     <meta name="theme-color" content="#007bff">
 </head>
 <body class="bg-light">
 
   <div class="container-fluid">
-    <!-- Pulsante per aprire il checkout in modalità mobile (visibile solo su dispositivi piccoli) -->
     <div class="d-md-none text-end p-2">
       <button id="openCheckout" class="btn btn-primary">Apri Checkout</button>
     </div>
-
     <div class="row">
- 
-      <!-- Overlay/Checkout a destra -->
-      <!-- In modalità mobile questo elemento è nascosto di default, salvo che venga aggiunta la classe "aperto" -->
+
       <div class="col-md-4 admin-overlay">
-        <!-- Pulsante per chiudere il checkout -->
         <button class="btn-close-overlay">&times;</button>
         <h2>Checkout Pagamento</h2>
         <form id="checkoutForm" class="form-prodotto">
