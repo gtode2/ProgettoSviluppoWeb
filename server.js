@@ -992,7 +992,7 @@ async function main() {
             return
         }
         if (user.usertype !== 1) {
-            res.status(400).json({})
+            res.status(401).json({err:"unauthorized"})
             return
         }
         
@@ -1136,7 +1136,6 @@ async function main() {
             res.status(500).json({})
         }
     })
-    
 
     app.post("/stripe/webhook", express.raw({ type: 'application/json' }), async (req, res) => {
         const sig = req.headers["stripe-signature"];

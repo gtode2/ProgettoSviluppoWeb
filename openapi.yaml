@@ -6,7 +6,7 @@ info:
 servers:
   - url: https://localhost:3000
     description: Server https
-  - ur;: http://localhost:3001
+  - url: http://localhost:3001
     description: Server https usato per le applicazioni che necessitano certificati firmati per operare in https (es. stripe)
 paths:
   /:
@@ -811,3 +811,643 @@ paths:
         '500':
           description: errore sconosciuto del server
           content: {}
+  /report:
+    post:
+      summary: inserimento report
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                productid:
+                  type: number
+                dove:
+                  type: string
+                desc:
+                  type: string
+              required:
+                - productid
+                - dove
+                - desc
+              example:
+                productid: 1
+                dove: nome prodotto
+                desc: nome offensivo
+      responses:
+        '200':
+          description: report inserito correttamente
+          content: {}
+        '400':
+          description: informazioni mancanti
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err:: "missing info"
+        '401':
+          description: account non autorizzato a inserire il report
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"  
+        '500':
+          description: errore sconosciuto del server
+          content: {}
+    get:
+      summary: caricamento report
+      responses:
+        '200':
+          description: report caricati correttamente
+          content: {}
+        '401':
+          description: account non autorizzato a visualizzare i report
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"  
+        '500':
+          description: errore sconosciuto del server
+          content: {}
+    patch:
+      summary: chiusura report
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                
+              required:
+                - id
+              example:
+                id: 1
+      responses:
+        '200':
+          description: report rimosso correttamente
+          content: {}
+        '400':
+          description: informazioni mancanti
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err:: "missing id"
+        '401':
+          description: account non autorizzato a inserire il report
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"  
+                usertype:
+                  summary: tipo utente errato
+                  value:
+                    err: "usertype"
+        '500':
+          description: errore sconosciuto del server
+          content: {}
+  /ban:
+    post:
+      summary: ban utente o prodotto
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                type:
+                  type: string
+              required:
+                - id
+                - type
+              example:
+                id: 1
+                type: 0
+      responses:
+        '200':
+          description: ban eseguto correttamente
+          content: {}
+        '400':
+          description: informazioni mancanti
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err:: "missing info"
+        '401':
+          description: account non autorizzato a eseguire il ban
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"  
+                usertype:
+                  summary: tipo utente errato
+                  value:
+                    err: "usertype"
+        '500':
+          description: errore sconosciuto del server
+          content: {}
+    get:
+      summary: fornisce pagina statica ban
+      responses:
+        '200':
+          description: report rimosso correttamente
+          content:
+            text/html:
+              schema:
+                type: string
+  /artigiani:
+    post:
+      summary: richiesta artigiani
+      responses:
+        '200':
+          description: invio artigiani trovati
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  art:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        actid:
+                          type: number
+                        nome:
+                          type: string
+              example:
+                - actid: 1
+                  type: bricolage da mario
+        '500':
+          description: errore sconosciuto del server
+          content: {}
+  /userArea: 
+    get:
+      summary: carica la userarea corretta (artigiano, utente o admin)
+      responses:
+        '200':
+          description: file html della pagina di userArea
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: rediect a renewtoken o a regact 
+          headers:
+            Location:
+              description: redirect alle pagine 
+              schema:
+                type: string
+              examples:
+                /renewtoken:
+                  summary: se accessToken non è verificabile lo inoltra a renewtoken
+                  value: "/renewtoken"  
+                /regact:  
+                  summary: se artigiano non ha un'attività lo reindirizza a registrazione attività
+  /user:
+    post:
+      summary: richiesta informazioni utente e attività
+      requestBody:
+        required: false
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                act:
+                  type: boolean
+              example:
+                act: false
+      responses:
+        '200':
+          description: invio prodotti trovati
+          content:
+            application/json:
+              schema: 
+                oneof:
+                  - type: object  
+                    properties:
+                      nome: 
+                        type: string
+                      cognome: 
+                        type: string
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      ntel:
+                        type: string
+                  - type: object  
+                    properties:
+                      actid: 
+                        type: number
+                      nome: 
+                        type: string
+                      indirizzo:
+                        type: string
+                      email:
+                        type: string
+                      ntel:
+                        type: string
+                      descr:
+                        type: string
+              examples:
+                user:
+                  summary: informazioni utente
+                  value: 
+                    nome: gabriele 
+                    cognome: todeschini
+                    username: gtode
+                    email: gtodeschini1@studenti.uninsubria.it
+                    ntel: 1122334455
+                attivita:
+                  summary: informazioni attività
+                  value: 
+                    actid: 1
+                    nome: bricolage da mario
+                    indirizzo: Via Roma 12 Milano 
+                    email: bricolagedamario@gmail.it
+                    ntel: 6677889900
+                    descr: negozio dedicato a bricolage e fai da te
+        '401':
+          description: account non autorizzato a visualizzare le informazioni dell'utente o dell'attività
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"          
+        '500':
+          description: errore sconosciuto del server
+          content: {}
+  /editact:
+    get:
+      summary: caricamento pagina modifica attività
+      responses:
+        '200':
+          description: report inserito correttamente
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: rediect a userarea 
+          headers:
+            Location:
+              description: redirect alla pagina 
+              schema:
+                type: string
+              example:
+                value: /userArea
+  /act:
+    patch:
+      summary: modifica dell'attività 
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string 
+                email:
+                  type: string
+                ntel:
+                  type: string
+                
+                descr:
+                  type: string
+                
+              example:
+                nome: bricolage da mario
+                email: bricolagedamario@gmail.it
+                ntel: 1234567890
+      responses:
+        '200':
+          description: modifica prodotto eseguita correttamente
+          content: {}
+        '400':
+          description: nessun valore modificato 
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "no value" 
+        '401':
+          description: account non autorizzato modificare il prodotto
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"  
+        '500':
+          description: errore sconosciuto del server
+          content: {}
+  /updateUser:
+    patch:
+      summary: modifica dell'utente 
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string 
+                cognnome:
+                  type: string 
+                username:
+                  type: string 
+                email:
+                  type: string
+                ntel:
+                  type: string
+              example:
+                nome: mario
+                cognome: rossi
+                email: mariorossi1971@gmail.com
+                ntel: 1234567890
+      responses:
+        '200':
+          description: modifica utente eseguita correttamente
+          content: {}
+        '400':
+          description: nessun valore modificato 
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "empty" 
+        '401':
+          description: account non autorizzato modificare il prodotto
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"  
+        '500':
+          description: errore sconosciuto del server
+          content: {}  
+  /checkout:
+    post:
+      summary: esegue operazioni iniziali per checkout 
+      responses:
+        '200':
+          description: conferma inizio checkout
+          content: {}
+        '401':
+          description: account non autorizzato a avviare il checkout
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"      
+                unauthorized:
+                  summary: tipo account errato     
+        '404':
+          description: carrello vuoto
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "empty"
+        '409':
+          description: non ci sono abbastanza prodotti in magazzino per completare l'ordine
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "not enough" 
+        '500':
+    get:
+      summary: invia pagina per completare ilo checkout 
+      responses:
+        '200':
+          description: conferma inizio checkout
+          content:
+            text/html:
+              schema:
+                type: string
+        '302':
+          description: Redirect a renewToken
+          headers:
+            Location:
+              description: inoltra per verificare correttezza account se non è possibile verificare l'accessToken
+              schema:
+                type: string
+              example:
+                value: "/renewtoken"
+  /confirmCheckout:
+    post:
+      summary: creazione pacchetto stripe completata, invio id 
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                addr:
+                  type: string
+              required:
+                - addr
+              example:
+                addr: Via Roma 12, Milano
+      responses:
+        '200':
+          description: invio prodotti trovati
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  id:
+                    type: string
+              example:
+                id: idSessioneStripe              
+        '400':
+          description: indirizzo mancante
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              example:
+                err: "missing addr"
+        '401':
+          description: account non autorizzato a visualizzare le informazioni dell'utente o dell'attività
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  err:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: accessToken non valido
+                  value: 
+                    err: "invalid token" 
+                missingToken:
+                  summary: accessToken mancante
+                  value: 
+                    err: "missing token"
+                noorder:
+                  summary: ordine non trovato
+                  value: 
+                    err: "no order"           
+        '500':
+          description: errore sconosciuto del server
+          content: {}
+  /success:
+    get:
+      summary: fornisce pagina statica success
+      responses:
+        '200':
+          description: report rimosso correttamente
+          content:
+            text/html:
+              schema:
+                type: string
+  /cancel:
+    get:
+      summary: fornisce pagina statica cancellazione acquisto
+      responses:
+        '200':
+          description: report rimosso correttamente
+          content:
+            text/html:
+              schema:
+                type: string
+  
