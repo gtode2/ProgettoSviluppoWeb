@@ -109,7 +109,7 @@ async function main() {
     });
 
     const stripe = require('stripe')(process.env.STRIPE_SECRET);
-    const endpointSecret = process.env.STRIPE_SESSION; 
+    const endpointSecret = process.env.STRIPE_WSS; 
 
     app.get("/",async (req,res)=>{        
         try {
