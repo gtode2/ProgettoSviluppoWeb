@@ -3,57 +3,71 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Area Utente</title>
+    <title>Area Utente - Modifica Attività</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <link rel="manifest" href="/manifest.webmanifest">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#007bff" />
   </head>
+  <body class="bg-light">
+    <!-- Header -->
+    <header class="py-3 bg-white shadow-sm">
+      <div class="container">
+        <h1 class="h4 m-0">Modifica Attività</h1>
+      </div>
+    </header>
 
-  <body>
-    <div class="iframe-sfondo">
-      <iframe src="/HomePage/HomePage.html" title="Sfondo Homepage"></iframe>
-    </div>
-
-    <div class="d-flex justify-content-center align-items-center">
-      <div class="col-md-6 mt-4">
-        <h2>Dati Utente</h2>
-        <div class="mt-3">
-          <label for="nome" class="form-label">Nome attività</label>
-          <input type="text" id="nome" class="form-control">
-        </div>
-        <div class="mt-3">
-          <label for="email" class="form-label">Email pubblica</label>
-          <input type="email" id="email" class="form-control">
-        </div>
-        <div class="mt-3">
-          <label for="telefono" class="form-label">Numero di telefono pubblico</label>
-          <input type="number" id="telefono" class="form-control">
-        </div>
-        <div class="mt-3">
-          <label for="indirizzo" class="form-label">Indirizzo</label>
-          <input type="number" id="indirizzo" class="form-control">
-        </div>
-        <div class="mb-3">
-              <label for="descr" class="form-label">Descrizione</label>
-              <textarea name="descrizione" id="descr" class="form-control description-textarea"></textarea>
+    <div class="container py-5">
+      <div class="card mx-auto" style="max-width: 600px;">
+        <div class="card-body">
+          <h2 class="h5 text-center mb-4">Dati Utente</h2>
+          <form id="modificaAttivitaForm">
+            <div class="mb-3">
+              <label for="nome" class="form-label">Nome attività</label>
+              <input type="text" id="nome" class="form-control" required />
             </div>
-        <div class="mt-3 text-center">
-          <button class="btn btn-secondary" id="salva" onclick="save()">Salva</button>
-          <button class="btn btn-secondary" id="annulla" onclick="cancel()">Annulla</button>
-        </div>
-        <div class="mt-4 text-center">
-            <button class="btn btn-secondary" onclick="location.href='/userArea'">
-                Torna a area utente
+            <div class="mb-3">
+              <label for="email" class="form-label">Email pubblica</label>
+              <input type="email" id="email" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="telefono" class="form-label">
+                Numero di telefono pubblico
+              </label>
+              <input type="tel" id="telefono" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="indirizzo" class="form-label">Indirizzo</label>
+              <input type="text" id="indirizzo" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="descr" class="form-label">Descrizione</label>
+              <textarea
+                name="descrizione"
+                id="descr"
+                class="form-control description-textarea"
+                rows="3"
+                required
+              ></textarea>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" id="annulla" onclick="cancel()">Annulla</button>
+              <button type="submit" class="btn btn-primary" id="salva" onclick="save()">Salva</button>
+            </div>
+          </form>
+          <div class="text-center mt-4">
+            <button class="btn btn-outline-secondary" onclick="location.href='/userArea'">
+              Torna a area utente
             </button>
+          </div>
         </div>
       </div>
     </div>
-</div>
+
     <script src="/artigiano/modificaattivita/modificaatt.js"></script>
     <script src="/sw-register.js"></script>
   </body>
 </html>
-

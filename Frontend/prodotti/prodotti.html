@@ -3,68 +3,106 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Catalogo Prodotti</title>
+    <title>Catalogo Prodotti - Shopify Style</title>
 
+    <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <link rel="manifest" href="/manifest.webmanifest">
-
+    <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="stylesheet" href="prodotti.css" />
+
+    <!-- Se desideri gestire uno sfondo personalizzato con CSS anziché un iframe, puoi definire lo style qui -->
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      /* Se vuoi usare uno sfondo immagine, ad esempio:
+      body {
+         background: url('/images/bg-pattern.jpg') no-repeat center center fixed;
+         background-size: cover;
+      }
+      */
+      /* Nascondiamo l’eventuale elemento "background-frame" se presente in altri prototipi */
+      .background-frame {
+        display: none;
+      }
+    </style>
   </head>
   <body data-utente="cliente">
-
-    <nav class="navbar navbar-light bg-light">
-      <div class="mx-auto">
-        <form class="form-inline">
-          <input
-            class="form-control me-2 flex-grow-1"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-            id="searchbar"
-          >
-          <button class="btn btn-outline-success my-2 my-sm-0" type="button" id="btn-search">
-            Search
-          </button>
-          <button
-            class="btn btn-outline-primary ms-2"
-            type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#modalFiltri"
-          >
-            Filtri
-          </button>
-          <button class="btn btn-outline-success my-2 my-sm-0" type="button" id="btn-clear" onclick="clearFiltro()">
-            Clear
-          </button>
-        </form>
-        <div class="text-center my-3" id="view-buttons">
-          <button class="btn btn-outline-primary me-2" id="view-card">Card</button>
-          <button class="btn btn-outline-secondary me-2" id="view-list">Lista</button>
-          <button class="btn btn-outline-dark" id="view-fullscreen">Fullscreen</button>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+      <div class="container">
+        <a class="navbar-brand" href="#">Catalogo Prodotti</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarProducts"
+          aria-controls="navbarProducts"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarProducts">
+          <form class="d-flex flex-grow-1 my-2 my-lg-0">
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+              id="searchbar"
+            />
+            <button class="btn btn-outline-success me-2" type="button" id="btn-search">
+              Search
+            </button>
+            <button
+              class="btn btn-outline-primary me-2"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#modalFiltri"
+            >
+              Filtri
+            </button>
+            <button class="btn btn-outline-success" type="button" id="btn-clear" onclick="clearFiltro()">
+              Clear
+            </button>
+          </form>
         </div>
       </div>
     </nav>
 
-    <iframe
-      class="background-frame"
-      src="/HomePage/HomePage.html"
-      title="Sfondo HomePage"
-    ></iframe>
-
-    <div class="container my-5 position-relative prodotti-container">
-      <h1 class="text-center mb-4">Prodotti disponibili</h1>
-      <div class="row justify-content-center" id="lista-prodotti">
+    <!-- Sezione view buttons -->
+    <div class="container my-3">
+      <div class="text-center" id="view-buttons">
+        <button class="btn btn-outline-primary me-2" id="view-card">Card</button>
+        <button class="btn btn-outline-secondary me-2" id="view-list">Lista</button>
+        <button class="btn btn-outline-dark" id="view-fullscreen">Fullscreen</button>
       </div>
     </div>
 
-    <div class="modal fade" id="modalFiltri" tabindex="-1">
+    <!-- Container Prodotti -->
+    <div class="container my-5 prodotti-container">
+      <h1 class="text-center mb-4">Prodotti disponibili</h1>
+      <div class="row justify-content-center" id="lista-prodotti">
+        <!-- Qui verranno inserite dinamicamente le schede dei prodotti -->
+      </div>
+    </div>
+
+    <!-- Modal per i Filtri -->
+    <div class="modal fade" id="modalFiltri" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="filtroModalLabel">Filtra Prodotti</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Chiudi"
+            ></button>
           </div>
           <div class="modal-body">
             <form id="form-filtri">
@@ -89,12 +127,12 @@
 
               <div class="mb-3">
                 <label for="prezzoMin" class="form-label">Prezzo minimo (€)</label>
-                <input type="number" id="prezzoMin" class="form-control" min="0">
+                <input type="number" id="prezzoMin" class="form-control" min="0" />
               </div>
 
               <div class="mb-3">
                 <label for="prezzoMax" class="form-label">Prezzo massimo (€)</label>
-                <input type="number" id="prezzoMax" class="form-control" min="0">
+                <input type="number" id="prezzoMax" class="form-control" min="0" />
               </div>
 
               <div class="mb-3" id="bloccoartigiano">
@@ -115,7 +153,7 @@
                 </select>
               </div>
               <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="disponibili">
+                <input type="checkbox" class="form-check-input" id="disponibili" />
                 <label class="form-check-label" for="disponibili">Mostra solo prodotti disponibili</label>
               </div>
             </form>
@@ -128,8 +166,8 @@
       </div>
     </div>
 
+    <!-- Script -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script src="/Token.js"></script>
     <script src="prodotti.js"></script>
     <script src="filtro.js"></script>

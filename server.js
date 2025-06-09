@@ -90,7 +90,6 @@ async function main() {
 
         //rimozione prodotti pending scaduti
         try {
-            console.log("verifica rimozione ordini");
             
             await pool.query("BEGIN")
             let pending = await pool.query("SELECT id, expires_at, products FROM ordini WHERE expires_at<NOW()")            
@@ -106,7 +105,6 @@ async function main() {
                     for (const [prodid, prodotto] of Object.entries(prodotti)) {   
                         console.log("Prodotto:", prodotto);
                         await pool.query(`UPDATE prodotti SET amm = amm + $1 WHERE id = $2`, [prodotto.quantita, prodid]);
-                        console.log("Reinseriti prodotti " + prodid);  
                     }
                     await pool.query("COMMIT");                
                 }

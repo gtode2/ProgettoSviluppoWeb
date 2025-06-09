@@ -366,7 +366,7 @@ function showNoProductCard() {
     col.innerHTML = `
       <div class="card text-center shadow-sm">
         <div class="card-body">
-          <h5 class="card-title">Nessun prodotto stronzo</h5>
+          <h5 class="card-title">Nessun prodotto</h5>
         </div>
       </div>
     `;
