@@ -1,7 +1,6 @@
 async function addReport(pool, uid, pid, type, desc) {
     try {
         await pool.query('INSERT INTO report(uid, prodid, type, descr, solved) VALUES ($1,$2,$3,$4,$5)',[uid,pid,type,desc,false])
-        console.log("report aggiunto correttamente");
         return 0
     } catch (error) {
         console.log(error);
@@ -58,7 +57,6 @@ async function banArtigiano(pool, id) {
             JOIN attivita ON prodotti.actid = attivita.actid
             WHERE report.id=$1`, [id]) //ottengo id utente (che corrisponde a id attività)
         const user = res.rows[0].actid
-        console.log(user);
         
         await pool.query(`UPDATE utenti SET banned=TRUE WHERE uid=$1`,[user])
         await pool.query(`
